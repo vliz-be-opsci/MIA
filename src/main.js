@@ -17,7 +17,7 @@ class Widget {
             if (entry.response) {
                 // Create a new graph object
                 console.log(entry.response);
-                const graph = new Graph(entry.response, entry.entity,'application/ld+json');
+                const graph = new Graph(entry.response, entry.entity,'text/turtle');
                 // Add the graph to the entry
                 entry.graph = graph;
             }
@@ -129,19 +129,16 @@ class Widget {
                 false
                 );
                 
-            request.setRequestHeader('Accept', 'application/ld+json');
+            request.setRequestHeader('Accept', 'text/turtle');
             request.setRequestHeader('Content-Type', 'text/plain');
             try {
                 request.send(null);
                 // Check if the request was successful
                 if (request.status === 200) {
-                    // Parse the response
-                    const response = JSON.parse(request.responseText);
+                    // Get the response
+                    const response = request.responseText;
                     // Add the response to the data
                     data[i].response = response;
-
-                    console.log('Request successful');
-                    console.log(data[i]);
                 }else{
                     console.log('Request failed');
                 }
