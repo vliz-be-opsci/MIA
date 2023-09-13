@@ -1,11 +1,27 @@
+import Graph from "./graph.js";
+
 class Widget {
 
     constructor() {
         // Harvest data from the DOM
         this.data = this.harvestData();
-
+        // Add Underline to the spans that were found
+        this.addUnderline();
         // Make requests per entity to get more info
         this.data = this.makeRequests(this.data);
+
+        // Create a graph object for each entry of the data
+        for (let i = 0; i < this.data.length; i++) {
+            const entry = this.data[i];
+            // Check if the entry has a response
+            if (entry.response) {
+                // Create a new graph object
+                console.log(entry.response);
+                const graph = new Graph(entry.response, entry.entity,'application/ld+json');
+                // Add the graph to the entry
+                entry.graph = graph;
+            }
+        }
 
         // Create the layout
         this.layout = this.createLayout(this.data);
@@ -31,6 +47,39 @@ class Widget {
         layout.appendChild(ul);
 
         return layout;
+    }
+
+    addUnderline() {
+        //Add an underline to the element that is in the span
+        // Loop through the spans
+        const spans = document.querySelectorAll('span[entity]');
+        for (let i = 0; i < spans.length; i++) {
+            // Get the span innerHTML
+            const span = spans[i];
+            const text = span.textContent;
+            // Add the underline to the span
+            span.innerHTML = `<u>${text}</u>`;
+            span.style.color = 'red';
+            // Add a click event listener to the span
+            span.addEventListener('click', (event) => {
+                // Get the entity
+                const entity = span.getAttribute('entity');
+                // onclick open a new tab with the entity
+                window.open(entity, '_blank');
+            });
+
+            //add on hover effect to the span and color it blue
+            //make sure he underline of the span is red
+            span.addEventListener('mouseover', (event) => {
+                span.style.color = 'blue';
+            }
+            );
+            span.addEventListener('mouseout', (event) => {
+                span.style.color = 'red';
+            }
+            );
+
+        }
     }
 
     harvestData() {
@@ -80,16 +129,26 @@ class Widget {
                 false
                 );
                 
-            request.setRequestHeader('Accept', 'application/json');
+            request.setRequestHeader('Accept', 'application/ld+json');
             request.setRequestHeader('Content-Type', 'text/plain');
-            request.send(null);
-            // Check if the request was successful
-            if (request.status === 200) {
-                // Parse the response
-                const response = JSON.parse(request.responseText);
-                // Add the response to the data
-                data[i].response = response;
-            }
+            try {
+                request.send(null);
+                // Check if the request was successful
+                if (request.status === 200) {
+                    // Parse the response
+                    const response = JSON.parse(request.responseText);
+                    // Add the response to the data
+                    data[i].response = response;
+
+                    console.log('Request successful');
+                    console.log(data[i]);
+                }else{
+                    console.log('Request failed');
+                }
+            } catch (error) {
+                console.log('Request failed');
+                console.log(error);
+            }    
         }
         // Return the data
         return data;
@@ -101,6 +160,4 @@ class Widget {
     }
 }
 
-// Instantiate the widget
-const widget = new Widget();
-widget.manipulateDOM();
+export default Widget;
