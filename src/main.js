@@ -1,14 +1,54 @@
 import Graph from "./graph.js";
+import { addUnderline, alert } from "./utils/widget_classes.js";
+
 
 class Widget {
 
     constructor() {
         // Harvest data from the DOM
         this.data = this.harvestData();
-        // Add Underline to the spans that were found
-        this.addUnderline();
+
+        //depending on what classes were found, the widget will do different things
+        //if class underline is found, the widget will add an underline to the spans
+        for (let i = 0; i < this.data.length; i++) {
+            const entry = this.data[i];
+            if (entry.classes.includes('underline')) {
+                addUnderline(entry);
+            }
+        }
+
+        //if class alert is found, the widget will send out an alert
+        for (let i = 0; i < this.data.length; i++) {
+            const entry = this.data[i];
+            if (entry.classes.includes('alert')) {
+                alert(entry);
+            }
+        }
+
+        //if verbose is found, the widget will append the text to the span to show the user in what way the widget is manipulating the text
+        for (let i = 0; i < this.data.length; i++) {
+            const entry = this.data[i];
+            if (entry.classes.includes('verbose')) {
+                entry.span.innerHTML = entry.span.innerHTML + '(getting more info)';
+            }
+        }
+
+        //simulate a long running async process
+        //this will be replaced by a function that will make requests to the API
+        //this function will be asynchronous
+        console.log('starting to wait');
+        async function simulateAsyncProcess() {
+            //wait for 2 seconds
+            await new Promise(resolve => setTimeout(resolve, 10000));
+            console.log('finished waiting');
+        }
+        simulateAsyncProcess();
+        
+
         // Make requests per entity to get more info
         this.data = this.makeRequests(this.data);
+
+        
 
         // Create a graph object for each entry of the data
         for (let i = 0; i < this.data.length; i++) {
@@ -49,38 +89,6 @@ class Widget {
         return layout;
     }
 
-    addUnderline() {
-        //Add an underline to the element that is in the span
-        // Loop through the spans
-        const spans = document.querySelectorAll('span[entity]');
-        for (let i = 0; i < spans.length; i++) {
-            // Get the span innerHTML
-            const span = spans[i];
-            const text = span.textContent;
-            // Add the underline to the span
-            span.innerHTML = `<u>${text}</u>`;
-            span.style.color = 'red';
-            // Add a click event listener to the span
-            span.addEventListener('click', (event) => {
-                // Get the entity
-                const entity = span.getAttribute('entity');
-                // onclick open a new tab with the entity
-                window.open(entity, '_blank');
-            });
-
-            //add on hover effect to the span and color it blue
-            //make sure he underline of the span is red
-            span.addEventListener('mouseover', (event) => {
-                span.style.color = 'blue';
-            }
-            );
-            span.addEventListener('mouseout', (event) => {
-                span.style.color = 'red';
-            }
-            );
-
-        }
-    }
 
     harvestData() {
         // Harvest data from the DOM
@@ -108,7 +116,8 @@ class Widget {
                 {
                     text: text,
                     entity: entity,
-                    classes: classes
+                    classes: classes,
+                    span: span
                 }
             );
         }
@@ -145,6 +154,11 @@ class Widget {
                     const response = request.responseText;
                     // Add the response to the data
                     data[i].response = response;
+                    //check if data[i].classes contains verbose => add the response to the span
+                    if (data[i].classes.includes('verbose')) {
+                        //delete (getting more info) from the span and add (making widget) to the span
+                        data[i].span.innerHTML = data[i].span.innerHTML.replace('(getting more info)','(making widget)');
+                    }
                 }else{
                     console.log('Request failed');
                 }
@@ -158,7 +172,6 @@ class Widget {
     }
 
     manipulateDOM() {
-        // Append the layout to the body of the document
         document.body.appendChild(this.layout);
     }
 }
