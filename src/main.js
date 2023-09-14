@@ -16,7 +16,7 @@ class Widget {
             // Check if the entry has a response
             if (entry.response) {
                 // Create a new graph object
-                console.log(entry.response);
+                //console.log(entry.response);
                 const graph = new Graph(entry.response, entry.entity,'text/turtle');
                 // Add the graph to the entry
                 entry.graph = graph;
@@ -85,7 +85,7 @@ class Widget {
     harvestData() {
         // Harvest data from the DOM
         // We want all the spans with the 'entity' attribute
-        console.log(document);
+        //console.log(document);
         const spans = document.querySelectorAll('span[entity]');
         console.log(spans);
         // Create an array to store the data
@@ -98,11 +98,17 @@ class Widget {
             const text = span.textContent;
             //Get the entity
             const entity = span.getAttribute('entity');
+            //Get all the classes and store them in an array
+            let classes = [];
+            for (let j = 0; j < span.classList.length; j++) {
+                classes.push(span.classList[j]);
+            }
             // Add the text and entity to the data array as an object
             data.push(
                 {
                     text: text,
-                    entity: entity
+                    entity: entity,
+                    classes: classes
                 }
             );
         }
