@@ -1,3 +1,6 @@
 import Widget from './src/main.js';
-const widget = new Widget();
-widget.makegraph();
+import Mia from './src/mia.js';
+//const widget = new Widget();
+//widget.makegraph();
+
+const widget = new Mia();
