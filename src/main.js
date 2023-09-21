@@ -29,7 +29,7 @@ class Widget {
     async processData() {
         for (let i = 0; i < this.data.length; i++) {
             const entry = this.data[i];
-            this.updateDebugWidget(entry.entity, 'preprocessData');
+            this.updateDebugWidget(entry.mia_entity, 'preprocessData');
             if (entry.classes.includes('underline')) {
                 await addUnderline(entry);
             }
@@ -46,7 +46,7 @@ class Widget {
         for (let i = 0; i < this.data.length; i++) {
             const entry = this.data[i];
             if (entry.response) {
-                const graph = new Graph(entry.response, entry.entity,'text/turtle');
+                const graph = new Graph(entry.response, entry.mia_entity,'text/turtle');
                 entry.graph = graph;
             }
         }
@@ -54,12 +54,12 @@ class Widget {
 
 
     async harvestData() {
-        const spans = document.querySelectorAll('span[entity]');
+        const spans = document.querySelectorAll('span[mia_entity]');
         const data = [];
         for (let i = 0; i < spans.length; i++) {
             const span = spans[i];
             const text = span.textContent;
-            const entity = span.getAttribute('entity');
+            const mia_entity = span.getAttribute('mia_entity');
             let classes = [];
             for (let j = 0; j < span.classList.length; j++) {
                 classes.push(span.classList[j]);
@@ -67,7 +67,7 @@ class Widget {
             data.push(
                 {
                     text: text,
-                    entity: entity,
+                    mia_entity: mia_entity,
                     classes: classes,
                     span: span
                 }
@@ -78,11 +78,11 @@ class Widget {
 
     async makeRequests(data) {
         for (let i = 0; i < data.length; i++) {
-            const entity = data[i].entity;
+            const mia_entity = data[i].mia_entity;
             const request = new XMLHttpRequest();
             request.open(
                 'GET', 
-                entity,
+                mia_entity,
                 false
                 );
             request.setRequestHeader('Accept', 'text/turtle');
@@ -113,7 +113,7 @@ class Widget {
         document.body.appendChild(debugWidget);
     }
 
-    updateDebugWidget(entity, functionName) {
+    updateDebugWidget(mia_entity, functionName) {
         let debugWidget = document.getElementById('debugwidget');
         if (!debugWidget) {
             debugWidget = document.createElement('div');
@@ -122,10 +122,10 @@ class Widget {
         }
         debugWidget.innerHTML = `<h3>Debug Widget</h3>`;
         if (this.data) {
-            //find the data entry where the entity matches
-            const dataEntry = this.data.find(entry => entry.entity == entity);
-            //make id that is derived from the entity but is a valid id
-            const id = entity.replace(/[^a-zA-Z0-9]/g, '');
+            //find the data entry where the mia_entity matches
+            const dataEntry = this.data.find(entry => entry.mia_entity == mia_entity);
+            //make id that is derived from the mia_entity but is a valid id
+            const id = mia_entity.replace(/[^a-zA-Z0-9]/g, '');
             //check if the 'debugwidget' has a table with the id 'debugtable' in it already
             const table = debugWidget.querySelector('#debugtable');
             //if no table make it
@@ -134,11 +134,11 @@ class Widget {
             }
             //get the table
             const debugTable = debugWidget.querySelector('#debugtable');
-            //check if there is a tr with id of the entity
+            //check if there is a tr with id of the mia_entity
             const tr = debugTable.querySelector(`#${id}`);
             //if no tr make it
             if (!tr) {
-                debugTable.innerHTML += `<tr id="${id}"><td>${entity}</td></tr>`;
+                debugTable.innerHTML += `<tr id="${id}"><td>${mia_entity}</td></tr>`;
             }
             //get the tr
             const debugTr = debugTable.querySelector(`#${id}`);

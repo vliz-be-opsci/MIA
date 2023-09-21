@@ -1,11 +1,7 @@
 //this file will be responsible for creating a graph object from a given source file / text
 //the graph object will be used for linked data interpretation
 //uses rdflib.js
-
-
 //import remote data access library
-
-
 export default class Graph {
     //make constructor
     constructor(data,entity,type) {
