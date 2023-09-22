@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Web Widget</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+</head>
+<body>
+    <!-- The widget will be inserted here -->
+    <p>This is a test page to see if stuff works as it should work</p>
+    <p><span mia_entity="https://marineinfo.org/id/person/37869" class="modal-pop-up verbose">Very handsome person is behind this curtain</span></p>
+    <p>Im talking about <span mia_entity="https://marineregions.org/mrgid/1007" class="modal-pop-up verbose hover">Marles-sur-Canche SAIL</span></p>
+    
+</body>
+<script src="../src/utils/rdflib.min.js" ></script>
+<script src="https://unpkg.com/n3/browser/n3.min.js"></script>
+<script src="https://open-science.vliz.be/MIA/index.js" type="module" id="mia_script" debug="true"></script> <!-- dev src should be ../index.js => live version is currently located at https://open-science.vliz.be/MIA/index.js -->
+</html>
