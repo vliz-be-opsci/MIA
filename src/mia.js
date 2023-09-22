@@ -11,11 +11,6 @@ class Mia {
         this.fullDOM = document;
         this.mia_entities = this.getDOMData();
         console.log('Mia constructor finished');
-        //add ./css/mia.css to the DOM
-        const link = document.createElement('link');
-        link.setAttribute('rel', 'stylesheet');
-        link.setAttribute('href', '../src/css/mia.css');
-        document.head.appendChild(link);
     }
 
     //function to get the data from the DOM the data is all the span elements which have the attribute mia_entity
