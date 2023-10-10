@@ -1,6 +1,6 @@
 //this module will contain the mia class and all of its methods
 //import the required modules (for now there aren't any)
-import Graph from "./graph.js";
+import Graph from "./components/graph.js";
 import { getRdfTypeArray, getRdfTypeSPARQL } from "./utils/info_extraction.js";
 //create the mia class
 class Mia {

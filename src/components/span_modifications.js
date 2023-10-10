@@ -1,6 +1,7 @@
 //this file will contain all functions that will make small alterations to the entity span elements in the DOM
 //imports
 import Modal from "./modal.js";
+import Map from "./map.js";
 
 function checkVerbose(mia_entity){
     const mia_entity_classes = mia_entity.span.classList;
@@ -11,7 +12,7 @@ function checkVerbose(mia_entity){
 }
 
 //function that will select span modifications to be made
-function spanModifications(mia_entity){
+async function spanModifications(mia_entity){
     //get all mia_entity classes
     const mia_entity_classes = mia_entity.span.classList;
     //if model-pop-up is in the classes then add the popup modal
@@ -19,7 +20,6 @@ function spanModifications(mia_entity){
         addUnderline(mia_entity);
         addPopupModal(mia_entity);
     }
-    deleteLoader(mia_entity);
 }
 
 function deleteLoader(mia_entity){
@@ -51,4 +51,4 @@ function addPopupModal(mia_entity){
     mia_entity.modal = new Modal(mia_entity);
 }
 
-export {checkVerbose, spanModifications} ;
+export {checkVerbose, spanModifications, deleteLoader} ;

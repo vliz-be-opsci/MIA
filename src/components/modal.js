@@ -118,6 +118,8 @@ class Modal {
                 document.getElementById(modal_id).classList.add('hide');
             }
         });
+
+        //append another 
     }
 
     //function for placemodal
@@ -130,7 +132,7 @@ class Modal {
         });
     }
 
-    MarineRegionModal(mia_entity){
+    async MarineRegionModal(mia_entity){
         //get the span element
         const span = mia_entity.span;
         //make a blank modal in a div
@@ -141,9 +143,10 @@ class Modal {
 
         //make map object
         const map = new Map(mia_entity);
+        console.log(map);
         //add map.map to the modal
         modal.innerHTML = `<div class="modal-content">
-        <h2>Marine Region</h2>
+        <h2>Marine Region ${mia_entity.entity}</h2>
         ${map.map}
         </div>`;
         //append the modal to the span
