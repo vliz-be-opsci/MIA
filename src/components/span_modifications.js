@@ -3,10 +3,11 @@
 import Modal from "./modal.js";
 import Map from "./map.js";
 
-function checkVerbose(mia_entity){
-    const mia_entity_classes = mia_entity.span.classList;
-    //if verbose is set to true then add the verbose class to the span element
-    if(mia_entity_classes.contains('verbose')){
+function addLoader(mia_entity){
+    let uri = mia_entity.uri;
+    console.log(uri);
+    //check if the mia_entity.uri contains marineinfo or marregions
+    if(uri.includes("marineinfo") || uri.includes('marineregions')){
         addLoadingAnimation(mia_entity);
     }
 }
@@ -17,8 +18,7 @@ async function spanModifications(mia_entity){
     const mia_entity_classes = mia_entity.span.classList;
     //if model-pop-up is in the classes then add the popup modal
     if(mia_entity_classes.contains('modal-pop-up')){
-        addUnderline(mia_entity);
-        addPopupModal(mia_entity);
+        console.log('modal pop up');
     }
 }
 
@@ -29,14 +29,6 @@ function deleteLoader(mia_entity){
     const loader = span.querySelector('.lds-ring');
     //delete the loader
     loader.remove();
-}
-
-//function to make a red underline under the entity
-function addUnderline(mia_entity){
-    //get the span element
-    const span = mia_entity.span;
-    //add the underline class to the span element
-    span.classList.add('underline');
 }
 
 function addLoadingAnimation(mia_entity){
@@ -51,4 +43,4 @@ function addPopupModal(mia_entity){
     mia_entity.modal = new Modal(mia_entity);
 }
 
-export {checkVerbose, spanModifications, deleteLoader} ;
+export {addLoader, spanModifications, deleteLoader} ;

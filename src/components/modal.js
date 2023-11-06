@@ -62,7 +62,7 @@ class Modal {
         //make a blank modal in a div
         const modal = document.createElement('div');
         modal.classList.add('modal');
-        const modal_id = mia_entity.entity + '_modal_' + mia_entity.rdf_types[0];
+        const modal_id = mia_entity.uri + '_modal_' + mia_entity.rdf_types[0];
         modal.setAttribute('id',modal_id)
 
 
@@ -75,7 +75,7 @@ class Modal {
         let image = '';
         for (let i = 0; i < triples.length; i++) {
             const triple = triples[i];
-            if (triple.subject === mia_entity.entity || triple.subject === mia_entity.entity.replace('http', 'https') || triple.subject === mia_entity.entity.replace('https', 'http')) {
+            if (triple.subject === mia_entity.uri || triple.subject === mia_entity.uri.replace('http', 'https') || triple.subject === mia_entity.uri.replace('https', 'http')) {
                 if (triple.predicate === "https://schema.org#givenName") {
                     givenName = triple.object;
                     //delete quotes from the string
@@ -138,7 +138,7 @@ class Modal {
         //make a blank modal in a div
         const modal = document.createElement('div');
         modal.classList.add('modal');
-        const modal_id = mia_entity.entity + '_modal_' + mia_entity.rdf_types[0];
+        const modal_id = mia_entity.uri + '_modal_' + mia_entity.rdf_types[0];
         modal.setAttribute('id',modal_id)
 
         //make map object
@@ -146,7 +146,7 @@ class Modal {
         console.log(map);
         //add map.map to the modal
         modal.innerHTML = `<div class="modal-content">
-        <h2>Marine Region ${mia_entity.entity}</h2>
+        <h2>Marine Region ${mia_entity.uri}</h2>
         ${map.map}
         </div>`;
         //append the modal to the span

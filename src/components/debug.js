@@ -18,14 +18,14 @@ export default class Debug {
         //get the table
         const debugTable = debugWidget.querySelector('#debugtable');
         //add the headers to the table (mia_entity, classes, No_of_triples)
-        debugTable.innerHTML += `<tr><th> mia_entity </th><th> classes </th><th> No_of_triples </th><th> rdf:type </th></tr>`;
+        debugTable.innerHTML += `<tr><th> URI </th><th> classes </th><th> No_of_triples </th><th> rdf:type </th></tr>`;
         //loop through the mia_entities and add them to the table
         for (let i = 0; i < this.widget.mia_entities.length; i++) {
             const mia_entity = this.widget.mia_entities[i];
             //make id that is derived from the mia_entity but is a valid id
-            const id = mia_entity.entity.replace(/[^a-zA-Z0-9]/g, '');
+            const id = mia_entity.uri.replace(/[^a-zA-Z0-9]/g, '');
             //add the mia_entity to the table
-            debugTable.innerHTML += `<tr id="${id}"><td>${mia_entity.entity}</td><td>${mia_entity.classes}</td><td id="${id}_triples">0</td><td id="${id}_rdf_type">?</td></tr>`;
+            debugTable.innerHTML += `<tr id="${id}"><td>${mia_entity.uri}</td><td>${mia_entity.classes}</td><td id="${id}_triples">0</td><td id="${id}_rdf_type">?</td></tr>`;
         }
 
         //add the debug widget to the body

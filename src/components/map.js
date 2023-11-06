@@ -70,7 +70,7 @@ class Map {
             const triple = triples[i];
             //check if the subject of the triple is the entity
             //make another constant that is the other version being https or http
-            if (triple.subject === this.mia_entity.entity || triple.subject === this.mia_entity.entity.replace('http', 'https') || triple.subject === this.mia_entity.entity.replace('https', 'http')) {
+            if (triple.subject === this.mia_entity.uri || triple.subject === this.mia_entity.uri.replace('http', 'https') || triple.subject === this.mia_entity.uri.replace('https', 'http')) {
                 //check if the predicate is rdf:type
                 console.log(triple.predicate);
                 if (
@@ -139,7 +139,7 @@ class Map {
             const triple = triples[i];
             //check if the subject of the triple is the entity
             //make another constant that is the other version being https or http
-            if (triple.subject === this.mia_entity.entity || triple.subject === this.mia_entity.entity.replace('http', 'https') || triple.subject === this.mia_entity.entity.replace('https', 'http')) {
+            if (triple.subject === this.mia_entity.uri || triple.subject === this.mia_entity.uri.replace('http', 'https') || triple.subject === this.mia_entity.uri.replace('https', 'http')) {
                 //check if the predicate is rdf:type
                 console.log(triple.predicate);
                 if (

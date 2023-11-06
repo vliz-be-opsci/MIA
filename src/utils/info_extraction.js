@@ -13,7 +13,7 @@ function getRdfTypeArray(mia_entity) {
         const triple = graph.triples[i];
         //check if the subject of the triple is the entity
         //make another constant that is the other version being https or http
-        if (triple.subject === mia_entity.entity || triple.subject === mia_entity.entity.replace('http', 'https') || triple.subject === mia_entity.entity.replace('https', 'http')) {
+        if (triple.subject === mia_entity.uri || triple.subject === mia_entity.uri.replace('http', 'https') || triple.subject === mia_entity.uri.replace('https', 'http')) {
             //check if the predicate is rdf:type
             if (triple.predicate === "http://www.w3.org/1999/02/22-rdf-syntax-ns#type") {
                 //add the object to the array
@@ -38,7 +38,7 @@ function getRdfTypeSPARQL(mia_entity){
     //create a new graph
     const graph = $rdf.graph();
     //parse the rdf
-    $rdf.parse(rdf, graph, mia_entity.entity, 'text/turtle');
+    $rdf.parse(rdf, graph, mia_entity.uri, 'text/turtle');
     //create a new store
     const store = $rdf.graph();
     // query the store
