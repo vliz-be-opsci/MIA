@@ -20,23 +20,3 @@ let debugWidget = null;
 if (debug) {
     debugWidget = new Debug(widget);
 }
-
-for(let i = 0; i < widget.mia_entities.length; i++){
-    const mia_entity = widget.mia_entities[i];
-    //promise for entity that will get lod
-    mia_entity.getLinkedData().then(() => {
-        if(debug){
-            debugWidget.updateDebugWidgetTriples(mia_entity.uri, mia_entity.linked_data.triples.length);
-        }
-        mia_entity.getRdfType().then(() => {
-            if(debug){
-                debugWidget.updateDebugWidgetRDFType(mia_entity.uri, mia_entity.rdf_types);
-            }
-            //do promise to modify the span
-            spanModifications(mia_entity).then(() => {
-                //delete the loader
-                //deleteLoader(mia_entity);
-            });
-        });
-    });
-}

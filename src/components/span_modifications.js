@@ -12,6 +12,17 @@ function addLoader(mia_entity){
     }
 }
 
+function addMiaIcon(mia_entity){
+    let uri = mia_entity.uri;
+    console.log(uri);
+    //check if the mia_entity.uri contains marineinfo or marregions
+    if(uri.includes("marineinfo") || uri.includes('marineregions')){
+        //prepend a image span to the span element
+        const span = mia_entity.span;
+        
+    }
+}
+
 //function that will select span modifications to be made
 async function spanModifications(mia_entity){
     //get all mia_entity classes
