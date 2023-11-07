@@ -18,8 +18,9 @@ function addMiaIcon(mia_entity){
     //check if the mia_entity.uri contains marineinfo or marregions
     if(uri.includes("marineinfo") || uri.includes('marineregions')){
         //prepend a image span to the span element
+        //url to the mia icon => https://raw.githubusercontent.com/vliz-be-opsci/MIA/main/src/css/logo_mi.svg
         const span = mia_entity.span;
-        
+        span.innerHTML = '<span><img src="https://raw.githubusercontent.com/vliz-be-opsci/MIA/main/src/css/logo_mi.svg" class="mia_icon" alt="MIA logo"></span>' + span.innerHTML;
     }
 }
 
@@ -49,9 +50,6 @@ function addLoadingAnimation(mia_entity){
     span.innerHTML += '<div class="lds-ring"><div></div><div></div><div></div><div></div></div>';
 }
 
-//function to add a click event to the span element that will open a modal popup
-function addPopupModal(mia_entity){
-    mia_entity.modal = new Modal(mia_entity);
-}
 
-export {addLoader, spanModifications, deleteLoader} ;
+
+export {addLoader, spanModifications, deleteLoader, addMiaIcon} ;
