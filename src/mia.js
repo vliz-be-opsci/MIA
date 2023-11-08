@@ -2,6 +2,7 @@
 //import the required modules (for now there aren't any)
 import Graph from "./components/graph.js";
 import { getRdfTypeArray } from "./utils/info_extraction.js";
+import { deleteLoader } from "./components/span_modifications.js";
 //create the mia class
 class Mia {
     constructor() {
@@ -85,10 +86,14 @@ class MiaEntity{
                     this.store = store;
                     resolve(this);
                 } else {
+                    console.log('error in request for linked data in request onload');
+                    deleteLoader(this);
                     reject(new Error(`Request failed with status ${request.status}`));
                 }
             };
             request.onerror = () => {
+                console.log('error in request for linked data in request onerror');
+                deleteLoader(this);
                 reject(new Error('Network error'));
             };
             request.send();
@@ -97,7 +102,6 @@ class MiaEntity{
 
     //function to get rdf type of the uri
     async getRdfType(){
-
         return new Promise((resolve, reject) => {
             //first try the SPARQL method then the Array method
             try {
@@ -108,6 +112,8 @@ class MiaEntity{
                 //return the mia_uri
                 resolve(this);
             } catch (error) {
+                console.log('error getting rdf type')
+                deleteLoader(this);
                 console.log(error);
                 reject(error);
             }
