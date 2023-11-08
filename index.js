@@ -1,7 +1,7 @@
 import Mia from './src/mia.js';
 import Debug from './src/components/debug.js';
 import HoverPopup from './src/components/hoverpopup.js';
-import { addLoader, spanModifications, deleteLoader, addMiaIcon } from './src/components/span_modifications.js';
+import { addMiaIcon } from './src/components/span_modifications.js';
 import popupTemplate from './src/components/template.js';
 //const widget = new Widget();
 //widget.makegraph();

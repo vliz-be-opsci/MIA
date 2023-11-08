@@ -142,3 +142,15 @@ tr:nth-child(even){background-color: #f2f2f2}
     transform: translateY(20px);
   }
 }
+
+/*loading class will add flickering to the element to signal loading*/
+.loading {
+  animation: flickerAnimation 0.7s infinite;
+  background-color: #f2f2f2;
+}
+
+@keyframes flickerAnimation {
+  0%   { opacity:1; }
+  50%  { opacity:0; }
+  100% { opacity:1; }
+}

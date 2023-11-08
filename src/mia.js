@@ -3,6 +3,7 @@
 import Graph from "./components/graph.js";
 import { getRdfTypeArray } from "./utils/info_extraction.js";
 import { deleteLoader } from "./components/span_modifications.js";
+
 //create the mia class
 class Mia {
     constructor() {
@@ -84,6 +85,7 @@ class MiaEntity{
                     const store = new N3.Store();
                     store.addQuads(parsed_response);
                     this.store = store;
+                    deleteLoader(this);
                     resolve(this);
                 } else {
                     console.log('error in request for linked data in request onload');
@@ -113,7 +115,7 @@ class MiaEntity{
                 resolve(this);
             } catch (error) {
                 console.log('error getting rdf type')
-                deleteLoader(this);
+                //deleteLoader(this);
                 console.log(error);
                 reject(error);
             }

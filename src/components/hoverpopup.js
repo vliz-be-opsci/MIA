@@ -1,8 +1,10 @@
 //this file will contain all the fnctionality for the hover modal
-import { addLoader, deleteLoader } from "./span_modifications.js";
+
+import { addLoader } from "./span_modifications.js";
 
 class HoverPopup {
     constructor(mia_entity, x, y){
+        console.log('HoverPopup constructor started');
         addLoader(mia_entity);
         this.mia_entity = mia_entity;
         console.log(mia_entity);
@@ -19,7 +21,7 @@ class HoverPopup {
                 // Get RDF types
                 const rdfTypes = mia_entity.getRdfType().then((rdfTypes) => {
                     console.log(rdfTypes);
-                    deleteLoader(mia_entity);
+                    //deleteLoader(mia_entity);
                     this.spawnpopup();
                 });
             });
@@ -27,7 +29,7 @@ class HoverPopup {
         else {
             console.log('raw data already present');
             const rdfTypes = mia_entity.getRdfType();
-            deleteLoader(mia_entity);
+            //deleteLoader(mia_entity);
             this.spawnpopup();
         }
     }
@@ -61,12 +63,6 @@ class HoverPopup {
     }
 
     createPopup(x, y, position) {
-
-        //before creating a new popup , check if there is already a popup and delete it
-        let popupe = document.querySelector('.mia-popup');
-        if(popupe != null){
-            popupe.remove();
-        }
 
         // Clone the template content
         let template = document.getElementById('popup-template');

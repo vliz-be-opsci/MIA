@@ -4,13 +4,19 @@ import Modal from "./modal.js";
 import Map from "./map.js";
 
 function addLoader(mia_entity){
-    let uri = mia_entity.uri;
-    console.log(uri);
-    //check if the mia_entity.uri contains marineinfo or marregions
-    if(uri.includes("marineinfo") || uri.includes('marineregions')){
-        addLoadingAnimation(mia_entity);
-    }
+    //search for the img element that has .mia_icon as a class and add the class .loading
+    const span = document.querySelector(`a[href="${mia_entity.uri}"]`);
+    const img = span.querySelector('.mia_icon');
+    img.classList.add('loading');
 }
+
+function deleteLoader(mia_entity){
+    //search for the img element that has .mia_icon as a class and remove the class .loading
+    const span = document.querySelector(`a[href="${mia_entity.uri}"]`);
+    const img = span.querySelector('.mia_icon');
+    img.classList.remove('loading');
+}
+
 
 function addMiaIcon(mia_entity){
     let uri = mia_entity.uri;
@@ -34,22 +40,10 @@ async function spanModifications(mia_entity){
     }
 }
 
-function deleteLoader(mia_entity){
-    //get the span element
-    const span = mia_entity.span;
-    //get the loader
-    const loader = span.querySelector('.lds-ring');
-    //delete the loader
-    loader.remove();
-}
-
-function addLoadingAnimation(mia_entity){
-    //get the span element
-    const span = mia_entity.span;
-    //add  <div class="lds-circle"><div></div></div>
-    span.innerHTML += '<div class="lds-ring"><div></div><div></div><div></div><div></div></div>';
-}
 
 
 
-export {addLoader, spanModifications, deleteLoader, addMiaIcon} ;
+
+
+
+export {spanModifications, addMiaIcon, addLoader, deleteLoader} ;
