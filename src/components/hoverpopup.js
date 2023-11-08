@@ -61,18 +61,32 @@ class HoverPopup {
     }
 
     createPopup(x, y, position) {
-        console.log('creating popup');
-        console.log(x, y , position);
+
+        //before creating a new popup , check if there is already a popup and delete it
+        let popupe = document.querySelector('.mia-popup');
+        if(popupe != null){
+            popupe.remove();
+        }
+
+        // Clone the template content
+        let template = document.getElementById('popup-template');
+        let clone = template.content.cloneNode(true);
+
         //keep into account the scroll position
         x = x + window.scrollX- parent.scrollX;
         y = y + window.scrollY- parent.scrollY;
-        console.log(x, y , position);
-        //create the popup element and add it to the body
-        const popup = document.createElement('div');
-        popup.classList.add('mia-popup');
+    
+        // Select the popup content
+        let popup = clone.querySelector('.mia-popup');
+    
+        // Add the position class and set the width and height
         popup.classList.add(position);
         popup.style.width = `${this.popupwidth}px`;
         popup.style.height = `${this.popupheight}px`;
+
+        console.log(position);
+    
+        // Position the popup
         switch (position) {
             case 'top-right':
                 popup.style.left = `${x}px`;
@@ -91,11 +105,25 @@ class HoverPopup {
                 popup.style.top = `${y}px`;
                 break;
         }
-        document.body.appendChild(popup);
-        //add the popup content
-        popup.innerHTML = `<div class="mia-popup-content">
-        <h2>${this.mia_entity.uri}</h2>
-        </div>`;
+    
+        // Select the text and image/map sections
+        let textSection = clone.querySelector('.text-section');
+        let imgMapSectionPortrait = clone.querySelector('.img-map-section.portrait');
+        let imgMapSectionLandscape = clone.querySelector('.img-map-section.landscape');
+    
+        // Fill in the text and image/map sections
+        textSection.innerHTML = `<h2>${this.mia_entity.uri}</h2>`;
+    
+        // Depending on the image/map dimensions, fill in the appropriate section
+        let isPortrait = true;/* logic to determine if the image/map is portrait */
+        if (isPortrait) {
+            imgMapSectionPortrait.innerHTML = '<img src="" alternate="image" />';
+        } else {
+            imgMapSectionLandscape.innerHTML = '<img src=""  alternate="image" />';
+        }
+    
+        // Append the filled template to the body
+        document.body.appendChild(clone);
     }
 
 }
