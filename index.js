@@ -2,7 +2,7 @@ import Mia from './src/mia.js';
 import Debug from './src/components/debug.js';
 import HoverPopup from './src/components/hoverpopup.js';
 import { addMiaIcon } from './src/components/span_modifications.js';
-import popupTemplate from './src/components/template.js';
+import { popupTemplate , textSectionTemplate } from './src/components/templates.js';
 //const widget = new Widget();
 //widget.makegraph();
 
@@ -25,6 +25,7 @@ if (debug) {
 
 //add the popup template to the body
 document.body.innerHTML += popupTemplate;
+document.body.innerHTML += textSectionTemplate;
 
 //wait for whole page to load
 window.addEventListener('load', function(){

@@ -1,6 +1,6 @@
 //this file will contain all the fnctionality for the hover modal
 
-import { addLoader } from "./span_modifications.js";
+import { addLoader , deleteLoader } from "./span_modifications.js";
 
 class HoverPopup {
     constructor(mia_entity, x, y){
@@ -10,7 +10,7 @@ class HoverPopup {
         console.log(mia_entity);
         this.mouse_position_x = x;
         this.mouse_position_y = y;
-        this.popupwidth = 400;
+        this.popupwidth = 400; //replace both by dynamic descision based on image size
         this.popupheight = 200;
         //check if the mia_entity already has raw_data , if not get the raw_data
         // In the constructor
@@ -23,6 +23,7 @@ class HoverPopup {
                     console.log(rdfTypes);
                     //deleteLoader(mia_entity);
                     this.spawnpopup();
+                    deleteLoader(mia_entity);
                 });
             });
         }
@@ -31,6 +32,7 @@ class HoverPopup {
             const rdfTypes = mia_entity.getRdfType();
             //deleteLoader(mia_entity);
             this.spawnpopup();
+            deleteLoader(mia_entity);
         }
     }
 
@@ -63,25 +65,19 @@ class HoverPopup {
     }
 
     createPopup(x, y, position) {
-
         // Clone the template content
         let template = document.getElementById('popup-template');
         let clone = template.content.cloneNode(true);
-
         //keep into account the scroll position
-        x = x + window.scrollX- parent.scrollX;
-        y = y + window.scrollY- parent.scrollY;
-    
+        x = x + window.scrollX;
+        y = y + window.scrollY;
         // Select the popup content
         let popup = clone.querySelector('.mia-popup');
-    
         // Add the position class and set the width and height
         popup.classList.add(position);
         popup.style.width = `${this.popupwidth}px`;
         popup.style.height = `${this.popupheight}px`;
-
         console.log(position);
-    
         // Position the popup
         switch (position) {
             case 'top-right':
@@ -101,15 +97,12 @@ class HoverPopup {
                 popup.style.top = `${y}px`;
                 break;
         }
-    
         // Select the text and image/map sections
         let textSection = clone.querySelector('.text-section');
         let imgMapSectionPortrait = clone.querySelector('.img-map-section.portrait');
         let imgMapSectionLandscape = clone.querySelector('.img-map-section.landscape');
-    
         // Fill in the text and image/map sections
         textSection.innerHTML = `<h2>${this.mia_entity.uri}</h2>`;
-    
         // Depending on the image/map dimensions, fill in the appropriate section
         let isPortrait = true;/* logic to determine if the image/map is portrait */
         if (isPortrait) {
@@ -117,11 +110,9 @@ class HoverPopup {
         } else {
             imgMapSectionLandscape.innerHTML = '<img src=""  alternate="image" />';
         }
-    
         // Append the filled template to the body
         document.body.appendChild(clone);
     }
-
 }
 
 export default HoverPopup;

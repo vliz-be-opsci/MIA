@@ -10,7 +10,15 @@ let popupTemplate = `
         </div>
     </div>
 </template>
-`
-;
+`;
 
-export default popupTemplate;
+let textSectionTemplate = `
+<template id="text-section-template">
+    <div class="text-section-content">
+        <div class="text-section-title"></div>
+        <div class="text-section-body"></div>
+    </div>
+</template>
+`;
+
+export {popupTemplate, textSectionTemplate};
