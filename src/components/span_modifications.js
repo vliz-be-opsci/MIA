@@ -17,7 +17,6 @@ function deleteLoader(mia_entity){
     img.classList.remove('loading');
 }
 
-
 function addMiaIcon(mia_entity){
     let uri = mia_entity.uri;
     console.log(uri);

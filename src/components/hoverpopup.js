@@ -48,6 +48,12 @@ class HoverPopup {
         this.createPopup(x, y, position);
     }
 
+    //function to full in popup content and return the html element
+    makePopupContent(){
+        //use rdf data store to fill in the popup content
+        
+    }
+
     getPopupPosition(x, y, width, height) {
         if (x + width < window.innerWidth) {
             if (y + height < window.innerHeight) {

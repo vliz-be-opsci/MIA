@@ -1,8 +1,8 @@
 //this module will contain the mia class and all of its methods
 //import the required modules (for now there aren't any)
-import Graph from "./components/graph.js";
 import { getRdfTypeArray } from "./utils/info_extraction.js";
 import { deleteLoader } from "./components/span_modifications.js";
+import { createStore } from "./components/linked_data_store.js";
 
 //create the mia class
 class Mia {
@@ -71,19 +71,10 @@ class MiaEntity{
                     //get the response
                     const response = request.responseText;
                     this.raw_data = response;
-    
-                    //create a n3 parser object and parse the response
-                    const parser = new N3.Parser({
-                        format: 'text/turtle',
-                        baseIRI: this.uri
-                    });
-    
-                    // Parse the response and resolve the promise
-                    const parsed_response = parser.parse(response);
-                    this.n3parsed_response = parsed_response;
-                    //put the triples in a store
-                    const store = new N3.Store();
-                    store.addQuads(parsed_response);
+
+                    //use createStore function to create a store
+                    const store = createStore(this.uri, response, 'text/turtle');
+                    //add the store to the mia_entity
                     this.store = store;
                     deleteLoader(this);
                     resolve(this);
