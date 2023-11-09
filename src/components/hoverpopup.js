@@ -1,6 +1,7 @@
 //this file will contain all the fnctionality for the hover modal
 
 import { addLoader , deleteLoader } from "./span_modifications.js";
+import { getInfoPopup } from "../utils/info_extraction.js";
 
 class HoverPopup {
     constructor(mia_entity, x, y){
@@ -45,6 +46,10 @@ class HoverPopup {
         const y = this.mouse_position_y
         console.log(x, y);
         const position = this.getPopupPosition(x, y, this.popupwidth, this.popupheight);
+
+        //extract info here to give as argument to the createPopup function
+        let info = getInfoPopup(this.mia_entity);
+
         this.createPopup(x, y, position);
     }
 
