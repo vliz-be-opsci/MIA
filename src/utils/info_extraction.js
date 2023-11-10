@@ -35,11 +35,16 @@ function getPersonInfo(mia_entity) {
     let personName;
     const name_vocabularies = [
         'http://xmlns.com/foaf/0.1/name',
+        'http://schema.org/givenName',
+        'http://schema.org/familyName',
         'http://schema.org/name',
         'http://purl.org/dc/elements/1.1/title',
         'http://www.w3.org/2000/01/rdf-schema#label',
         'http://www.w3.org/2004/02/skos/core#prefLabel',
-        'http://www.w3.org/2004/02/skos/core#altLabel'
+        'http://www.w3.org/2004/02/skos/core#altLabel',
+        "http://www.w3.org/2004/02/skos/core#hiddenLabel",
+        "http://schema.org/alternateName",
+        "http://schema.org/title",
     ];
 
     for (let i = 0; i < name_vocabularies.length; i++) {

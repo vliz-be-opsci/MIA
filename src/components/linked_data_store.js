@@ -12,8 +12,11 @@ export function createStore(uri, text, format){
 
     // Parse the response and resolve the promise
     const parsed_response = parser.parse(text);
+
+
+
     //put the triples in a store
     const store = new N3.Store();
     store.addQuads(parsed_response);
-    return store;
+    return [parsed_response,store];
 }

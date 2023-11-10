@@ -71,11 +71,11 @@ class MiaEntity{
                     //get the response
                     const response = request.responseText;
                     this.raw_data = response;
-
                     //use createStore function to create a store
                     const store = createStore(this.uri, response, 'text/turtle');
                     //add the store to the mia_entity
-                    this.store = store;
+                    this.triples = store[0];
+                    this.store = store[1];
                     deleteLoader(this);
                     resolve(this);
                 } else {
