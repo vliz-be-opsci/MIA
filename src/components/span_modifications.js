@@ -4,17 +4,29 @@ import Modal from "./modal.js";
 import Map from "./map.js";
 
 function addLoader(mia_entity){
-    //search for the img element that has .mia_icon as a class and add the class .loading
-    const span = document.querySelector(`a[href="${mia_entity.uri}"]`);
-    const img = span.querySelector('.mia_icon');
-    img.classList.add('loading');
+    try {
+        //search for the img element that has .mia_icon as a class and add the class .loading
+        const span = document.querySelector(`a[href="${mia_entity.uri}"]`);
+        const img = span.querySelector('.mia_icon');
+        img.classList.add('loading');
+    } catch (error) {
+        //error can occur due to entity not being from mr or mi
+        console.log(error);
+    }
+    
 }
 
 function deleteLoader(mia_entity){
-    //search for the img element that has .mia_icon as a class and remove the class .loading
-    const span = document.querySelector(`a[href="${mia_entity.uri}"]`);
-    const img = span.querySelector('.mia_icon');
-    img.classList.remove('loading');
+    try {
+        //search for the img element that has .mia_icon as a class and remove the class .loading
+        const span = document.querySelector(`a[href="${mia_entity.uri}"]`);
+        const img = span.querySelector('.mia_icon');
+        img.classList.remove('loading');
+    } catch (error) {
+        //error can occur due to entity not being from mr or mi
+        console.log(error);
+    }
+    
 }
 
 function addMiaIcon(mia_entity){

@@ -50,11 +50,10 @@ class MiaEntity{
     }
 
     //function to make external http request and return a promise for which the response wil be logged in the console
-    async getLinkedData(){
-        //make the request and return the promise as mia_uri.linked_data
+    //make the request and return the promise as mia_uri.linked_data
+    getLinkedData = async function() {
         //create the request
-
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             const request = new XMLHttpRequest();
             //open the request
             request.open(
@@ -66,14 +65,14 @@ class MiaEntity{
             request.setRequestHeader('Accept', 'text/turtle');
             request.setRequestHeader('Content-Type', 'text/plain');
             //send the request
-            request.onload = () => {
+            request.onload = async () => {
                 if (request.status === 200) {
                     //get the response
                     const response = request.responseText;
                     this.raw_data = response;
-                    //use createStore function to create a store
-                    const store = createStore(this.uri, response, 'text/turtle');
-                    //add the store to the mia_entity
+
+                    //create a n3 parser object and parse the response
+                    const store = await createStore(this.uri, response, 'text/turtle');
                     this.triples = store[0];
                     this.store = store[1];
                     deleteLoader(this);
@@ -84,10 +83,38 @@ class MiaEntity{
                     reject(new Error(`Request failed with status ${request.status}`));
                 }
             };
-            request.onerror = () => {
-                console.log('error in request for linked data in request onerror');
+            request.onerror = async () => {
+                console.log('error in request for linked data in Turtle format, trying JSON-LD format');
                 deleteLoader(this);
-                reject(new Error('Network error'));
+
+                // Create a new request for JSON-LD data
+                const jsonldRequest = new XMLHttpRequest();
+                jsonldRequest.open('GET', this.uri, true);
+                jsonldRequest.setRequestHeader('Accept', 'application/ld+json');
+                jsonldRequest.setRequestHeader('Content-Type', 'application/json');
+                jsonldRequest.onload = async () => {
+                    if (jsonldRequest.status === 200) {
+                        const response = jsonldRequest.responseText;
+                        this.raw_data = response;
+            
+                        // Parse the JSON-LD data and create a store
+                        const store = await createStore(this.uri, JSON.parse(response), 'application/ld+json');
+                        this.triples = store[0];
+                        this.store = store[1];
+                        deleteLoader(this);
+                        resolve(this);
+                    } else {
+                        console.log('error in request for linked data in JSON-LD format');
+                        deleteLoader(this);
+                        reject(new Error(`Request failed with status ${jsonldRequest.status}`));
+                    }
+                };
+                jsonldRequest.onerror = () => {
+                    console.log('error in request for linked data in JSON-LD format');
+                    deleteLoader(this);
+                    reject(new Error('Network error'));
+                };
+                jsonldRequest.send();
             };
             request.send();
         });

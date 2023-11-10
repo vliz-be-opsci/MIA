@@ -20,10 +20,50 @@ function getRdfTypeArray(mia_entity) {
 
 function getDefaultInfo(mia_entity) {
     console.log('getDefaultInfo started');
-    //get title from the linked data
-    //get description from the linked data
-    //get possible image from the linked data
-    return {};
+
+    let store = mia_entity.store; 
+
+    const content_vocabularies = {
+        "title":[
+            'http://purl.org/dc/elements/1.1/title',
+            'http://www.w3.org/2000/01/rdf-schema#label',
+            'http://www.w3.org/2004/02/skos/core#prefLabel',
+            'http://www.w3.org/2004/02/skos/core#altLabel',
+            "http://www.w3.org/2004/02/skos/core#hiddenLabel",
+            "http://schema.org/alternateName",
+            "http://schema.org/title",
+
+        ],
+        "description": [
+            'http://purl.org/dc/elements/1.1/description',
+            'http://schema.org/description',
+            'http://www.w3.org/2000/01/rdf-schema#comment',
+            'http://www.w3.org/2004/02/skos/core#definition',
+            'http://www.w3.org/2004/02/skos/core#scopeNote',
+            'http://www.w3.org/2004/02/skos/core#example',
+            'http://www.w3.org/2004/02/skos/core#historyNote',
+            'http://www.w3.org/2004/02/skos/core#editorialNote',
+            'http://www.w3.org/2004/02/skos/core#changeNote',
+            'http://www.w3.org/2004/02/skos/core#note',
+            'http://www.w3.org/2004/02/skos/core#definition',
+            'http://www.w3.org/2004/02/skos/core#example'
+        ]
+    }
+
+    let content = {};
+
+    for (const [key, value] of Object.entries(content_vocabularies)) {
+        for (let i = 0; i < value.length; i++) {
+            const vocabulary = value[i];
+            const quads = store.getQuads(mia_entity.uri, vocabulary, null, null);
+            if (quads.length > 0) {
+                content[key] = quads[0].object.value;
+                break;
+            }
+        }
+    };
+    console.log(content);
+    return content;
 }
 
 function getPersonInfo(mia_entity) {
@@ -67,13 +107,61 @@ function getPersonInfo(mia_entity) {
 
 function getMapInfo(mia_entity) {
     console.log('getMapInfo started');
-    //get the map info from the linked data
-    //get the name
-    //get the description
-    //get the image
-    //get the location
-    //return an object with all the info
-    return {};
+    let store = mia_entity.store; 
+    const content_vocabularies = {
+        "title":[
+            'http://purl.org/dc/elements/1.1/title',
+            'http://www.w3.org/2000/01/rdf-schema#label',
+            'http://www.w3.org/2004/02/skos/core#prefLabel',
+            'http://www.w3.org/2004/02/skos/core#altLabel',
+            "http://www.w3.org/2004/02/skos/core#hiddenLabel",
+            "http://schema.org/alternateName",
+            "http://schema.org/title",
+
+        ],
+        "description": [
+            'http://purl.org/dc/elements/1.1/description',
+            'http://schema.org/description',
+            'http://www.w3.org/2000/01/rdf-schema#comment',
+            'http://www.w3.org/2004/02/skos/core#definition',
+            'http://www.w3.org/2004/02/skos/core#scopeNote',
+            'http://www.w3.org/2004/02/skos/core#example',
+            'http://www.w3.org/2004/02/skos/core#historyNote',
+            'http://www.w3.org/2004/02/skos/core#editorialNote',
+            'http://www.w3.org/2004/02/skos/core#changeNote',
+            'http://www.w3.org/2004/02/skos/core#note',
+            'http://www.w3.org/2004/02/skos/core#definition',
+            'http://www.w3.org/2004/02/skos/core#example'
+        ]
+    }
+
+    let content_mr = {};
+    for (const [key, value] of Object.entries(content_vocabularies)) {
+        for (let i = 0; i < value.length; i++) {
+            const vocabulary = value[i];
+            // Create an array of URIs to check
+            const uris = [
+                mia_entity.uri.startsWith('https://') ? mia_entity.uri.replace('https://', 'http://') : mia_entity.uri,
+                mia_entity.uri.startsWith('http://') ? mia_entity.uri.replace('http://', 'https://') : mia_entity.uri
+            ];
+            // Flag to indicate if quads were found
+            let quadsFound = false;
+            for (const uri of uris) {
+                const quads = store.getQuads(uri, vocabulary, null, null);
+                if (quads.length > 0) {
+                    content_mr[key] = quads[0].object.value;
+                    quadsFound = true;
+                    break;
+                }
+            }
+            // If quads were found, break the outer loop
+            if (quadsFound) {
+                break;
+            }
+        }
+    };
+    console.log(content_mr);
+    return content_mr;
 }
 
 function getInfoPopup(mia_entity){
