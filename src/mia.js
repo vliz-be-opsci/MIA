@@ -25,7 +25,7 @@ class Mia {
             //extract the value of the attribute mia_entity
             const uri = span.getAttribute('href'); 
             //add the mia_entity class to the span element if the uri contains marineinfo or marineregions
-            if(uri.includes('marineinfo') || uri.includes('marineregions')){
+            if(uri.includes('marineinfo') || uri.includes('marineregions') || uri.includes('orcid')){
                 span.classList.add('mia_entity');
             }
             //extract classes from the span element
