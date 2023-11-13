@@ -1,7 +1,9 @@
 //this file will contain all the fnctionality for the hover modal
 
 import { addLoader , deleteLoader } from "./span_modifications.js";
-import { getInfoPopup } from "../utils/info_extraction.js";
+import { getInfoPopup , getBoundryInfo } from "../utils/info_extraction.js";
+import { addToStore } from "./linked_data_store.js";
+
 
 class HoverPopup {
     constructor(mia_entity, x, y){
@@ -12,7 +14,7 @@ class HoverPopup {
         this.mouse_position_x = x;
         this.mouse_position_y = y;
         this.popupwidth = 400; //replace both by dynamic descision based on image size
-        this.popupheight = 200;
+        this.popupheight = 300;
         //check if the mia_entity already has raw_data , if not get the raw_data
         // In the constructor
         if(this.mia_entity.raw_data == ""){
@@ -50,13 +52,7 @@ class HoverPopup {
         //extract info here to give as argument to the createPopup function
         let info = getInfoPopup(this.mia_entity);
 
-        this.createPopup(x, y, position);
-    }
-
-    //function to full in popup content and return the html element
-    makePopupContent(){
-        //use rdf data store to fill in the popup content
-        
+        this.createPopup(x, y, position, info);
     }
 
     getPopupPosition(x, y, width, height) {
@@ -75,7 +71,81 @@ class HoverPopup {
         }
     }
 
-    createPopup(x, y, position) {
+    fillPopup(info, popupInnerHtml, mia_entity) {
+        //this function will fill the popup with the info
+        let textSection = popupInnerHtml.querySelector('.text-section');
+        let imgMapSectionPortrait = popupInnerHtml.querySelector('.img-map-section.portrait');
+        let imgMapSectionLandscape = popupInnerHtml.querySelector('.img-map-section.landscape');
+
+        //loop over the info and fillin the popup , first check if there is a title key and fill that one in with h2
+        //the other keys will be filled in with <p> of a value is present , if there are multiple values then there will be multiple <p> elements
+
+        //check if there is a title key
+        let titleinfo = mia_entity.uri;
+        //check if info.title exists
+        if( info.hasOwnProperty('title') && info["title"].length > 0){
+            titleinfo = info["title"][0];
+        }
+        //create the title element
+        let title_element = document.createElement('h2');
+        //add the title to the text section
+        textSection.appendChild(title_element);
+        //fill in the title
+        title_element.innerHTML = titleinfo;
+
+        //if geom is present and the value is not empty then add a loader to the map (imgMapSectionLandscape)
+        if(info.hasOwnProperty('geom') && info["geom"].length > 0){
+            imgMapSectionLandscape.innerHTML = '<div class="map"><img src="https://raw.githubusercontent.com/vliz-be-opsci/MIA/main/src/css/logo_mi.svg" class="loader" alt="MIA logo"></div>';
+        }
+
+        //loop over info
+        for (const [key, value] of Object.entries(info)) {
+            //check if the key is not title
+            if(key != 'title' && key != 'geom'){
+                /*
+                //loop over the values
+                for (let i = 0; i < value.length; i++) {
+                    //create the value element
+                    let value_element = document.createElement('p');
+                    //add the value to the text section
+                    textSection.appendChild(value_element);
+                    //fill in the value
+                    value_element.innerHTML = value[i];
+                }
+                */
+                //add the value to the text section if its not empty
+                if(value.length > 0){
+                    let title_element = document.createElement('h5');
+                    textSection.appendChild(title_element);
+                    //fill in the value
+                    title_element.innerHTML = key;
+                    //only take the first value
+                    let value_element = document.createElement('p');
+                    textSection.appendChild(value_element);
+                    //fill in the value => but only the first 150 characters, if there are more add ...
+                    if(value[0].length > 150){
+                        value_element.innerHTML = value[0].substring(0, 150) + '...';
+                    }else{
+                        value_element.innerHTML = value[0];
+                    }
+                }
+            }
+        }
+
+
+        // Depending on the image/map dimensions, fill in the appropriate section
+        let isPortrait = true;/* logic to determine if the image/map is portrait */
+        if (isPortrait) {
+            imgMapSectionPortrait.innerHTML = '<img src="" alternate="image" />';
+        } else {
+            imgMapSectionLandscape.innerHTML = '<img src=""  alternate="image" />';
+        }
+
+        return popupInnerHtml;
+
+    }
+
+    createPopup(x, y, position, info) {
         // Clone the template content
         let template = document.getElementById('popup-template');
         let clone = template.content.cloneNode(true);
@@ -108,22 +178,49 @@ class HoverPopup {
                 popup.style.top = `${y}px`;
                 break;
         }
-        // Select the text and image/map sections
-        let textSection = clone.querySelector('.text-section');
-        let imgMapSectionPortrait = clone.querySelector('.img-map-section.portrait');
-        let imgMapSectionLandscape = clone.querySelector('.img-map-section.landscape');
-        // Fill in the text and image/map sections
-        textSection.innerHTML = `<h2>${this.mia_entity.uri}</h2>`;
-        // Depending on the image/map dimensions, fill in the appropriate section
-        let isPortrait = true;/* logic to determine if the image/map is portrait */
-        if (isPortrait) {
-            imgMapSectionPortrait.innerHTML = '<img src="" alternate="image" />';
-        } else {
-            imgMapSectionLandscape.innerHTML = '<img src=""  alternate="image" />';
-        }
+
+        //function here to fill the popup with the info
+        clone = this.fillPopup(info, clone, this.mia_entity);
         // Append the filled template to the body
         document.body.appendChild(clone);
+
+        //if geom is present in the info then get the data from the geom uri and add it to the store
+        if(info.hasOwnProperty('geom') && info["geom"].length > 0){
+            //get the geom uri
+            const geom_uri = info["geom"][0];
+            //get the store
+            const store = this.mia_entity.store;
+            //add the geom uri to the store
+            let returned = makeMap(geom_uri, store, this.mia_entity);
+            this.mia_entity.store = returned[1];
+        }
     }
+}
+
+async function makeMap(uri, store, mia_entity) {
+    //create the request
+    return new Promise(async (resolve, reject) => {
+        //create the request
+        try {
+            const nstore = await addToStore(uri, 'text/turtle', store);
+            mia_entity.store = nstore[1];
+            //append the triples to the triples of the mia_entity
+            mia_entity.triples = mia_entity.triples.concat(nstore[0]);
+        } catch (error) {
+            console.log(error);
+            console.log('error getting linked data');
+            const nstore = await addToStore(uri, 'application/ld+json', store);
+            mia_entity.triples = mia_entity.triples.concat(nstore[0]);
+            mia_entity.store = nstore[1];
+        }
+
+        console.log(mia_entity);
+        resolve(mia_entity.store);
+
+        //get boundry info
+        let boundry_info = getBoundryInfo(mia_entity, uri);
+        console.log(boundry_info);
+    });
 }
 
 export default HoverPopup;

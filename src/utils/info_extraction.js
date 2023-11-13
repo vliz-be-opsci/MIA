@@ -18,6 +18,75 @@ function getRdfTypeArray(mia_entity) {
     return triples;
 }
 
+function getBaseUris(mia_entity) {
+    // returns an array of base uris that are used to describe the triples (e.g. http://marineregions.org/ns/ontology#) 
+    // the ones extracted will be _predicate and _object
+    const baseUris = [];
+    const triples = mia_entity.store.getQuads(mia_entity.uri, null, null, null);
+    //base uri can be found by getting evrything before the last # or /
+    for (let i = 0; i < triples.length; i++) {
+        const triple = triples[i];
+        const predicate = triple.predicate.value;
+        const object = triple.object.value;
+        const predicate_base_uri = predicate.substring(0, predicate.lastIndexOf('/') + 1);
+        const object_base_uri = object.substring(0, object.lastIndexOf('/') + 1);
+        if (!baseUris.includes(predicate_base_uri)) {
+            baseUris.push(predicate_base_uri);
+        }
+        if (!baseUris.includes(object_base_uri)) {
+            baseUris.push(object_base_uri);
+        }
+    }
+    return baseUris;
+}
+
+function getDataViaConfig(uri, config, store, searchInPredicate = true) {
+    let content = {};
+    for (const [key, value] of Object.entries(config)) {
+        content[key] = [];
+        for (let i = 0; i < value.length; i++) {
+            let vocabulary = value[i];
+
+            // Create an array of vocabularies to check
+            const vocabularies = [
+                vocabulary.startsWith('https://') ? vocabulary.replace('https://', 'http://') : vocabulary,
+                vocabulary.startsWith('http://') ? vocabulary.replace('http://', 'https://') : vocabulary
+            ];
+
+            const uris = [
+                uri.startsWith('https://') ? uri.replace('https://', 'http://') : uri,
+                uri.startsWith('http://') ? uri.replace('http://', 'https://') : uri
+            ];
+
+            // Flag to indicate if quads were found
+            let quadsFound = false;
+
+            for (const vocab of vocabularies) {
+                for (const uri of uris) {
+                    let quads;
+                    console.log(vocab,uri);
+                    if (searchInPredicate) {
+                        quads = store.getQuads(uri, vocab, null, null);
+                    } else {
+                        quads = store.getQuads(uri, null, vocab, null);
+                    }
+                    if (quads.length > 0) {
+                        // Store all found values
+                        content[key].push(...quads.map(quad => quad.object.value));
+                        quadsFound = true;
+                        break;
+                    }
+                }
+                // If quads were found, break the outer loop
+                if (quadsFound) {
+                    break;
+                }
+            }
+        }
+    };
+    return content;
+}
+
 function getDefaultInfo(mia_entity) {
     console.log('getDefaultInfo started');
 
@@ -25,7 +94,9 @@ function getDefaultInfo(mia_entity) {
 
     const content_vocabularies = {
         "title":[
+            "http://schema.org/name",
             'http://purl.org/dc/elements/1.1/title',
+            'http://purl.org/dc/terms/#title',
             'http://www.w3.org/2000/01/rdf-schema#label',
             'http://www.w3.org/2004/02/skos/core#prefLabel',
             'http://www.w3.org/2004/02/skos/core#altLabel',
@@ -50,18 +121,20 @@ function getDefaultInfo(mia_entity) {
         ]
     }
 
-    let content = {};
+    let content = getDataViaConfig(mia_entity.uri,content_vocabularies, store);
+    return content;
+}
 
-    for (const [key, value] of Object.entries(content_vocabularies)) {
-        for (let i = 0; i < value.length; i++) {
-            const vocabulary = value[i];
-            const quads = store.getQuads(mia_entity.uri, vocabulary, null, null);
-            if (quads.length > 0) {
-                content[key] = quads[0].object.value;
-                break;
-            }
-        }
-    };
+function getBoundryInfo(mia_entity, geom_uri) {
+    let tosearch = {
+        "geometry": [
+            "http://www.opengis.net/ont/geosparql#asWKT"
+        ]
+    }
+
+    let store = mia_entity.store;
+
+    let content = getDataViaConfig(geom_uri,tosearch, store);
     console.log(content);
     return content;
 }
@@ -72,37 +145,48 @@ function getPersonInfo(mia_entity) {
     let store = mia_entity.store;
     //get the person info from the linked data
     //perform a switch case using the most common vocabularies to find the name of the person
-    let personName;
-    const name_vocabularies = [
-        'http://xmlns.com/foaf/0.1/name',
-        'http://schema.org/givenName',
-        'http://schema.org/familyName',
-        'http://schema.org/name',
-        'http://purl.org/dc/elements/1.1/title',
-        'http://www.w3.org/2000/01/rdf-schema#label',
-        'http://www.w3.org/2004/02/skos/core#prefLabel',
-        'http://www.w3.org/2004/02/skos/core#altLabel',
-        "http://www.w3.org/2004/02/skos/core#hiddenLabel",
-        "http://schema.org/alternateName",
-        "http://schema.org/title",
-    ];
-
-    for (let i = 0; i < name_vocabularies.length; i++) {
-        const vocabulary = name_vocabularies[i];
-        const quads = store.getQuads(mia_entity.uri, vocabulary, null, null);
-        if (quads.length > 0) {
-            console.log(quads);
-            personName = quads[0].object.value;
-            break;
-        }
+    const dict_info = {
+        "name": [
+            'http://xmlns.com/foaf/0.1/name',
+            'http://schema.org/givenName',
+            'http://schema.org/familyName',
+            'http://schema.org/name',
+        ],
+        "familyName": [
+            'http://schema.org/familyName'
+        ],
+        "birthDate": [
+            'http://schema.org/birthDate',
+        ],
+        "deathDate": [
+            'http://schema.org/deathDate',
+        ],
+        "description": [
+            'http://purl.org/dc/elements/1.1/description',
+            'http://schema.org/description',
+            'http://www.w3.org/2000/01/rdf-schema#comment',
+            'http://www.w3.org/2004/02/skos/core#definition',
+            'http://www.w3.org/2004/02/skos/core#scopeNote',
+            'http://www.w3.org/2004/02/skos/core#example',
+            'http://www.w3.org/2004/02/skos/core#historyNote',
+            'http://www.w3.org/2004/02/skos/core#editorialNote',
+            'http://www.w3.org/2004/02/skos/core#changeNote',
+            'http://www.w3.org/2004/02/skos/core#note',
+            'http://www.w3.org/2004/02/skos/core#definition',
+            'http://www.w3.org/2004/02/skos/core#example'
+        ],
+        "publications": [
+            'http://schema.org/publication'
+        ],
+        "image": [
+            'http://schema.org/image',
+            'http://xmlns.com/foaf/0.1/img'
+        ]
     }
 
-    console.log(personName);
-    //get the name
-    //get the birth date
-    //get the death date
-    //return an object with all the info
-    return {};
+    let content = getDataViaConfig(mia_entity.uri,dict_info, store);
+    console.log(content);
+    return content;
 }
 
 function getMapInfo(mia_entity) {
@@ -132,36 +216,15 @@ function getMapInfo(mia_entity) {
             'http://www.w3.org/2004/02/skos/core#note',
             'http://www.w3.org/2004/02/skos/core#definition',
             'http://www.w3.org/2004/02/skos/core#example'
+        ],
+        "geom": [
+            "http://marineregions.org/ns/ontology#hasGeometry"
         ]
     }
 
-    let content_mr = {};
-    for (const [key, value] of Object.entries(content_vocabularies)) {
-        for (let i = 0; i < value.length; i++) {
-            const vocabulary = value[i];
-            // Create an array of URIs to check
-            const uris = [
-                mia_entity.uri.startsWith('https://') ? mia_entity.uri.replace('https://', 'http://') : mia_entity.uri,
-                mia_entity.uri.startsWith('http://') ? mia_entity.uri.replace('http://', 'https://') : mia_entity.uri
-            ];
-            // Flag to indicate if quads were found
-            let quadsFound = false;
-            for (const uri of uris) {
-                const quads = store.getQuads(uri, vocabulary, null, null);
-                if (quads.length > 0) {
-                    content_mr[key] = quads[0].object.value;
-                    quadsFound = true;
-                    break;
-                }
-            }
-            // If quads were found, break the outer loop
-            if (quadsFound) {
-                break;
-            }
-        }
-    };
-    console.log(content_mr);
-    return content_mr;
+    let content = getDataViaConfig(mia_entity.uri,content_vocabularies, store);
+    console.log(content);
+    return content;
 }
 
 function getInfoPopup(mia_entity){
@@ -179,7 +242,7 @@ function getInfoPopup(mia_entity){
     //if true => call getMapInfo otherwise call getDefaultInfo
     if (rdf_types_array.includes("http://marineregions.org/ns/ontology#MRGeoObject")) {
         return getMapInfo(mia_entity);
-    } else if (rdf_types_array.includes("https://schema.org#Person")) {
+    } else if (rdf_types_array.includes("https://schema.org/Person")) {
         return getPersonInfo(mia_entity);
     } else {
         return getDefaultInfo(mia_entity);
@@ -187,4 +250,4 @@ function getInfoPopup(mia_entity){
 }
 
 
-export {getRdfTypeArray, getInfoPopup};
+export {getRdfTypeArray, getInfoPopup, getBoundryInfo};

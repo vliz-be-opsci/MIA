@@ -122,6 +122,13 @@ tr:nth-child(even){background-color: #f2f2f2}
 
 .mia-popup {
   position: absolute;
+}
+
+/*put a scroll bar on the mia-popup-content*/
+.mia-popup-content {
+  overflow-y: scroll;
+  max-height: 300px;
+  padding: 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
   background-color: white;
@@ -150,7 +157,21 @@ tr:nth-child(even){background-color: #f2f2f2}
 }
 
 @keyframes flickerAnimation {
-  0%   { opacity:1; }
-  50%  { opacity:0; }
-  100% { opacity:1; }
+  /*also make the object rotate*/
+  0%   { opacity:1;}
+  50%  { 
+    opacity:0;
+    }
+  100% { opacity:1; 
+    transform: rotate(360deg);
+  }
+}
+
+/* loader for the map.laoder */
+
+.map > .loader {
+  /*loading animation here */
+  animation: flickerAnimation 2s infinite;
+  height: 150px;
+  align-self: center;
 }

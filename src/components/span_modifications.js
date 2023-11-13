@@ -51,6 +51,13 @@ async function spanModifications(mia_entity){
     }
 }
 
+function deletePopupMapLoader(){
+    //delete the loader from the map
+    const loader = document.querySelector('.loader');
+    //delete the loader
+    loader.remove();
+}
+
 
 
 

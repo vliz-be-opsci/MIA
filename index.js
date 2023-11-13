@@ -67,6 +67,9 @@ window.addEventListener('load', function(){
                     //check if the mouse is in the neighborhood of the popup , if not delete popup
                     //get the popup
                     const popup = document.querySelector('.mia-popup');
+
+                    // ! TODO: Fix bug where the content popup won't be removed due to the popup being invisible and bigger then the content that is shown
+
                     //check if mouse is over the popup
                     const rect = popup.getBoundingClientRect();
                     //make the surface of the popup bigger

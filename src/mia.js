@@ -54,70 +54,24 @@ class MiaEntity{
     getLinkedData = async function() {
         //create the request
         return new Promise(async (resolve, reject) => {
-            const request = new XMLHttpRequest();
-            let format = 'application/ld+json';
-            //open the request
-            request.open(
-                'GET', 
-                this.uri,
-                true // Make the request asynchronous
-            );
-            //set the headers
-            request.setRequestHeader('Accept', 'application/ld+json');
-            request.setRequestHeader('Content-Type', 'application/json');
-            //send the request
-            request.onload = async () => {
-                if (request.status === 200) {
-                    //get the response
-                    const response = request.responseText;
-                    this.raw_data = response;
-
-                    //create a n3 parser object and parse the response
-                    const store = await createStore(this.uri, response, format);
-                    this.triples = store[0];
-                    this.store = store[1];
-                    deleteLoader(this);
-                    resolve(this);
-                } else {
-                    console.log('error in request for linked data in request onload');
-                    deleteLoader(this);
-                    reject(new Error(`Request failed with status ${request.status}`));
-                }
-            };
-            request.onerror = async () => {
-                console.log('error in request for linked data in Turtle format, trying JSON-LD format');
+            //create the request
+            try {
+                const store = await createStore(this.uri, 'text/turtle');
+                this.triples = store[0];
+                this.store = store[1];
                 deleteLoader(this);
-                let format = 'application/ld+json';
-                // Create a new request for JSON-LD data
-                const jsonldRequest = new XMLHttpRequest();
-                jsonldRequest.open('GET', this.uri, true);
-                jsonldRequest.setRequestHeader('Accept', 'application/ld+json');
-                jsonldRequest.setRequestHeader('Content-Type', 'application/json');
-                jsonldRequest.onload = async () => {
-                    if (jsonldRequest.status === 200) {
-                        const response = jsonldRequest.responseText;
-                        this.raw_data = response;
-            
-                        // Parse the JSON-LD data and create a store
-                        const store = await createStore(this.uri, JSON.parse(response), format);
-                        this.triples = store[0];
-                        this.store = store[1];
-                        deleteLoader(this);
-                        resolve(this);
-                    } else {
-                        console.log('error in request for linked data in JSON-LD format');
-                        deleteLoader(this);
-                        reject(new Error(`Request failed with status ${jsonldRequest.status}`));
-                    }
-                };
-                jsonldRequest.onerror = () => {
-                    console.log('error in request for linked data in JSON-LD format');
-                    deleteLoader(this);
-                    reject(new Error('Network error'));
-                };
-                jsonldRequest.send();
-            };
-            request.send();
+                resolve(this);
+                reject('error getting linked data');
+            } catch (error) {
+                console.log(error);
+                console.log('error getting linked data');
+                const store = await createStore(this.uri, 'application/ld+json');
+                this.triples = store[0];
+                this.store = store[1];
+                deleteLoader(this);
+                resolve(this);
+                reject('error getting linked data');
+            }
         });
     }
 
