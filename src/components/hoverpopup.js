@@ -220,6 +220,43 @@ async function makeMap(uri, store, mia_entity) {
         //get boundry info
         let boundry_info = getBoundryInfo(mia_entity, uri);
         console.log(boundry_info);
+
+        let wktstring = boundry_info["geometry"][0];
+        //remove crs identifier
+        let wkt = wktstring.replace(/<[^>]+> /, '');
+
+        // Parse the WKT string into GeoJSON
+        let geojson = Terraformer.wktToGeoJSON(wkt);
+
+        // create a div string with the class map and id map
+        //replace the loader with the div
+        let map_div = document.createElement('div');
+        map_div.setAttribute('class', 'map');
+        map_div.setAttribute('id', 'map');
+        //replace the loader with the div
+        let loader = document.querySelector('.loader');
+        loader.replaceWith(map_div);
+
+        // Create a new Leaflet map
+        let map = L.map('map')
+
+        // Add a tile layer to the map
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Add a default marker to the map at the GeoJSON coordinates
+        //L.marker(geojson.coordinates.reverse()).addTo(map);
+
+        // Add the GeoJSON layer to the map
+        let geoJsonLayer = L.geoJSON(geojson).addTo(map);
+
+        // Fit the map to the GeoJSON layer
+        map.fitBounds(geoJsonLayer.getBounds());
+
+        //fake resize event to make sure the map is rendered correctly
+        window.dispatchEvent(new Event('resize'));
+
     });
 }
 
