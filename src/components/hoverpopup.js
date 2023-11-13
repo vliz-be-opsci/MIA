@@ -251,11 +251,22 @@ async function makeMap(uri, store, mia_entity) {
         // Add the GeoJSON layer to the map
         let geoJsonLayer = L.geoJSON(geojson).addTo(map);
 
-        // Fit the map to the GeoJSON layer
-        map.fitBounds(geoJsonLayer.getBounds());
+        //change the popup size to be landscape (width 600px and height 400px)
+        let popup = document.querySelector('.mia-popup');
+        popup.style.width = '400px';
+        popup.style.height = '300px';
+
+        //change the map div to be landscape (width 600px and height 300px)
+        let map_div2 = document.querySelector('#map');
+        map_div2.style.width = '100%';
+        map_div2.style.height = '300px';
 
         //fake resize event to make sure the map is rendered correctly
         window.dispatchEvent(new Event('resize'));
+
+        // Fit the map to the GeoJSON layer
+        map.fitBounds(geoJsonLayer.getBounds());
+
 
     });
 }

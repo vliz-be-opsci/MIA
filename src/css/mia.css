@@ -118,16 +118,12 @@ tr:nth-child(even){background-color: #f2f2f2}
   margin-left: 3px;
 }
 
-#map { height: 500px; }
-
 .mia-popup {
   position: absolute;
 }
 
 /*put a scroll bar on the mia-popup-content*/
 .mia-popup-content {
-  overflow-y: scroll;
-  max-height: 300px;
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
