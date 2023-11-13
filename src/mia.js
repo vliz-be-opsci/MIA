@@ -25,7 +25,7 @@ class Mia {
             //extract the value of the attribute mia_entity
             const uri = span.getAttribute('href'); 
             //add the mia_entity class to the span element if the uri contains marineinfo or marineregions
-            if(uri.includes('marineinfo') || uri.includes('marineregions') || uri.includes('orcid')){
+            if(uri.includes('marineinfo') || uri.includes('marineregions')){
                 span.classList.add('mia_entity');
             }
             //extract classes from the span element
@@ -55,6 +55,7 @@ class MiaEntity{
         //create the request
         return new Promise(async (resolve, reject) => {
             const request = new XMLHttpRequest();
+            let format = 'application/ld+json';
             //open the request
             request.open(
                 'GET', 
@@ -62,8 +63,8 @@ class MiaEntity{
                 true // Make the request asynchronous
             );
             //set the headers
-            request.setRequestHeader('Accept', 'text/turtle');
-            request.setRequestHeader('Content-Type', 'text/plain');
+            request.setRequestHeader('Accept', 'application/ld+json');
+            request.setRequestHeader('Content-Type', 'application/json');
             //send the request
             request.onload = async () => {
                 if (request.status === 200) {
@@ -72,7 +73,7 @@ class MiaEntity{
                     this.raw_data = response;
 
                     //create a n3 parser object and parse the response
-                    const store = await createStore(this.uri, response, 'text/turtle');
+                    const store = await createStore(this.uri, response, format);
                     this.triples = store[0];
                     this.store = store[1];
                     deleteLoader(this);
@@ -86,7 +87,7 @@ class MiaEntity{
             request.onerror = async () => {
                 console.log('error in request for linked data in Turtle format, trying JSON-LD format');
                 deleteLoader(this);
-
+                let format = 'application/ld+json';
                 // Create a new request for JSON-LD data
                 const jsonldRequest = new XMLHttpRequest();
                 jsonldRequest.open('GET', this.uri, true);
@@ -98,7 +99,7 @@ class MiaEntity{
                         this.raw_data = response;
             
                         // Parse the JSON-LD data and create a store
-                        const store = await createStore(this.uri, JSON.parse(response), 'application/ld+json');
+                        const store = await createStore(this.uri, JSON.parse(response), format);
                         this.triples = store[0];
                         this.store = store[1];
                         deleteLoader(this);
