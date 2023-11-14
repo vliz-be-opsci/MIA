@@ -13,8 +13,8 @@ class HoverPopup {
         //console.log(mia_entity);
         this.mouse_position_x = x;
         this.mouse_position_y = y;
-        this.popupwidth = 400; //replace both by dynamic descision based on image size
-        this.popupheight = 300;
+        mia_entity.popupwidth = 400; //replace both by dynamic descision based on image size
+        mia_entity.popupheight = 350;
         //check if the mia_entity already has raw_data , if not get the raw_data
         // In the constructor
         if(this.mia_entity.raw_data == ""){
@@ -25,7 +25,7 @@ class HoverPopup {
                 const rdfTypes = mia_entity.getRdfType().then((rdfTypes) => {
                     console.log(rdfTypes);
                     //deleteLoader(mia_entity);
-                    this.spawnpopup();
+                    this.spawnpopup(mia_entity);
                     deleteLoader(mia_entity);
                 });
             });
@@ -34,12 +34,12 @@ class HoverPopup {
             console.log('raw data already present');
             const rdfTypes = mia_entity.getRdfType();
             //deleteLoader(mia_entity);
-            this.spawnpopup();
+            this.spawnpopup(mia_entity);
             deleteLoader(mia_entity);
         }
     }
 
-    spawnpopup() {
+    spawnpopup(mia_entity) {
         //this function will spawn the popup at the location of the mouse
         //get the span element
         //get the mouse position x
@@ -47,12 +47,12 @@ class HoverPopup {
         //get the mouse position y
         const y = this.mouse_position_y
         //console.log(x, y);
-        const position = this.getPopupPosition(x, y, this.popupwidth, this.popupheight);
+        const position = this.getPopupPosition(x, y, mia_entity.popupwidth, mia_entity.popupheight);
 
         //extract info here to give as argument to the createPopup function
         let info = getInfoPopup(this.mia_entity);
 
-        this.createPopup(x, y, position, info);
+        this.createPopup(x, y, position, info, mia_entity);
     }
 
     getPopupPosition(x, y, width, height) {
@@ -77,61 +77,45 @@ class HoverPopup {
         let imgMapSectionPortrait = popupInnerHtml.querySelector('.img-map-section.portrait');
         let imgMapSectionLandscape = popupInnerHtml.querySelector('.img-map-section.landscape');
 
+        //clone text template into a variable
+        let textSectionTemplate = document.getElementById('text-section-template');
+        let clone = textSectionTemplate.content.cloneNode(true);
+        //append the clone to the text section
+        textSection.appendChild(clone);
+
         //loop over the info and fillin the popup , first check if there is a title key and fill that one in with h2
         //the other keys will be filled in with <p> of a value is present , if there are multiple values then there will be multiple <p> elements
 
         //check if there is a title key
         let titleinfo = mia_entity.uri;
-        //check if info.title exists
-        if( info.hasOwnProperty('title') && info["title"].length > 0){
-            titleinfo = info["title"][0];
+        if(info.hasOwnProperty('title') && info["title"].length > 0){
+            titleinfo = info["title"];
         }
-        //create the title element
-        let title_element = document.createElement('h2');
-        //add the title to the text section
-        textSection.appendChild(title_element);
-        //fill in the title
-        title_element.innerHTML = titleinfo;
+        let titlesection = textSection.querySelector('.text-section-title');
+        titlesection.innerHTML = titleinfo;
 
         //if geom is present and the value is not empty then add a loader to the map (imgMapSectionLandscape)
-        if(info.hasOwnProperty('geom') && info["geom"].length > 0){
+        if(info.hasOwnProperty('map') && info["map"].length > 0){
             imgMapSectionLandscape.innerHTML = '<div class="map"><img src="https://raw.githubusercontent.com/vliz-be-opsci/MIA/main/src/css/logo_mi.svg" class="loader" alt="MIA logo"></div>';
         }
 
-        //loop over info
-        for (const [key, value] of Object.entries(info)) {
-            //check if the key is not title
-            if(key != 'title' && key != 'geom'){
-                /*
-                //loop over the values
-                for (let i = 0; i < value.length; i++) {
-                    //create the value element
-                    let value_element = document.createElement('p');
-                    //add the value to the text section
-                    textSection.appendChild(value_element);
-                    //fill in the value
-                    value_element.innerHTML = value[i];
-                }
-                */
-                //add the value to the text section if its not empty
-                if(value.length > 0){
-                    let title_element = document.createElement('h5');
-                    textSection.appendChild(title_element);
-                    //fill in the value
-                    title_element.innerHTML = key;
-                    //only take the first value
-                    let value_element = document.createElement('p');
-                    textSection.appendChild(value_element);
-                    //fill in the value => but only the first 150 characters, if there are more add ...
-                    if(value[0].length > 150){
-                        value_element.innerHTML = value[0].substring(0, 150) + '...';
-                    }else{
-                        value_element.innerHTML = value[0];
-                    }
-                }
-            }
-        }
+        //do descripion part here
+        //check if there is a description key
+        if(info.hasOwnProperty('description') && info["description"] != undefined){
+            let descriptioninfo = info["description"];
 
+            //if the description is more then 400 characters do a substring and fadeout class to the text-section-body in classes
+            if(descriptioninfo.length > 400){
+                textSection.querySelector('.text-section-body').classList.add('fadeout');
+                //take the first 400 characters of the description
+                descriptioninfo = descriptioninfo.substring(0, 400);
+                //add ... to the end of the description
+                descriptioninfo = descriptioninfo + '...';
+            }
+
+            let descriptionsection = textSection.querySelector('.text-section-body');
+            descriptionsection.innerHTML = descriptioninfo;
+        }
 
         // Depending on the image/map dimensions, fill in the appropriate section
         let isPortrait = true;/* logic to determine if the image/map is portrait */
@@ -145,7 +129,7 @@ class HoverPopup {
 
     }
 
-    createPopup(x, y, position, info) {
+    createPopup(x, y, position, info, mia_entity) {
         // Clone the template content
         let template = document.getElementById('popup-template');
         let clone = template.content.cloneNode(true);
@@ -156,8 +140,8 @@ class HoverPopup {
         let popup = clone.querySelector('.mia-popup');
         // Add the position class and set the width and height
         popup.classList.add(position);
-        popup.style.width = `${this.popupwidth}px`;
-        popup.style.height = `${this.popupheight}px`;
+        popup.style.width = `${mia_entity.popupwidth}px`;
+        popup.style.height = `${mia_entity.popupheight}px`;
         //console.log(position);
         // Position the popup
         switch (position) {
@@ -185,9 +169,9 @@ class HoverPopup {
         document.body.appendChild(clone);
 
         //if geom is present in the info then get the data from the geom uri and add it to the store
-        if(info.hasOwnProperty('geom') && info["geom"].length > 0){
+        if(info.hasOwnProperty('map') && info["map"].length > 0){
             //get the geom uri
-            const geom_uri = info["geom"][0];
+            const geom_uri = info["map"];
             //get the store
             const store = this.mia_entity.store;
             //add the geom uri to the store
@@ -253,13 +237,18 @@ async function makeMap(uri, store, mia_entity) {
 
         //change the popup size to be landscape (width 600px and height 400px)
         let popup = document.querySelector('.mia-popup');
-        popup.style.width = '400px';
-        popup.style.height = '300px';
+        popup.style.width = mia_entity.popupwidth + 'px';
+        popup.style.height = mia_entity.popupheight + 'px';
+
+        //get the text.section height and substract the height to get the height of the map
+        let text_section = document.querySelector('.text-section');
+        let text_section_height = text_section.offsetHeight;
+        let map_div_height = 300 - text_section_height;
 
         //change the map div to be landscape (width 600px and height 300px)
         let map_div2 = document.querySelector('#map');
         map_div2.style.width = '100%';
-        map_div2.style.height = '300px';
+        map_div2.style.height = `${map_div_height}px`;
 
         //fake resize event to make sure the map is rendered correctly
         window.dispatchEvent(new Event('resize'));

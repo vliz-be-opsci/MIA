@@ -15,7 +15,8 @@ let popupTemplate = `
 let textSectionTemplate = `
 <template id="text-section-template">
     <div class="text-section-content">
-        <div class="text-section-title"></div>
+        <h4 class="text-section-title">
+        </h4>
         <div class="text-section-body"></div>
     </div>
 </template>

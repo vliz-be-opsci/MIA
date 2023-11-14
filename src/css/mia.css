@@ -171,3 +171,9 @@ tr:nth-child(even){background-color: #f2f2f2}
   height: 150px;
   align-self: center;
 }
+
+.fadeout {
+  /*text effect where bottom is faded out*/
+  background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(255,255,255,0) 100%) !important;
+  z-index: 1;
+}

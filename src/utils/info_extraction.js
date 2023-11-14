@@ -136,9 +136,10 @@ function getDefaultInfo(mia_entity) {
     //perform a second function that will map the properties that were collected to 4 components of the popup template
     //the components are title, affordances ,description, image/map (affordances will be added later)
     let template_config = {
-        "title": content.title,
-        "description": content.description,
-        "image": content.image,
+        //if array then take the first element else take the value
+        "title": content.title[0],
+        "description": content.description[0],
+        "image": content.image[0],
         "affordances": ""
     }
 
@@ -206,7 +207,17 @@ function getPersonInfo(mia_entity) {
 
     let content = getDataViaConfig(mia_entity.uri,dict_info, store, mia_entity.lang);
     console.log(content);
-    return content;
+
+    //perform a second function that will map the properties that were collected to 4 components of the popup template
+    //the components are title, affordances ,description, image/map (affordances will be added later)
+    let template_config = {
+        "title": content.name[0] + " " + content.familyName[0],
+        "description": content.description[0],
+        "image": content.image[0],
+        "affordances": ""
+    }
+
+    return template_config;
 }
 
 function getMapInfo(mia_entity) {
@@ -244,7 +255,17 @@ function getMapInfo(mia_entity) {
 
     let content = getDataViaConfig(mia_entity.uri,content_vocabularies, store, mia_entity.lang);
     console.log(content);
-    return content;
+
+    //perform a second function that will map the properties that were collected to 4 components of the popup template
+    //the components are title, affordances ,description, image/map (affordances will be added later)
+    let template_config = {
+        "title": content.title[0],
+        "description": content.description[0],
+        "map": content.geom[0],
+        "affordances": ""
+    }
+
+    return template_config;
 }
 
 function getInfoPopup(mia_entity){
