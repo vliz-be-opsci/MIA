@@ -25,7 +25,7 @@ export async function createStore(uri, format){
             });
             //get the text of the response
             const text = await response.text();
-            console.log(text);
+            //console.log(text);
             //create a n3 parser object and parse the response
             parser = new N3.Parser({
                 format: format,
@@ -62,7 +62,7 @@ export async function addToStore(uri, format, store){
             });
             //get the text of the response
             const text = await response.text();
-            console.log(text);
+            //console.log(text);
             //create a n3 parser object and parse the response
             parser = new N3.Parser({
                 format: format,

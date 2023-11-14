@@ -9,7 +9,7 @@ export default class Graph {
         //console.log(data);
         this.pre_filtered_triples = this.importData(data,entity,type);
         this.triples = this.getTriples(this.pre_filtered_triples);
-        console.log(this.triples);
+        //console.log(this.triples);
     }
 
     //function here that will extract an array of triples from the pre_filtered_triples

@@ -10,7 +10,7 @@ class HoverPopup {
         console.log('HoverPopup constructor started');
         addLoader(mia_entity);
         this.mia_entity = mia_entity;
-        console.log(mia_entity);
+        //console.log(mia_entity);
         this.mouse_position_x = x;
         this.mouse_position_y = y;
         this.popupwidth = 400; //replace both by dynamic descision based on image size
@@ -46,7 +46,7 @@ class HoverPopup {
         const x = this.mouse_position_x
         //get the mouse position y
         const y = this.mouse_position_y
-        console.log(x, y);
+        //console.log(x, y);
         const position = this.getPopupPosition(x, y, this.popupwidth, this.popupheight);
 
         //extract info here to give as argument to the createPopup function
@@ -158,7 +158,7 @@ class HoverPopup {
         popup.classList.add(position);
         popup.style.width = `${this.popupwidth}px`;
         popup.style.height = `${this.popupheight}px`;
-        console.log(position);
+        //console.log(position);
         // Position the popup
         switch (position) {
             case 'top-right':
@@ -214,12 +214,12 @@ async function makeMap(uri, store, mia_entity) {
             mia_entity.store = nstore[1];
         }
 
-        console.log(mia_entity);
+        //console.log(mia_entity);
         resolve(mia_entity.store);
 
         //get boundry info
         let boundry_info = getBoundryInfo(mia_entity, uri);
-        console.log(boundry_info);
+        //console.log(boundry_info);
 
         let wktstring = boundry_info["geometry"][0];
         //remove crs identifier
