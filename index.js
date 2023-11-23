@@ -1,10 +1,16 @@
+import Affordances from "./src/affordances.js";
+
+const affordances = new Affordances();
+
+
+/*
 import Mia from './src/mia.js';
 import Debug from './src/components/debug.js';
 import HoverPopup from './src/components/hoverpopup.js';
 import { addMiaIcon } from './src/components/span_modifications.js';
 import { popupTemplate , textSectionTemplate } from './src/components/templates.js';
-//const widget = new Widget();
-//widget.makegraph();
+
+
 
 //check if <script src="../index.js" type="module" ></script> has an attribute debug set to true
 //if so create a a new instance of the debug class
@@ -127,3 +133,5 @@ window.addEventListener('load', function(){
         });
     }
 });
+
+*/
