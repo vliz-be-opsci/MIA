@@ -1,6 +1,6 @@
 //this file will contain all the fnctionality for the hover modal
 
-import { addLoader , deleteLoader } from "./span_modifications.js";
+import { addFailed, addLoader , deleteLoader } from "./span_modifications.js";
 import { getInfoPopup , getBoundryInfo } from "../utils/info_extraction.js";
 import { addToStore } from "./linked_data_store.js";
 
@@ -27,7 +27,11 @@ class HoverPopup {
                     //deleteLoader(mia_entity);
                     this.spawnpopup(mia_entity);
                     deleteLoader(mia_entity);
-                });
+                }, (error) => {
+                    console.log(error);
+                    addFailed(mia_entity);
+                }
+                );
             });
         }
         else {

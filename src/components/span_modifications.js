@@ -29,6 +29,7 @@ function deleteLoader(mia_entity){
 
 function addFailed(mia_entity){
     try {
+        console.log('adding failed svg');
         //search for the img element that has .mia_icon as a class and add the class .loading
         const span = document.querySelector(`a[href="${mia_entity.uri}"]`);
         //check if there is a img element
@@ -36,6 +37,20 @@ function addFailed(mia_entity){
             const img = span.querySelector('.mia_icon');
             //replace the src of the img element with the failed image
             img.src = 'https://raw.githubusercontent.com/vliz-be-opsci/MIA/main/src/css/error.svg';
+            //add tooltip class to img and make a span with class tooltoptext with  in it a placeholder error
+            //if the img already has a tooltip then don't add the tooltip
+            if(img.classList.contains('tooltip')){
+                return;
+            }
+            img.classList.add('tooltip');
+            img.classList.add('mia_icon');
+            img.classList.add('failed');
+            img.alt = 'MIA logo';
+            img.title = 'MIA failed to load this entity';
+            //add the tooltip text
+            const span_tooltip = document.createElement('span');
+            span_tooltip.classList.add('tooltiptext');
+            span_tooltip.innerHTML = 'MIA failed to load this entity';
             //end function
             return;
         }

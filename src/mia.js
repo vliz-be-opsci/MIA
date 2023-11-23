@@ -65,12 +65,16 @@ class MiaEntity{
             } catch (error) {
                 console.log(error);
                 console.log('error getting linked data');
-                const store = await createStore(this.uri, 'application/ld+json');
-                this.triples = store[0];
-                this.store = store[1];
-                deleteLoader(this);
-                addFailed(this);
-                resolve(this);
+                try {
+                    const store = await createStore(this.uri, 'application/ld+json');
+                    this.triples = store[0];
+                    this.store = store[1];
+                    deleteLoader(this);
+                    resolve(this);
+                } catch (error) {
+                    deleteLoader(this);
+                    addFailed(this);
+                }
                 reject('error getting linked data');
             }
         });
