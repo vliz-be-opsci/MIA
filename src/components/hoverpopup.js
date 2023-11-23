@@ -189,6 +189,8 @@ async function makeMap(uri, store, mia_entity) {
     //create the request
     return new Promise(async (resolve, reject) => {
         //create the request
+        //make the http uri a https uri in the beginning of the uri
+        uri = uri.replace('http://', 'https://');
         try {
             const nstore = await addToStore(uri, 'text/turtle', store);
             mia_entity.store = nstore[1];
