@@ -152,6 +152,10 @@ tr:nth-child(even){background-color: #f2f2f2}
   background-color: #f2f2f2;
 }
 
+.failed {
+  background-color: #f2f2f2;
+}
+
 @keyframes flickerAnimation {
   /*also make the object rotate*/
   0%   { opacity:1;}

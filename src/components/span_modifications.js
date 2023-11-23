@@ -1,7 +1,5 @@
 //this file will contain all functions that will make small alterations to the entity span elements in the DOM
 //imports
-import Modal from "./modal.js";
-import Map from "./map.js";
 
 function addLoader(mia_entity){
     try {
@@ -27,6 +25,28 @@ function deleteLoader(mia_entity){
         console.log(error);
     }
     
+}
+
+function addFailed(mia_entity){
+    try {
+        //search for the img element that has .mia_icon as a class and add the class .loading
+        const span = document.querySelector(`a[href="${mia_entity.uri}"]`);
+        //check if there is a img element
+        if(span.querySelector('.mia_icon')){
+            const img = span.querySelector('.mia_icon');
+            //replace the src of the img element with the failed image
+            img.src = 'https://raw.githubusercontent.com/vliz-be-opsci/MIA/main/src/css/error.svg';
+            //end function
+            return;
+        }
+        //if it doesn't exist then add the failed image
+        span.innerHTML = '<span><img src="https://raw.githubusercontent.com/vliz-be-opsci/MIA/main/src/css/error.svg" class="mia_icon" alt="MIA logo"></span>' + span.innerHTML;
+        return;
+
+    } catch (error) {
+        //error can occur due to entity not being from mr or mi
+        console.log(error);
+    }
 }
 
 function addMiaIcon(mia_entity){
@@ -64,4 +84,4 @@ function deletePopupMapLoader(){
 
 
 
-export {spanModifications, addMiaIcon, addLoader, deleteLoader} ;
+export {spanModifications, addMiaIcon, addLoader, deleteLoader, addFailed, deletePopupMapLoader} ;

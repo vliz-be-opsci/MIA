@@ -1,7 +1,7 @@
 //this module will contain the mia class and all of its methods
 //import the required modules (for now there aren't any)
 import { getRdfTypeArray } from "./utils/info_extraction.js";
-import { deleteLoader } from "./components/span_modifications.js";
+import { addFailed, deleteLoader } from "./components/span_modifications.js";
 import { createStore } from "./components/linked_data_store.js";
 
 //create the mia class
@@ -69,6 +69,7 @@ class MiaEntity{
                 this.triples = store[0];
                 this.store = store[1];
                 deleteLoader(this);
+                addFailed(this);
                 resolve(this);
                 reject('error getting linked data');
             }
@@ -91,6 +92,7 @@ class MiaEntity{
                 //deleteLoader(this);
                 console.log(error);
                 reject(error);
+                addFailed(this);
             }
         });
     }
