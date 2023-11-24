@@ -1,7 +1,7 @@
 //this file will be the interface between the linked data store and the mia entity
 // this for possible future port to rdflib instead of n3
 
-export async function createEmptyStore(){
+export function createEmptyStore(){
     const store = new N3.Store();
     return store;
 }

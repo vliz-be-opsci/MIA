@@ -4,6 +4,7 @@
 //     const logger = new Logger('error');
 //     logger.log('Affordances class construction started', 'info');
 
+
 export default class Logger {
     constructor(level = 'info'){
         if(!Logger.instance){
@@ -15,20 +16,55 @@ export default class Logger {
         return Logger.instance;
     }
 
+    logMessage(type, message) {
+        const timestamp = new Date().toISOString();
+        this.logs.push({timestamp, message, type});
+        const icon = this.getIcon(type);
+        if (this.shouldLog(type)) {
+            const header = `${icon} ${timestamp}`;
+            const stackLine = this.getStackLine(type);
+            this.consoleLog(type, `${header} | ${stackLine}\n${message}`);
+        }
+    }
+
+    consoleLog(type, message) {
+        if (type === 'error') {
+            console.error(message);
+        }
+        if (type === 'warning') {
+            console.warn(message);
+        }
+        if (type === 'info' || type === 'log' || type === 'debug') {
+            console.log(message);
+        }
+    }
+
+    getIcon(type) {
+        switch (type) {
+            case 'error': return '❌';
+            case 'warning': return '⚠️';
+            case 'info': return 'ℹ️';
+            case 'debug': return '🐞';
+            case 'log': return '📝';
+            default: return '';
+        }
+    }
+
+    getStackLine(type) {
+        const stackLine = (new Error().stack.split('\n')[3] || '').trim();
+        if (type === 'info' || type === 'log' || type === '') {
+            const match = stackLine.match(/http:\/\/[^\/]+(\/[^:]+:\d+:\d+)/);
+            return match ? match[1] : '';
+        }
+        return stackLine;
+    }
+
     shouldLog(type) {
         if (this.level === 'debug') return true;
         if (this.level === 'info' && type !== 'debug') return true;
         if (this.level === 'warning' && (type === 'warning' || type === 'error')) return true;
         if (this.level === 'error' && type === 'error') return true;
         return false;
-    }
-
-    logMessage(type, message) {
-        const timestamp = new Date().toISOString();
-        this.logs.push({timestamp: timestamp, message: message, type: type});
-        if (this.shouldLog(type)) {
-            console.log(type + ' | ' + timestamp + ' | ' +message);
-        }
     }
 
     log(message) {
@@ -51,8 +87,7 @@ export default class Logger {
         this.logMessage('error', message);
     }
 
-    getLogs(type = null){
-        //return all the log messages if no type is given else return only the messages of the given type
+    getLogs(type = null) {
         if(type === null){
             return this.logs;
         }

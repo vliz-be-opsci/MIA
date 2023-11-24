@@ -1,5 +1,8 @@
 import Affordances from "./src/affordances.js";
+import Logger from "./src/utils/logger.js";
 
+const logger = new Logger('debug');
+logger.log('index.js started');
 const affordances = new Affordances();
 
 
