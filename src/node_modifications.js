@@ -3,26 +3,44 @@
 
 function addLoader(mia_entity){
     try {
-        //search for the img element that has .mia_icon as a class and add the class .loading
-        const span = document.querySelector(`a[href="${mia_entity.uri}"]`);
+        //get span
+        const span = mia_entity.node;
         const img = span.querySelector('.mia_icon');
+        //check if the img already has a loader
+        if(img.classList.contains('loading')){
+            return;
+        }
+        //add the loader
         img.classList.add('loading');
     } catch (error) {
         //error can occur due to entity not being from mr or mi
-        console.log(error);
+        logger.error(error);
     }
-    
 }
+
+function addInfoIcon(mia_entity){
+    let span = mia_entity.node;
+
+    //if the span already has a info icon or mia_icon then return
+    if(span.querySelector('.info_icon') || span.querySelector('.mia_icon')){
+        return;
+    }
+    span.innerHTML = '<span class="mia_icon">ℹ️</span>' + span.innerHTML;
+}
+
 
 function deleteLoader(mia_entity){
     try {
-        //search for the img element that has .mia_icon as a class and remove the class .loading
-        const span = document.querySelector(`a[href="${mia_entity.uri}"]`);
+        //get span
+        const span = mia_entity.node;
         const img = span.querySelector('.mia_icon');
-        img.classList.remove('loading');
+        //check if the img already has a loader
+        if(img.classList.contains('loading')){
+            img.classList.remove('loading');
+        }
     } catch (error) {
         //error can occur due to entity not being from mr or mi
-        console.log(error);
+        logger.log(error);
     }
     
 }
@@ -65,13 +83,9 @@ function addFailed(mia_entity){
 }
 
 function addMiaIcon(mia_entity){
-    let uri = mia_entity.uri;
-    console.log(uri);
-    //check if the mia_entity.uri contains marineinfo or marregions
-    if(uri.includes("marineinfo") || uri.includes('marineregions')){
+    const span = mia_entity.node;
+    if (mia_entity.icon === 'mia'){
         //prepend a image span to the span element
-        //url to the mia icon => https://raw.githubusercontent.com/vliz-be-opsci/MIA/main/src/css/logo_mi.svg
-        const span = mia_entity.node;
         span.innerHTML = '<span><img src="https://raw.githubusercontent.com/vliz-be-opsci/MIA/main/src/css/logo_mi.svg" class="mia_icon" alt="MIA logo"></span>' + span.innerHTML;
     }
 }
@@ -99,4 +113,4 @@ function deletePopupMapLoader(){
 
 
 
-export {spanModifications, addMiaIcon, addLoader, deleteLoader, addFailed, deletePopupMapLoader} ;
+export {spanModifications, addMiaIcon, addLoader, deleteLoader, addFailed, deletePopupMapLoader, addInfoIcon} ;

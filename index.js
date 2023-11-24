@@ -3,6 +3,9 @@ import Logger from "./src/utils/logger.js";
 
 const logger = new Logger('debug');
 logger.log('index.js started');
+
+export const PROXYURL = '';
+
 const affordances = new Affordances();
 
 

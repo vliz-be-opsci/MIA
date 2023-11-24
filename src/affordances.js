@@ -1,7 +1,5 @@
 // Purpose: Affordances class
-import Logger from "./utils/logger.js";
 import AffordanceEntity from "./affordance_entity.js";
-const logger = new Logger();
 
 // desc: Affordances class
 // usage: const affordances = new Affordances();

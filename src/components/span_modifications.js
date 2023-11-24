@@ -9,7 +9,7 @@ function addLoader(mia_entity){
         img.classList.add('loading');
     } catch (error) {
         //error can occur due to entity not being from mr or mi
-        console.log(error);
+        logger.error(error);
     }
     
 }

@@ -10,6 +10,7 @@ export default class Logger {
         if(!Logger.instance){
             this.logs = [];
             this.level = level;
+            this.tracefile = null;
             Logger.instance = this;
             window.logger = this;
         }
@@ -18,11 +19,24 @@ export default class Logger {
 
     logMessage(type, message) {
         const timestamp = new Date().toISOString();
-        this.logs.push({timestamp, message, type});
+        const stackLine = this.getStackLine(type);
+        let safe_message = message;
+        //if the message is an object then stringify it for the safe logs
+        if(typeof message === 'object'){
+            safe_message = JSON.stringify(message);
+        }
+
+        this.logs.push({type,timestamp,stackLine,safe_message});
         const icon = this.getIcon(type);
         if (this.shouldLog(type)) {
-            const header = `${icon} ${timestamp}`;
-            const stackLine = this.getStackLine(type);
+            const header = `${icon}`;
+            if (typeof message === 'object') {
+                //length of the header + stackline + 1 space
+                let dottedline = '-'.repeat(header.length + stackLine.length + 3);
+                this.consoleLog(type, `${header} | ${stackLine}\n${dottedline}`);
+                console.log(message);
+                return;
+            }
             this.consoleLog(type, `${header} | ${stackLine}\n${message}`);
         }
     }
@@ -34,7 +48,10 @@ export default class Logger {
         if (type === 'warning') {
             console.warn(message);
         }
-        if (type === 'info' || type === 'log' || type === 'debug') {
+        if (type === 'debug') {
+            console.trace(message);
+        }
+        if (type === 'info' || type === 'log') {
             console.log(message);
         }
     }
@@ -93,5 +110,14 @@ export default class Logger {
         }
         const logs = this.logs.filter(log => log.type === type);
         return logs;
+    }
+
+    dumpLogs(type = null) {
+        if(type === null){
+            console.table(this.logs);
+            return;
+        }
+        const logs = this.logs.filter(log => log.type === type);
+        console.table(logs);
     }
 }
