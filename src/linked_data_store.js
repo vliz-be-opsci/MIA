@@ -26,13 +26,18 @@ export async function getLinkedDataNQuads(uri){
         let parsed_response;
         switch (data.format) {
             case 'application/ld+json':
-                const jsontext = JSON.parse(text);
-                // Convert JSON-LD to N-Quads
-                const nquads = await jsonld.toRDF(jsontext, {format: 'application/n-quads'});
-                // Parse N-Quads
-                parser = new N3.Parser({format: 'N-Quads'});
-                parsed_response = parser.parse(nquads);
-                break;
+                try {
+                    const jsontext = JSON.parse(text);
+                    // Convert JSON-LD to N-Quads
+                    const nquads = await jsonld.toRDF(jsontext, {format: 'application/n-quads'});
+                    // Parse N-Quads
+                    parser = new N3.Parser({format: 'N-Quads'});
+                    parsed_response = parser.parse(nquads);
+                    break;
+                } catch (error) {
+                    logger.log(error);
+                    throw new Error('Error parsing json-ld');
+                }
             //have a case where the format is text/html and then search for fair signposting links
             case 'text/html':
                 //search for fair signposting links in the head

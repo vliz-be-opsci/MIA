@@ -28,7 +28,6 @@ function addInfoIcon(mia_entity){
     span.innerHTML = '<span class="mia_icon">ℹ️</span>' + span.innerHTML;
 }
 
-
 function deleteLoader(mia_entity){
     try {
         //get span
@@ -49,7 +48,7 @@ function addFailed(mia_entity){
     try {
         console.log('adding failed svg');
         //search for the img element that has .mia_icon as a class and add the class .loading
-        const span = document.querySelector(`a[href="${mia_entity.uri}"]`);
+        const span = mia_entity.node;
         //check if there is a img element
         if(span.querySelector('.mia_icon')){
             const img = span.querySelector('.mia_icon');
@@ -90,16 +89,6 @@ function addMiaIcon(mia_entity){
     }
 }
 
-//function that will select span modifications to be made
-async function spanModifications(mia_entity){
-    //get all mia_entity classes
-    const mia_entity_classes = mia_entity.span.classList;
-    //if model-pop-up is in the classes then add the popup modal
-    if(mia_entity_classes.contains('modal-pop-up')){
-        console.log('modal pop up');
-    }
-}
-
 function deletePopupMapLoader(){
     //delete the loader from the map
     const loader = document.querySelector('.loader');
@@ -107,10 +96,4 @@ function deletePopupMapLoader(){
     loader.remove();
 }
 
-
-
-
-
-
-
-export {spanModifications, addMiaIcon, addLoader, deleteLoader, addFailed, deletePopupMapLoader, addInfoIcon} ;
+export {addMiaIcon, addLoader, deleteLoader, addFailed, deletePopupMapLoader, addInfoIcon} ;

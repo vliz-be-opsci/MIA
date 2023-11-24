@@ -1,11 +1,12 @@
 //this file will contain the entity class which keeps all info about the affordance and some actions that manipulate the affordance
-import { addMiaIcon, addLoader, deleteLoader, addInfoIcon } from "./node_modifications.js";
+import { addMiaIcon, addLoader, deleteLoader, addInfoIcon, addFailed } from "./node_modifications.js";
 import { createEmptyStore, storeSize , getLinkedDataNQuads, addDataToStore} from "./linked_data_store.js";
+import Popup from "./popup.js";
 
 export default class AffordanceEntity {
     constructor(affordance) {
         this.uri = affordance.href;
-        this.id = 'id-' + Math.random().toString(36).slice(2, 11);
+        this.id = 'id-' + Math.random().toString(36).slice(2, 11); // todo: check if this is really needed in the end
         this.node = affordance;
         this.store = createEmptyStore();
         this.checked = false;
@@ -27,11 +28,17 @@ export default class AffordanceEntity {
                 addLoader(this);
                 logger.info('getting linked data');
                 //function here to get linked data
-                this.Fillstore();
+                this.Fillstore().then(() => {new Popup(this, event)});
                 this.checked = true;
                 //delete the loader
                 deleteLoader(this);
-                
+            }else if (storeSize(this.store) === 0 && this.icon === 'mia'){
+                logger.log('change symbol to error');
+                addFailed(this);
+            }
+            else {
+                //create popup
+                new Popup(this, event);
             }
         });
     }
@@ -74,5 +81,4 @@ export default class AffordanceEntity {
             logger.log('orcid icon');
         }
     }
-
 }

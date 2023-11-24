@@ -32,8 +32,7 @@ export default class Logger {
             const header = `${icon}`;
             if (typeof message === 'object') {
                 //length of the header + stackline + 1 space
-                let dottedline = '-'.repeat(header.length + stackLine.length + 3);
-                this.consoleLog(type, `${header} | ${stackLine}\n${dottedline}`);
+                this.consoleLog(type, `${header} | ${stackLine}`);
                 console.log(message);
                 return;
             }
