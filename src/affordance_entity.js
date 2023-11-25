@@ -28,7 +28,7 @@ export default class AffordanceEntity {
                 addLoader(this);
                 logger.info('getting linked data');
                 //function here to get linked data
-                this.Fillstore().then(() => {new Popup(this, event)});
+                this.Fillstore(event);
                 this.checked = true;
                 //delete the loader
                 deleteLoader(this);
@@ -36,24 +36,27 @@ export default class AffordanceEntity {
                 logger.log('change symbol to error');
                 addFailed(this);
             }
-            else {
-                //create popup
+            else if (storeSize(this.store) !== 0 ) {
                 new Popup(this, event);
             }
         });
     }
 
-    async Fillstore(){
+    async Fillstore(event){
         //get linked data
         getLinkedDataNQuads(this.uri).then((data) => {
             logger.log(data);
             addDataToStore(this.store, data);
-
             //check if store is empty, if so don't add the info icon
             if(storeSize(this.store) === 0){
                 return;
             }
             addInfoIcon(this);
+            //if data is undefined then set the store._size to -1
+            if(data !== undefined){
+                new Popup(this, event);
+                return;
+            }
         });
     }
 
