@@ -1,6 +1,7 @@
 //this file will contain the entity class which keeps all info about the affordance and some actions that manipulate the affordance
 import { addMiaIcon, addLoader, deleteLoader, addInfoIcon, addFailed } from "./node_modifications.js";
 import { createEmptyStore, storeSize , getLinkedDataNQuads, addDataToStore} from "./linked_data_store.js";
+import { getInfoPopup } from "./info_extraction.js";
 import Popup from "./popup.js";
 
 export default class AffordanceEntity {
@@ -46,17 +47,15 @@ export default class AffordanceEntity {
         //get linked data
         getLinkedDataNQuads(this.uri).then((data) => {
             logger.log(data);
-            addDataToStore(this.store, data);
-            //check if store is empty, if so don't add the info icon
-            if(storeSize(this.store) === 0){
-                return;
-            }
-            addInfoIcon(this);
-            //if data is undefined then set the store._size to -1
-            if(data !== undefined){
+            addDataToStore(this.store, data).then((store) => {
+                logger.log(store);
+                //extract info from the store
+                getInfoPopup(this);
+                //add the info icon
+                addInfoIcon(this);
+                //add the popup
                 new Popup(this, event);
-                return;
-            }
+            });
         });
     }
 

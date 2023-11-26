@@ -133,7 +133,7 @@ async function getData(uri, formats) {
     throw new Error('No acceptable format found');
 }
 
-export function addDataToStore(store, data){
+export async function addDataToStore(store, data){
     store.addQuads(data);
     return store;
 }
