@@ -46,7 +46,8 @@ function getDataViaConfig(uri, config, store, lang) {
                         // perform a filter on the langue of the object
                         logger.log(`${vocab} | ${lang} | ${quads.length}`);
                         logger.log(quads);
-                        quads = quads.filter(quad => quad._object.language == lang);
+                        //if lang is not null filter on lang
+                        if (lang != null){quads = quads.filter(quad => quad._object.language == lang);}
                         logger.log(quads);
                         // if no quads were found with the given language, then take the first one
                         if (quads.length == 0) {
@@ -78,6 +79,7 @@ function getDefaultInfo(affordance) {
         "title":[
             'https://schema.org/name',
             'http://purl.org/dc/elements/1.1/title',
+            'http://xmlns.com/foaf/0.1/name',
             'http://purl.org/dc/terms/#title',
             'http://www.w3.org/2000/01/rdf-schema#label',
             'http://www.w3.org/2004/02/skos/core#prefLabel',
@@ -90,6 +92,7 @@ function getDefaultInfo(affordance) {
         "description": [
             'http://purl.org/dc/elements/1.1/description',
             'https://schema.org/description',
+            'http://purl.org/dc/elements/1.1/description',
             'http://www.w3.org/2000/01/rdf-schema#comment',
             'http://www.w3.org/2004/02/skos/core#definition',
             'http://www.w3.org/2004/02/skos/core#scopeNote',
@@ -103,12 +106,13 @@ function getDefaultInfo(affordance) {
         ],
         "image": [
             'https://schema.org/image',
-            'http://xmlns.com/foaf/0.1/img'
+            'http://xmlns.com/foaf/0.1/img',
+            'http://xmlns.com/foaf/0.1/logo'
         ]
     }
 
     let content = getDataViaConfig(affordance.uri,content_vocabularies, store, affordance.lang);
-
+    logger.info(content);
     //perform a second function that will map the properties that were collected to 4 components of the popup template
     //the components are title, affordances ,description, image/map (affordances will be added later)
     let template_config = {
@@ -118,6 +122,8 @@ function getDefaultInfo(affordance) {
         "image": content.image[0],
         "affordances": ""
     }
+
+    logger.info(template_config);
 
     return template_config;
 }
@@ -283,10 +289,12 @@ function getLang(affordance) {
     if (lang == null) {
         lang = document.querySelector('html').getAttribute('lang');
     }
+    /*
     //if lang is still null then get the language of the browser
     if (lang == null) {
         lang = navigator.language;
     }
+    */
     return lang;
 }
 
