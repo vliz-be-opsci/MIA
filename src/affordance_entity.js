@@ -1,7 +1,7 @@
 //this file will contain the entity class which keeps all info about the affordance and some actions that manipulate the affordance
 import { addMiaIcon, addLoader, deleteLoader, addInfoIcon, addFailed } from "./node_modifications.js";
 import { createEmptyStore, storeSize , getLinkedDataNQuads, addDataToStore} from "./linked_data_store.js";
-import { getInfoPopup } from "./info_extraction.js";
+import { getBoundryInfo, getInfoPopup } from "./info_extraction.js";
 import Popup from "./popup.js";
 
 export default class AffordanceEntity {
@@ -38,9 +38,10 @@ export default class AffordanceEntity {
                 addFailed(this);
             }
             else if (storeSize(this.store) !== 0 ) {
-                new Popup(this, event);
+                this.popup = new Popup(this, event);
             }
         });
+
     }
 
     async Fillstore(event){
@@ -50,11 +51,36 @@ export default class AffordanceEntity {
             addDataToStore(this.store, data).then((store) => {
                 logger.log(store);
                 //extract info from the store
-                getInfoPopup(this);
+                this.template_ingest_info = getInfoPopup(this);
                 //add the info icon
                 addInfoIcon(this);
                 //add the popup
-                new Popup(this, event);
+                this.popup = new Popup(this, event);
+
+                //loop over the template_ingest_info dict
+                //for each key check if the key is in the node
+                for (const [key, value] of Object.entries(this.template_ingest_info)) {
+                    logger.log(value);
+                    //check if value contains a class toload and if so get the attribute url
+                    if (value !== null && value !== undefined && value.includes('toload')) {
+                        logger.log('loading ' + key);
+                        //get the url from the value
+                        let url = value.split('url="')[1].split('"')[0];
+                        logger.log(url);
+                        // get the data behind this node
+                        getLinkedDataNQuads(url).then((data) => {
+                            logger.log(data);
+                            //add the data to the store
+                            addDataToStore(this.store, data).then((store) => {
+                                logger.log(store);
+                                let boundry_info = getBoundryInfo(this, url);
+                                logger.log(boundry_info);
+                                //seperate the makemap from the replace loader with map so I can save the map
+                                this.popup.makemap(boundry_info);
+                            });
+                        });
+                    }
+                }
             });
         });
     }
@@ -62,6 +88,7 @@ export default class AffordanceEntity {
     checkUri() {
         let knownSources = {
             'http://dev.marineinfo.org': 'mia',
+            'https://marineinfo.org': 'mia',
             'https://marineregions.org/': 'mia',
             'https://orcid.org/': 'orcid'
         }

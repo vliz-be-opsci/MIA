@@ -36,9 +36,9 @@ function getDataViaConfig(uri, config, store, lang) {
 
             // Flag to indicate if quads were found
             let quadsFound = false;
-
             for (const vocab of vocabularies) {
                 for (const uri of uris) {
+                    //logger.log( uri + " | " + vocab);
                     let quads;
                     quads = store.getQuads(uri, vocab, null, null);
                     if (quads.length > 0) {
@@ -73,7 +73,6 @@ function getDataViaConfig(uri, config, store, lang) {
 function getDefaultInfo(affordance) {
     logger.log('getDefaultInfo started');
     let store = affordance.store; 
-
 
     const content_vocabularies = {
         "title":[
@@ -243,7 +242,7 @@ function getMapInfo(affordance) {
     let template_config = {
         "title": content.title[0],
         "description": content.description[0],
-        "map": content.geom[0],
+        "other": `<div url="${content.geom[0]}" class="toload"><img src="https://raw.githubusercontent.com/vliz-be-opsci/MIA/main/src/css/logo_mi.svg" class="loader" alt="MIA logo"></div>`,
         "affordances": ""
     }
 

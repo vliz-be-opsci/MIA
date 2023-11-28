@@ -169,10 +169,10 @@ tr:nth-child(even){background-color: #f2f2f2}
 
 /* loader for the map.laoder */
 
-.map > .loader {
+.toload > .loader {
   /*loading animation here */
   animation: flickerAnimation 2s infinite;
-  height: 150px;
+  height: 75px;
   align-self: center;
 }
 

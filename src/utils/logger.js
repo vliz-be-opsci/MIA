@@ -23,7 +23,12 @@ export default class Logger {
         let safe_message = message;
         //if the message is an object then stringify it for the safe logs
         if(typeof message === 'object'){
-            safe_message = JSON.stringify(message);
+            try {
+                safe_message = JSON.stringify(message);
+            } catch (error) {
+                console.error(error);
+            }
+            
         }
 
         this.logs.push({type,timestamp,stackLine,safe_message});

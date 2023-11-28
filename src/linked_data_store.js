@@ -15,7 +15,7 @@ export async function getLinkedDataNQuads(uri){
 
     //check if the uri has a return format for ttl or json-ld
     //order of preference for return formats
-    const return_formats = ['application/ld+json', 'text/turtle', 'application/rdf+xml', 'application/n-triples', 'application/n-quads', 'text/n3', 'text/rdf+n3', 'text/html'];
+    const return_formats = ['text/turtle', 'application/ld+json',  'application/rdf+xml', 'application/n-triples', 'application/n-quads', 'text/n3', 'text/rdf+n3', 'text/html'];
 
     try {
         const data = await getData(uri, return_formats);

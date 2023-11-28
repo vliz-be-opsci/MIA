@@ -1,20 +1,15 @@
 // This file will contain the popup class which will create a popup element and add it to the DOM
 
+import TemplateFiller from "./template_filler.js";
+
 export default class Popup {
     constructor(affordance, event){
-        this.event = event;
-        this.affordance = affordance;
-        let dimensions = [300,500];
-
-        if (this.checkhiddenobjectDom()){
-            logger.warning('Other popup is loading');
-            return;
-        }
-
         logger.info('creating popup');
         this.popup = document.createElement('div');
         this.popup.classList.add('mia-popup');
-        //check aspect ratio of the screen to determine if the popup is in landscape or portrait mode
+        this.event = event;
+        this.affordance = affordance;
+        let dimensions = [300,350];
         this.mode = this.Mode();
         if (this.mode === 'landscape'){
             this.popup.classList.add('landscape');
@@ -26,10 +21,32 @@ export default class Popup {
             this.popup.height = dimensions[1];
             this.popup.width = dimensions[0];
         }
+        this.size = this.determinesizeclass();
+        dimensions = this.adjustsizetoclass();
+        if (this.mode === 'landscape'){
+            this.popup.classList.add('landscape');
+            this.popup.height= dimensions[0];
+            this.popup.width = dimensions[1];
+        }
+        else{
+            this.popup.classList.add('portrait');
+            this.popup.height = dimensions[1];
+            this.popup.width = dimensions[0];
+        }
+        if (this.checkhiddenobjectDom()){
+            logger.warning('Other popup is loading');
+            return;
+        }
         
         //add content to the popup
         this.popup.content = document.createElement('div');
         this.popup.content.classList.add('mia-popup-content');
+        this.popup.classList.add(this.size);
+        logger.log(this.size);
+
+        this.templatefiller = new TemplateFiller(this.affordance.template_ingest_info, this.popup);
+        this.templatefiller.generateHTML();
+
         this.popup.appendChild(this.popup.content);
 
         //set the popup placement
@@ -49,10 +66,61 @@ export default class Popup {
         this.timeoutId = null;
         this.popopeventlistener();
 
-
     }
 
-    // TODO: make function that will determine the scale of the popup based on document window size (eg: sm, m, lg)
+    update(new_affordance){
+        //update the popup with new information
+        //update the affordance
+        this.affordance = new_affordance;
+        //update the template
+        this.templatefiller.updateHTML(this.affordance.template_ingest_info);
+    }
+
+    adjustsizetoclass(){
+        //adjust this.dimensions based on the size class
+        if (this.size === 'sm'){
+            return [150,175];
+        }
+        else if (this.size === 'm'){
+            return [200,225];
+        }
+        else if (this.size === 'lg'){
+            return [250,300];
+        }
+        else if (this.size === 'xl'){
+            return [300,350];
+        }
+    }
+
+    makemap(boundry_info){
+        this.templatefiller.makeMap(boundry_info);
+    }
+
+    determinesizeclass(){
+        let windowWidth = window.innerWidth;
+        let windowHeight = window.innerHeight;
+        let popupWidth = this.popup.width;
+        let popupHeight = this.popup.height;
+        let scale_height = windowHeight/popupHeight;
+        let scale_width = windowWidth/popupWidth;
+        let scale = Math.min(scale_height, scale_width);
+
+        logger.info('scale: ' + scale);
+
+        if (scale < 1.1){
+            return 'sm';
+        }
+        else if (scale < 1.3){
+            return 'm';
+        }
+        else if (scale < 1.8){
+            return 'lg';
+        }
+        else{
+            return 'xl';
+        }
+    }
+
 
     
     popopeventlistener() {

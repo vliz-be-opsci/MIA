@@ -6,7 +6,6 @@ export async function createEmptyStore(){
     return store;
 }
 
-
 //function to create a store from a given uri , text and format
 export async function createStore(uri, format){
     
