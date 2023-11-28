@@ -39,6 +39,9 @@ export default class AffordanceEntity {
             }
             else if (storeSize(this.store) !== 0 ) {
                 this.popup = new Popup(this, event);
+                //fake window resize event to make sure the map is the correct size
+                // TODO: put this somewhere else
+                window.dispatchEvent(new Event('resize'));
             }
         });
 
@@ -75,8 +78,10 @@ export default class AffordanceEntity {
                                 logger.log(store);
                                 let boundry_info = getBoundryInfo(this, url);
                                 logger.log(boundry_info);
-                                //seperate the makemap from the replace loader with map so I can save the map
-                                this.popup.makemap(boundry_info);
+                                //delete the loader with the map
+                                this.popup.deleteLoader();
+                                //replace key with map
+                                this.template_ingest_info[key] = this.popup.makemap(boundry_info);
                             });
                         });
                     }

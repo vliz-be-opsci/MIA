@@ -48,10 +48,20 @@ export default class TemplateFiller {
                     //check if the data is not null or undefined
                     if (data[element.id] !== null && data[element.id] !== undefined){
                         element.innerHTML = data[element.id];
+                        //check if element is object HTMLDivElement and if so add the data as a child
+                        if (data[element.id] instanceof HTMLDivElement){
+                            element.innerHTML = '';
+                            element.appendChild(data[element.id]);
+                        }
                     }
                 }
             }
         }
+    }
+
+    deleteLoader(){
+        //delete loader
+        document.querySelector('.toload').remove();
     }
 
     makeMap(boundry_info){
@@ -69,9 +79,10 @@ export default class TemplateFiller {
         let map_div = document.createElement('div');
         map_div.setAttribute('class', 'map');
         map_div.setAttribute('id', 'map');
-        //replace the loader with the div
-        let loader = document.querySelector('.toload');
-        loader.replaceWith(map_div);
+
+        //add the map div to the popup
+        let popupdiv = document.querySelector('.mia-popup-content');
+        popupdiv.appendChild(map_div);
 
         // Create a new Leaflet map
         let map = L.map('map')
@@ -99,6 +110,7 @@ export default class TemplateFiller {
         // Fit the map to the GeoJSON layer
         map.fitBounds(geoJsonLayer.getBounds());
 
+        return map_div;
     }
 
 

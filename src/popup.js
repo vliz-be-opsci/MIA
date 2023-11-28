@@ -93,7 +93,11 @@ export default class Popup {
     }
 
     makemap(boundry_info){
-        this.templatefiller.makeMap(boundry_info);
+        return this.templatefiller.makeMap(boundry_info);
+    }
+
+    deleteLoader(){
+        this.templatefiller.deleteLoader();
     }
 
     determinesizeclass(){
