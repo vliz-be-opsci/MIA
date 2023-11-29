@@ -1,6 +1,6 @@
 // Purpose: Affordances class
 import AffordanceEntity from "./affordance_entity.js";
-
+import SelfAffordanceEntity from "./self_affordance_entity.js";
 // desc: Affordances class
 // usage: const affordances = new Affordances();
 //        affordances.affordanceManager.getAffordances();
@@ -19,9 +19,31 @@ export default class Affordances {
         });
         this.affordances = this.affordanceManager.getAffordances();
         logger.info('Ammount of affordances: ' + this.affordanceManager.getAffordances().length);
-
+        this.self_uri = this.selfAffordanceCheck();
+        logger.log(this.self_uri);
+        new SelfAffordanceEntity(this.self_uri)
         this.documentWatcher = new DocumentWatcher(this.affordanceManager);
     };
+
+
+
+    //have a self affordance check function that will check the current document a base ref or fair signposting in the document
+    selfAffordanceCheck(){
+        //check if the document has a base ref
+        if (document.querySelector('base') !== null){
+            //check if the base ref is the same as the current page
+            if (document.querySelector('base').href === document.location.href){
+                //make a self affordance
+                logger.log('self affordancevia base ref');
+                return document.querySelector('base').href;
+            }
+        }
+        if (document.querySelector('link[rel="describedby"]') !== null){
+            //check if the base ref is the same as the current page
+            logger.log('self affordance via link rel self');
+            return document.querySelector('link[rel="describedby"]').href;
+        }     
+    }
 }
 
 class AffordanceManager {
