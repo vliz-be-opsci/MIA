@@ -39,9 +39,8 @@ export default class AffordanceEntity {
             }
             else if (storeSize(this.store) !== 0 ) {
                 this.popup = new Popup(this, event);
-                //fake window resize event to make sure the map is the correct size
-                // TODO: put this somewhere else
-                window.dispatchEvent(new Event('resize'));
+                this.popup.resizemap();
+                
             }
         });
 

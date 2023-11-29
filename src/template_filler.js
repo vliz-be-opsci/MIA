@@ -113,6 +113,22 @@ export default class TemplateFiller {
         return map_div;
     }
 
+    resizeMap(){
+        logger.log('resizing map');
+
+        //get the height of the popup and set the map to 75% of that
+        let popup = document.querySelector('.mia-popup-content');
+        let popup_height = popup.offsetHeight;
+        let map_div_height = popup_height / 100 * 75;
+
+        let map_div = document.querySelector('#map');
+        map_div.style.width = '100%';
+        map_div.style.height = `${map_div_height}px`;
+
+        //fake resize event to make sure the map is rendered correctly
+        window.dispatchEvent(new Event('resize'));
+    }
+
 
     cloneTemplateToNode(templateID, node=null){
         logger.log('cloning template to node');

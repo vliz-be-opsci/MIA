@@ -100,6 +100,10 @@ export default class Popup {
         this.templatefiller.deleteLoader();
     }
 
+    resizemap(){
+        this.templatefiller.resizeMap();
+    }
+
     determinesizeclass(){
         let windowWidth = window.innerWidth;
         let windowHeight = window.innerHeight;
