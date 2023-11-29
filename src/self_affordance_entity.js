@@ -19,16 +19,29 @@ export default class SelfAffordanceEntity {
     
         //create a copy icon
         let copyIcon = document.createElement('img');
-        copyIcon.src = 'http://example.com/path/to/your/icon.svg'; // replace with your SVG URL
+        copyIcon.src = 'https://raw.githubusercontent.com/vliz-be-opsci/MIA/main/src/css/copy.svg'; // replace with your SVG URL
         copyIcon.classList.add('copy-icon');
         node.appendChild(copyIcon);
-    
-        //add an event listener to the node that when the node is clicked the uri will be copied to the clipboard and a message will be shown to the user that the uri is copied
+
+        //create a temporary div for the copy message
+        let copyMessage = document.createElement('div');
+        copyMessage.id = 'copy-message';
+        copyMessage.style.display = 'none';
+        document.body.appendChild(copyMessage);
+        
         node.addEventListener('click', (event) => {
             //copy the uri to the clipboard
             navigator.clipboard.writeText(this.uri).then(() => {
                 //show a message to the user that the uri is copied
-                logger.log('uri copied to clipboard');
+                copyMessage.innerText = 'URI copied to clipboard';
+                copyMessage.style.display = 'block';
+        
+                //hide the message after 2 seconds
+                setTimeout(() => {
+                    copyMessage.style.display = 'none';
+                }, 2000);
+            }, (err) => {
+                console.error('Could not copy text: ', err);
             });
         });
         //add the node to the dom
