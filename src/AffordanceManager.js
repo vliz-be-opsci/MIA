@@ -7,7 +7,7 @@ export default class AffordanceManager {
         this.affordances = [];
         this.initAffordances();
         this.DocumentWatcher = new DocumentWatcher(this);
-        new CollectingScheduler(this.affordances);
+        this.CollectingScheduler = new CollectingScheduler(this.affordances);
     }
 
     initAffordances() {
@@ -77,6 +77,7 @@ class DocumentWatcher {
             if (link.href !== '') {
                 console.log('link added: ' + link.href);
                 this.affordanceManager.addAffordance(link);
+                this.affordanceManager.CollectingScheduler.queueNextInSchedule();
             }
         });
     }
