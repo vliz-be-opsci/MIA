@@ -1,22 +1,24 @@
-
-
 export default class CollectingScheduler {
-    constructor(afforadances){
+    constructor(afforadances,derefconfig){
         console.log('Collecting Scheduler initialised');
         this.affordances = afforadances;
         console.log(this.affordances);
         this.schedule = afforadances;
+        this.derefconfig = derefconfig;
+        console.log(this.derefconfig);
         this.queueNextInSchedule();
+        
     }
 
     async queueNextInSchedule() {
         try {
             setTimeout(async () => {
-                const ae = this.schedule.shift();
-                if (!ae) {
+                //if length of schedule is 0 return
+                if (this.schedule.length === 0) {
                     console.log('no affordances left in schedule');
                     return;
                 }
+                const ae = this.schedule.shift();
                 console.log(ae);
                 await this.collectInfo(ae);
                 console.log('collected info for ' + ae.link);

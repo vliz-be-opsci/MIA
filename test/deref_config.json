@@ -1,0 +1,28 @@
+[
+    {
+        "RDF_TYPE": "http://marineregions.org/ns/ontology#MRGeoObject",
+        "PREFIXES": [
+            {
+                "prefix": "mr",
+                "uri": "http://marineregions.org/ns/ontology#"
+            },
+            {
+                "prefix": "skos",
+                "uri": "http://www.w3.org/2004/02/skos/core#"
+            },
+            {
+                "prefix": "dcterms",
+                "uri": "http://purl.org/dc/terms/"
+            }
+        ],
+        "ASSERTION_PATHS": [
+            "mr:hasGeometry",
+            "<http://www.w3.org/ns/dcat#centroid"
+        ],
+        "TEMPLATE": "map",
+        "MAPPING": {
+            "mapwkt": "dcterms:isVersionOf/mr:hasGeometry/gsp:asWKT",
+            "centroid": "dcterms:isVersionOf/<http://www.w3.org/ns/dcat#centroid/gsp:asWKT"
+        }
+    }
+]

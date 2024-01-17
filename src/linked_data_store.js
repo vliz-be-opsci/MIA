@@ -20,7 +20,7 @@ export async function getLinkedDataNQuads(uri){
     try {
         const data = await getData(uri, return_formats);
         let text = await data.response.text();
-        //logger.log(text);
+        //console.log(text);
         //based on the format create a parser object
         let parser;
         let parsed_response;
@@ -35,7 +35,7 @@ export async function getLinkedDataNQuads(uri){
                     parsed_response = parser.parse(nquads);
                     break;
                 } catch (error) {
-                    logger.log(error);
+                    console.log(error);
                     throw new Error('Error parsing json-ld');
                 }
             //have a case where the format is text/html and then search for fair signposting links
@@ -58,8 +58,8 @@ export async function getLinkedDataNQuads(uri){
                         if(!href.includes('http')){
                             href = uri + href;
                         }
-                        //logger.log(href);
-                        //logger.log(type);
+                        //console.log(href);
+                        //console.log(type);
 
                         //fetch the href with the correct accept header
                         const response = await fetch(href, {
@@ -70,7 +70,7 @@ export async function getLinkedDataNQuads(uri){
 
                         //get the text of the response
                         text = await response.text();
-                        //logger.log(text);
+                        //console.log(text);
                         //create a n3 parser object and parse the response check first if the format is json-ld 
                         //if it is json-ld then convert it to nquads
                         //if it is not json-ld then parse it with the correct format
@@ -108,12 +108,12 @@ export async function getLinkedDataNQuads(uri){
                 });
                 parsed_response = parser.parse(text);
         }
-        //logger.log(parsed_response);
+        //console.log(parsed_response);
 
         return parsed_response;
 
     } catch (error) {
-        logger.log(error);
+        console.log(error);
     }
 }
 
@@ -127,7 +127,7 @@ async function getData(uri, formats) {
                 return { format, response };
             }
         } catch (error) {
-            logger.log(error);
+            console.log(error);
         }
     }
     throw new Error('No acceptable format found');

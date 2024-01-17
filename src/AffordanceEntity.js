@@ -2,11 +2,12 @@
 import Entity from './Entity.js';
 
 export default class AffordanceEntity {
-    constructor(affordance) {
+    constructor(affordance, derefinfocollector) {
         console.log('Affordance Entity initialised');
         this.element = affordance;
         this.link = affordance.href;
-        this.collected_info = new Entity; //placeholder here for entity class
+        this.collected_info = new Entity;
+        this.derefinfocollector = derefinfocollector;
         this.onHover();
     };
 
@@ -33,18 +34,7 @@ export default class AffordanceEntity {
             return;
         }
         console.log('TODO: deref request here');
-        //emmulate a deref request here by setting a timeout
-        setTimeout(() => {
-            let content = {
-                'title': 'this is a title',
-                'description': 'this is a description',
-                'image': 'this is an image'
-            };
-            this.collected_info.updateContent(content);
-            console.log('info collected');
-            console.log(this.collected_info);
-            
-        }, 2000);
+        this.derefinfocollector.collectInfo(this.link);
     };
 
     produce_HTML_view() {

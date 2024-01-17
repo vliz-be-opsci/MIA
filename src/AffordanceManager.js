@@ -1,31 +1,34 @@
 import AffordanceEntity from './AffordanceEntity.js';
 import CollectingScheduler from './CollectingScheduler.js';
+import DerefInfoCollector from "./DerefInfoCollector.js";
+
 
 export default class AffordanceManager {
-    constructor() {
+    constructor(derefconfig) {
         console.log('Affordance Manager initialised');
         this.affordances = [];
-        this.initAffordances();
+        this.DerefInfoCollector = new DerefInfoCollector(derefconfig);
+        this.initAffordances(this.DerefInfoCollector);
         this.DocumentWatcher = new DocumentWatcher(this);
         this.CollectingScheduler = new CollectingScheduler(this.affordances);
     }
 
-    initAffordances() {
+    initAffordances(derefinfocollector) {
         const links = document.querySelectorAll('a');
         links.forEach((link) => {
             if (link.href !== '') {
                 console.log('link added: ' + link.href);
-                this.addAffordance(link);
+                this.addAffordance(link, derefinfocollector);
             }
         });
         this.affordances = this.getAffordances();
         console.log('Ammount of affordances: ' + this.getAffordances().length);
     }
 
-    addAffordance(affordance) {
+    addAffordance(affordance, derefinfocollector) {
         //log the type of node and the inner html of the node
         //console.log(affordance.parentNode.nodeName + ' ' + affordance.parentNode.innerHTML);
-        this.affordances.push(new AffordanceEntity(affordance));
+        this.affordances.push(new AffordanceEntity(affordance, derefinfocollector));
     }
 
     removeAffordance(affordance) {
