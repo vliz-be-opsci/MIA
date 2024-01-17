@@ -17,12 +17,12 @@
         ],
         "ASSERTION_PATHS": [
             "mr:hasGeometry",
-            "<http://www.w3.org/ns/dcat#centroid"
+            "<http://www.w3.org/ns/dcat#centroid>"
         ],
         "TEMPLATE": "map",
         "MAPPING": {
             "mapwkt": "dcterms:isVersionOf/mr:hasGeometry/gsp:asWKT",
-            "centroid": "dcterms:isVersionOf/<http://www.w3.org/ns/dcat#centroid/gsp:asWKT"
+            "centroid": "dcterms:isVersionOf/<http://www.w3.org/ns/dcat#centroid/gsp:asWKT>"
         }
     }
 ]

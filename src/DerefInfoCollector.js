@@ -1,4 +1,4 @@
-import { createEmptyStore, getLinkedDataNQuads } from "./linked_data_store.js";
+import { addDataToStore, createEmptyStore, getLinkedDataNQuads } from "./linked_data_store.js";
 
 export default class DerefInfoCollector {
     constructor(config) {
@@ -23,17 +23,21 @@ export default class DerefInfoCollector {
     }
 
     async getInfoGraph(url) {
+        let triplestore = createEmptyStore();
         console.log('getting info graph');
         getLinkedDataNQuads(url).then((data) => {
+            addDataToStore(triplestore, data);
             console.log(data);
+            console.log(triplestore);
             //check via the derefconfig if all the required info is present 
             //if not, fetch the missing info
-            console.log(this.checkTypeInConfig(this.getTypes(url,data)));
+            console.log(this.getConfigInfoType(this.getTypes(url,triplestore)));
         });
         return 
     }
 
-    getTypes(url,triples) {
+    
+    getTypes(url, triplestore) {
         console.log('getting types');
         //perform url trick for now that https and http are both checked, be sure to replace the beginning of the url only
         let urls = [url];
@@ -42,31 +46,27 @@ export default class DerefInfoCollector {
         } else if (url.startsWith('http')) {
             urls.push(url.replace('http://', 'https://'));
         }
-
+    
         const types = [];
         for (const url of urls) {
             if (types.length == 0) {
-                for (const triple of triples) {
-                    if (triple._predicate.id === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' && triple._subject.id === url) {
-                        types.push(triple._object.id);
-                    }
+                const quads = triplestore.getQuads(url, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
+                for (const quad of quads) {
+                    types.push(quad.object.id);
                 }
             }
         }
         return types;
     }
 
-    checkTypeInConfig(types){
-        console.log('checking type in config');
-        console.log(types);
-        console.log(this.derefconfig);
+    getConfigInfoType(types){
         for (const type of types) {
             for( const config of this.derefconfig){
                 if(config.RDF_TYPE === type){
-                    return true;
+                    return config;
                 }
             }
         }
-        return false;
+        return null;
     }
 }

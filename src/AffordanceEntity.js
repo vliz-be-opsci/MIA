@@ -33,7 +33,6 @@ export default class AffordanceEntity {
             console.log('info already collected');
             return;
         }
-        console.log('TODO: deref request here');
         this.derefinfocollector.collectInfo(this.link);
     };
 
