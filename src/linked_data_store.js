@@ -2,6 +2,8 @@
 // this for possible future port to rdflib instead of n3
 
 export function createEmptyStore(){
+    var storerdf = $rdf.graph();
+    console.log("store", storerdf); //rdflib works
     const store = new N3.Store();
     return store;
 }
