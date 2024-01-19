@@ -26,8 +26,8 @@ export default class DerefInfoCollector {
         let triplestore = createEmptyStore();
         console.log('getting info graph');
         getLinkedDataNQuads(url).then((data) => {
-            addDataToStore(triplestore, data);
             console.log(data);
+            addDataToStore(triplestore, data);
             console.log(triplestore);
             //check via the derefconfig if all the required info is present 
             //if not, fetch the missing info
