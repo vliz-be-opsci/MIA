@@ -7,10 +7,11 @@ export default class AffordanceManager {
     constructor(derefconfig) {
         console.log('Affordance Manager initialised');
         this.affordances = [];
-        this.DerefInfoCollector = new DerefInfoCollector(derefconfig);
-        this.initAffordances(this.DerefInfoCollector);
-        this.DocumentWatcher = new DocumentWatcher(this);
-        this.CollectingScheduler = new CollectingScheduler(this.affordances);
+        this.collectingScheduler = new CollectingScheduler();
+        this.derefInfoCollector = new DerefInfoCollector(derefconfig);
+        this.initAffordances(this.derefInfoCollector);
+        this.documentWatcher = new DocumentWatcher(this);
+        
     }
 
     initAffordances(derefinfocollector) {
@@ -21,14 +22,15 @@ export default class AffordanceManager {
                 this.addAffordance(link, derefinfocollector);
             }
         });
-        this.affordances = this.getAffordances();
-        console.log('Ammount of affordances: ' + this.getAffordances().length);
+        console.log('Ammount of affordances: ' + this.affordances.length);
     }
 
     addAffordance(affordance, derefinfocollector) {
         //log the type of node and the inner html of the node
         //console.log(affordance.parentNode.nodeName + ' ' + affordance.parentNode.innerHTML);
-        this.affordances.push(new AffordanceEntity(affordance, derefinfocollector));
+        let new_ae = new AffordanceEntity(affordance, derefinfocollector);
+        this.affordances.push(new_ae);
+        this.collectingScheduler.queueAffordance(new_ae);
     }
 
     removeAffordance(affordance) {
@@ -39,9 +41,6 @@ export default class AffordanceManager {
         }
     }
 
-    getAffordances() {
-        return this.affordances;
-    }
 
     getAffordanceByNode(node) {
         return this.affordances.find((affordance) => {
@@ -80,7 +79,7 @@ class DocumentWatcher {
             if (link.href !== '') {
                 console.log('link added: ' + link.href);
                 this.affordanceManager.addAffordance(link);
-                this.affordanceManager.CollectingScheduler.queueNextInSchedule();
+                
             }
         });
     }

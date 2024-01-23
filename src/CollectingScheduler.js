@@ -1,37 +1,36 @@
+
+const DELAYMS = 666;
+
 export default class CollectingScheduler {
-    constructor(afforadances,derefconfig){
+    constructor(){
         console.log('Collecting Scheduler initialised');
-        this.affordances = afforadances;
-        console.log(this.affordances);
-        this.schedule = afforadances;
-        this.derefconfig = derefconfig;
-        console.log(this.derefconfig);
-        this.queueNextInSchedule();
-        
+        this.schedule = [];
     }
 
-    async queueNextInSchedule() {
-        try {
-            setTimeout(async () => {
-                //if length of schedule is 0 return
-                if (this.schedule.length === 0) {
-                    console.log('no affordances left in schedule');
-                    return;
-                }
-                const ae = this.schedule.shift();
-                console.log(ae);
-                await this.collectInfo(ae);
-                console.log('collected info for ' + ae.link);
-                // log the ammount of affordances left in the schedule
-                console.log(this.schedule.length);
-                this.queueNextInSchedule();
-            }, 666);
-        } catch (error) {
-            console.log(error);
+    async queueAffordance(affordance) {
+        this.schedule.push(affordance);
+        console.log('Affordance queued: ' + affordance);
+        if (this.schedule.length === 1){ // only restart scheduler if it was empty before
+            this.queueNextInSchedule();
         }
     }
 
-    collectInfo(ae) {
-        ae.collectInfo();
+    async queueNextInSchedule() {
+        if (this.schedule.length === 0) {
+            console.log('no affordances left in schedule');
+            return; //this stops the scheduler
+        } 
+        // else
+        try {
+            setTimeout(async () => {
+                //if length of schedule is 0 return
+                const ae = this.schedule.shift();
+                await ae.collectInfo();
+
+                this.queueNextInSchedule();
+            }, DELAYMS); // check if smart delay is possible
+        } catch (error) {
+            console.log(error);
+        }
     }
 }

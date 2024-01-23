@@ -28,7 +28,7 @@ export default class AffordanceEntity {
 
     async collectInfo() {
         //function to collect info
-        console.log('collecting info');
+        console.log('collecting info for ' + this.link);
         if(Object.keys(this.collected_info.content).length !== 0){
             console.log('info already collected');
             return;
