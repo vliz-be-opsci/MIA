@@ -26,8 +26,7 @@ export default class DerefInfoCollector {
     };
   }
 
-  async getInfoGraph(url) {
-    let triplestore = createEmptyStore();
+  getInfoGraph(url) {
     console.log("getting info graph");
     getLinkedDataNQuads(url).then((triplestore) => {
       console.log(triplestore);
@@ -39,27 +38,43 @@ export default class DerefInfoCollector {
       }
 
       for (const url of urls) {
-        this.getTypes(url, triplestore).then((types) => {
-          //check if length of types is not 0 else return;
-          if (types.length == 0) {
-            return;
+        const query = `
+              SELECT ?type WHERE {
+                  <${url}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type .
+              }
+          `;
+        console.log(query);
+        const queryobject = $rdf.SPARQLToQuery(query, false, triplestore);
+        triplestore.query(
+          queryobject,
+          (bindings) => {
+            let types = [];
+            for (let variable in bindings) {
+              console.log(
+                `Variable: ${variable}, Value: ${bindings[variable]}`
+              );
+              types.push(bindings[variable].value);
+            }
+            console.log(types);
+            let config = this.getConfigInfoType(types);
+            if (config !== null) {
+              console.log(config);
+              this.completeInfo(
+                this.replacePrefixesAssertionPaths(
+                  config.ASSERTION_PATHS,
+                  config.PREFIXES
+                ),
+                triplestore
+              );
+            }
+          },
+          null,
+          () => {
+            console.log("Query complete");
           }
-          console.log(types);
-          let type_config_url = this.getConfigInfoType(types);
-          console.log(type_config_url);
-          let prefixes = type_config_url.PREFIXES;
-          let assertion_paths = type_config_url.ASSERTION_PATHS;
-
-          let prefixed_assertion_paths = this.replacePrefixesAssertionPaths(
-            assertion_paths,
-            prefixes
-          );
-          console.log(prefixed_assertion_paths);
-          this.completeInfo(prefixed_assertion_paths, triplestore);
-        });
+        );
       }
     });
-    return;
   }
 
   completeInfo(assertion_paths, triplestore) {
@@ -125,50 +140,23 @@ export default class DerefInfoCollector {
     console.log(query);
     const queryobject = $rdf.SPARQLToQuery(query, false, triplestore);
     const results = triplestore.query(queryobject);
-    console.log(results);
-    if (results.length > 0) {
-      return true;
-    }
-    return false;
-  }
 
-  async getTypes(url, triplestore) {
-    return new Promise((resolve, reject) => {
-      console.log("getting types with url: ", url);
-      try {
-        const types = [];
-        if (types.length == 0) {
-          const query = `
-						SELECT ?type WHERE {
-								<${url}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type .
-						}
-						.
-					`;
-          console.log(query);
-          const queryobject = $rdf.SPARQLToQuery(query, false, triplestore);
-          triplestore.query(queryobject, null, null, (results, error) => {
-            if (error) {
-              console.log("Error querying the triplestore:", error);
-              resolve([]);
-              return;
-            }
-            if (!results) {
-              console.log("No results from the query");
-              resolve([]);
-              return;
-            }
-            console.log(results);
-            for (const result of results.bindings) {
-              types.push(result["?type"].value);
-            }
-            resolve(types);
-          });
+    triplestore.query(
+      queryobject,
+      (bindings) => {
+        for (let variable in bindings) {
+          console.log(`Variable: ${variable}, Value: ${bindings[variable]}`);
         }
-      } catch (error) {
-        console.log("error");
-        resolve([]);
+        if (results.length > 0) {
+          return true;
+        }
+        return false;
+      },
+      null,
+      () => {
+        console.log("Query complete");
       }
-    });
+    );
   }
 
   getTypesOld(url, triplestore, callback) {
