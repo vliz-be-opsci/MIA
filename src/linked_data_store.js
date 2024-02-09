@@ -122,17 +122,6 @@ async function getData(uri, formats) {
   throw new Error("No acceptable format found");
 }
 
-export async function addDataToStore(store, data) {
-  data.forEach((triple) => {
-    store.add(
-      store.sym(triple.subject),
-      store.sym(triple.predicate),
-      store.literal(triple.object)
-    );
-  });
-  return store;
-}
-
 export function storeSize(store) {
   return store.length;
 }

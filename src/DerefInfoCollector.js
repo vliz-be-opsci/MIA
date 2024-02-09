@@ -1,8 +1,4 @@
-import {
-  addDataToStore,
-  createEmptyStore,
-  getLinkedDataNQuads,
-} from "./linked_data_store.js";
+import { getLinkedDataNQuads } from "./linked_data_store.js";
 
 export default class DerefInfoCollector {
   constructor(config) {
@@ -60,10 +56,8 @@ export default class DerefInfoCollector {
             if (config !== null) {
               console.log(config);
               this.completeInfo(
-                this.replacePrefixesAssertionPaths(
-                  config.ASSERTION_PATHS,
-                  config.PREFIXES
-                ),
+                config.ASSERTION_PATHS,
+                config.PREFIXES,
                 triplestore
               );
             }
@@ -77,55 +71,100 @@ export default class DerefInfoCollector {
     });
   }
 
-  completeInfo(assertion_paths, triplestore) {
+  completeInfo(array_assertion_paths, prefixes, triplestore) {
     //check if all the paths are present in the triplestore
-    for (const assertion_path of assertion_paths) {
-      if (!this.assertPathsConfig(assertion_path, triplestore)) {
+    for (const assertion_path of array_assertion_paths) {
+      if (
+        !this.assertPathsConfig(
+          this.replacePrefixesAssertionPath(assertion_path, prefixes),
+          triplestore
+        )
+      ) {
         //fetch the missing info
         console.log("fetching missing info");
+        console.log(assertion_path);
+        let REGEXP = /<[^>]+>|[^/]+/g;
+        let parts_assertion_path = assertion_path.match(REGEXP);
+        let uris = [];
+        let prefixed_parts_path = [];
+        for (const part of parts_assertion_path) {
+          let len_prefixed_parts_path = prefixed_parts_path.length;
+          let new_len = len_prefixed_parts_path;
+          for (const prefix of prefixes) {
+            if (len_prefixed_parts_path != new_len) {
+              break;
+            }
+            if (part.startsWith(prefix.prefix)) {
+              //replace prefix: with <prefix.uri> , don't forget to add the : at the end of the prefix
+              let new_part = part.replace(
+                prefix.prefix + ":",
+                "<" + prefix.uri
+              );
+              new_part = new_part + ">"; // add the closing bracket
+              prefixed_parts_path.push(new_part);
+              new_len = len_prefixed_parts_path + 1;
+              //next in forloop
+              break;
+            }
+          }
+          //check if there was a part added, if not add the part as is
+          if (len_prefixed_parts_path == new_len) {
+            prefixed_parts_path.push(part);
+          }
+        }
+
+        for (const part of prefixed_parts_path) {
+          //trim the part of < and > and add it to the uris array
+          uris.push(part.substring(1, part.length - 1));
+        }
+
+        for (const uri of uris) {
+          console.log(uri);
+          getLinkedDataNQuads(uri).then((toaddtriplestore) => {
+            console.log(toaddtriplestore);
+            triplestore.addAll(toaddtriplestore);
+            console.log(triplestore);
+          });
+        }
       }
     }
   }
 
-  replacePrefixesAssertionPaths(assertion_paths, prefixes) {
+  replacePrefixesAssertionPath(assertion_path, prefixes) {
     //replace the prefixes in the assertion paths
-    let new_assertion_paths = [];
-    for (const assertion_path of assertion_paths) {
-      // eg: replace "schema:" with "http://schema.org/" => schema:Person => <http://schema.org/Person>
-      // eg: "mr:geoObjects/mr:GeoObject" => "<http://mrgeo.com/geoObjects>/<http://mrgeo.com/geoObjects/GeoObject>
-      // prefixes [{prefix: "schema", uri: "http://schema.org/"}]
-      // perform regex expression to determine the parts that need to be replaced
-      // <http://www.w3.org/ns/dcat#centroid>/gsp:asWKT => ["<http://www.w3.org/ns/dcat#centroid>", "gsp:asWKT"]
-      // mr:hasGeometry/gsp:asWKT => ["mr:hasGeometry", "gsp:asWKT"]
-      let REGEXP = /<[^>]+>|[^/]+/g;
-      let parts_assertion_path = assertion_path.match(REGEXP);
-      console.log(parts_assertion_path);
-      let prefixed_parts_path = [];
-      for (const part of parts_assertion_path) {
-        let len_prefixed_parts_path = prefixed_parts_path.length;
-        let new_len = len_prefixed_parts_path;
-        for (const prefix of prefixes) {
-          if (len_prefixed_parts_path != new_len) {
-            break;
-          }
-          if (part.startsWith(prefix.prefix)) {
-            //replace prefix: with <prefix.uri> , don't forget to add the : at the end of the prefix
-            let new_part = part.replace(prefix.prefix + ":", "<" + prefix.uri);
-            new_part = new_part + ">"; // add the closing bracket
-            prefixed_parts_path.push(new_part);
-            new_len = len_prefixed_parts_path + 1;
-            //next in forloop
-            break;
-          }
+    // eg: replace "schema:" with "http://schema.org/" => schema:Person => <http://schema.org/Person>
+    // eg: "mr:geoObjects/mr:GeoObject" => "<http://mrgeo.com/geoObjects>/<http://mrgeo.com/geoObjects/GeoObject>
+    // prefixes [{prefix: "schema", uri: "http://schema.org/"}]
+    // perform regex expression to determine the parts that need to be replaced
+    // <http://www.w3.org/ns/dcat#centroid>/gsp:asWKT => ["<http://www.w3.org/ns/dcat#centroid>", "gsp:asWKT"]
+    // mr:hasGeometry/gsp:asWKT => ["mr:hasGeometry", "gsp:asWKT"]
+    let REGEXP = /<[^>]+>|[^/]+/g;
+    let parts_assertion_path = assertion_path.match(REGEXP);
+    console.log(parts_assertion_path);
+    let prefixed_parts_path = [];
+    for (const part of parts_assertion_path) {
+      let len_prefixed_parts_path = prefixed_parts_path.length;
+      let new_len = len_prefixed_parts_path;
+      for (const prefix of prefixes) {
+        if (len_prefixed_parts_path != new_len) {
+          break;
         }
-        //check if there was a part added, if not add the part as is
-        if (len_prefixed_parts_path == new_len) {
-          prefixed_parts_path.push(part);
+        if (part.startsWith(prefix.prefix)) {
+          //replace prefix: with <prefix.uri> , don't forget to add the : at the end of the prefix
+          let new_part = part.replace(prefix.prefix + ":", "<" + prefix.uri);
+          new_part = new_part + ">"; // add the closing bracket
+          prefixed_parts_path.push(new_part);
+          new_len = len_prefixed_parts_path + 1;
+          //next in forloop
+          break;
         }
       }
-      new_assertion_paths.push(prefixed_parts_path.join("/"));
+      //check if there was a part added, if not add the part as is
+      if (len_prefixed_parts_path == new_len) {
+        prefixed_parts_path.push(part);
+      }
     }
-    return new_assertion_paths;
+    return prefixed_parts_path.join("/");
   }
 
   assertPathsConfig(assertion_path, triplestore) {
