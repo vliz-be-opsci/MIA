@@ -58,7 +58,8 @@ export default class DerefInfoCollector {
               this.completeInfo(
                 config.ASSERTION_PATHS,
                 config.PREFIXES,
-                triplestore
+                triplestore,
+                url
               );
             }
           },
@@ -71,7 +72,7 @@ export default class DerefInfoCollector {
     });
   }
 
-  completeInfo(array_assertion_paths, prefixes, triplestore) {
+  completeInfo(array_assertion_paths, prefixes, triplestore, ogurl) {
     //check if all the paths are present in the triplestore
     for (const assertion_path of array_assertion_paths) {
       if (
@@ -120,11 +121,15 @@ export default class DerefInfoCollector {
 
         for (const uri of uris) {
           console.log(uri);
+          let objects = getObjects(triplestore, uri, ogurl);
+          console.log(objects);
+          /*
           getLinkedDataNQuads(uri).then((toaddtriplestore) => {
             console.log(toaddtriplestore);
             triplestore.addAll(toaddtriplestore);
             console.log(triplestore);
           });
+          */
         }
       }
     }
@@ -208,4 +213,30 @@ export default class DerefInfoCollector {
     }
     return null;
   }
+}
+
+function getObjects(triplestore, predicate, subject) {
+  let query = `
+    SELECT ?o WHERE {
+      <${subject}> <${predicate}> ?o .
+    }
+  `;
+  console.log(query);
+  const queryobject = $rdf.SPARQLToQuery(query, false, triplestore);
+  triplestore.query(
+    queryobject,
+    (bindings) => {
+      let objects = [];
+      for (let variable in bindings) {
+        console.log(`Variable: ${variable}, Value: ${bindings[variable]}`);
+        objects.push(bindings[variable].value);
+      }
+      console.log(objects);
+    },
+    null,
+    () => {
+      console.log("Query complete");
+      return objects;
+    }
+  );
 }
