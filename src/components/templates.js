@@ -22,4 +22,23 @@ let textSectionTemplate = `
 </template>
 `;
 
-export {popupTemplate, textSectionTemplate};
+let basicTemplate = `
+<template id="basic-template">
+    <div class="popup-content">
+        <h4 class="popup-content-title" id="title">
+        </h4>
+        <div class="popup-content-affordances" id="affordances"></div>
+        <div class="popup-content-text" id="description"></div>
+        <div class="popup-content-image" id="image"></div>
+        <div class="popup-content-other" id="other"></div>
+    </div>
+</template>
+`;
+
+let templateIDmap = {
+    'popup-template': popupTemplate,
+    'text-section-template': textSectionTemplate,
+    'basic-template': basicTemplate
+};
+
+export {popupTemplate, textSectionTemplate, templateIDmap, basicTemplate};

@@ -1,43 +1,19 @@
-//this util file will contain all the functions that will be used to extract information from the linked data
+// this file contains different functions that extract info out of a given store
 
-//function to get rdf:type of a given entity from the linked data
-//the function will return an array of rdf:type values
-function getRdfTypeArray(mia_entity) {
+function getRdfTypeArray(affordance) {
     //create an array to hold the rdf:type values
     let rdf_types = [];
-    let graph = mia_entity.n3parsed_response;
-    //console.log(mia_entity.store);
-    //console.log(mia_entity.uri);
+    let graph = affordance.n3parsed_response;
+    //logger.log(affordance.store);
+    //logger.log(affordance.uri);
 
     //use the n3 store to retrieve the triples that have predicate rdf:type and subject the uri of the entity
-    let triples = mia_entity.store.getQuads(mia_entity.uri, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', null, null);
+    let triples = affordance.store.getQuads(affordance.uri, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', null, null);
 
-    //also do une where the mia_entity.uri is http instead of https
-    let http_uri = mia_entity.uri.replace('https', 'http');
-    triples = triples.concat(mia_entity.store.getQuads(http_uri, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', null, null));
+    //also do une where the affordance.uri is http instead of https
+    let http_uri = affordance.uri.replace('https', 'http');
+    triples = triples.concat(affordance.store.getQuads(http_uri, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', null, null));
     return triples;
-}
-
-function getBaseUris(mia_entity) {
-    // returns an array of base uris that are used to describe the triples (e.g. http://marineregions.org/ns/ontology#) 
-    // the ones extracted will be _predicate and _object
-    const baseUris = [];
-    const triples = mia_entity.store.getQuads(mia_entity.uri, null, null, null);
-    //base uri can be found by getting evrything before the last # or /
-    for (let i = 0; i < triples.length; i++) {
-        const triple = triples[i];
-        const predicate = triple.predicate.value;
-        const object = triple.object.value;
-        const predicate_base_uri = predicate.substring(0, predicate.lastIndexOf('/') + 1);
-        const object_base_uri = object.substring(0, object.lastIndexOf('/') + 1);
-        if (!baseUris.includes(predicate_base_uri)) {
-            baseUris.push(predicate_base_uri);
-        }
-        if (!baseUris.includes(object_base_uri)) {
-            baseUris.push(object_base_uri);
-        }
-    }
-    return baseUris;
 }
 
 function getDataViaConfig(uri, config, store, lang) {
@@ -60,18 +36,19 @@ function getDataViaConfig(uri, config, store, lang) {
 
             // Flag to indicate if quads were found
             let quadsFound = false;
-
             for (const vocab of vocabularies) {
                 for (const uri of uris) {
+                    //logger.log( uri + " | " + vocab);
                     let quads;
                     quads = store.getQuads(uri, vocab, null, null);
                     if (quads.length > 0) {
 
                         // perform a filter on the langue of the object
-                        console.log(`${vocab} | ${lang} | ${quads.length}`);
-                        console.log(quads);
-                        quads = quads.filter(quad => quad._object.language == lang);
-                        console.log(quads);
+                        logger.log(`${vocab} | ${lang} | ${quads.length}`);
+                        logger.log(quads);
+                        //if lang is not null filter on lang
+                        if (lang != null){quads = quads.filter(quad => quad._object.language == lang);}
+                        logger.log(quads);
                         // if no quads were found with the given language, then take the first one
                         if (quads.length == 0) {
                             quads = store.getQuads(uri, vocab, null, null);
@@ -93,15 +70,15 @@ function getDataViaConfig(uri, config, store, lang) {
     return content;
 }
 
-function getDefaultInfo(mia_entity) {
-    console.log('getDefaultInfo started');
-    let store = mia_entity.store; 
-
+function getDefaultInfo(affordance) {
+    logger.log('getDefaultInfo started');
+    let store = affordance.store; 
 
     const content_vocabularies = {
         "title":[
             'https://schema.org/name',
             'http://purl.org/dc/elements/1.1/title',
+            'http://xmlns.com/foaf/0.1/name',
             'http://purl.org/dc/terms/#title',
             'http://www.w3.org/2000/01/rdf-schema#label',
             'http://www.w3.org/2004/02/skos/core#prefLabel',
@@ -114,6 +91,7 @@ function getDefaultInfo(mia_entity) {
         "description": [
             'http://purl.org/dc/elements/1.1/description',
             'https://schema.org/description',
+            'http://purl.org/dc/elements/1.1/description',
             'http://www.w3.org/2000/01/rdf-schema#comment',
             'http://www.w3.org/2004/02/skos/core#definition',
             'http://www.w3.org/2004/02/skos/core#scopeNote',
@@ -127,12 +105,13 @@ function getDefaultInfo(mia_entity) {
         ],
         "image": [
             'https://schema.org/image',
-            'http://xmlns.com/foaf/0.1/img'
+            'http://xmlns.com/foaf/0.1/img',
+            'http://xmlns.com/foaf/0.1/logo'
         ]
     }
 
-    let content = getDataViaConfig(mia_entity.uri,content_vocabularies, store, mia_entity.lang);
-
+    let content = getDataViaConfig(affordance.uri,content_vocabularies, store, affordance.lang);
+    logger.info(content);
     //perform a second function that will map the properties that were collected to 4 components of the popup template
     //the components are title, affordances ,description, image/map (affordances will be added later)
     let template_config = {
@@ -143,27 +122,29 @@ function getDefaultInfo(mia_entity) {
         "affordances": ""
     }
 
+    logger.info(template_config);
+
     return template_config;
 }
 
-function getBoundryInfo(mia_entity, geom_uri) {
+function getBoundryInfo(affordance, geom_uri) {
     let tosearch = {
         "geometry": [
             "http://www.opengis.net/ont/geosparql#asWKT"
         ]
     }
 
-    let store = mia_entity.store;
+    let store = affordance.store;
 
-    let content = getDataViaConfig(geom_uri,tosearch, store, mia_entity.lang);
-    //console.log(content);
+    let content = getDataViaConfig(geom_uri,tosearch, store, affordance.lang);
+    //logger.log(content);
     return content;
 }
 
-function getPersonInfo(mia_entity) {
-    console.log('getPersonInfo started');
-    //load in store of the mia_entity
-    let store = mia_entity.store;
+function getPersonInfo(affordance) {
+    logger.log('getPersonInfo started');
+    //load in store of the affordance
+    let store = affordance.store;
     //get the person info from the linked data
     //perform a switch case using the most common vocabularies to find the name of the person
     const dict_info = {
@@ -205,8 +186,8 @@ function getPersonInfo(mia_entity) {
         ]
     }
 
-    let content = getDataViaConfig(mia_entity.uri,dict_info, store, mia_entity.lang);
-    console.log(content);
+    let content = getDataViaConfig(affordance.uri,dict_info, store, affordance.lang);
+    logger.log(content);
 
     //perform a second function that will map the properties that were collected to 4 components of the popup template
     //the components are title, affordances ,description, image/map (affordances will be added later)
@@ -220,9 +201,9 @@ function getPersonInfo(mia_entity) {
     return template_config;
 }
 
-function getMapInfo(mia_entity) {
-    console.log('getMapInfo started');
-    let store = mia_entity.store; 
+function getMapInfo(affordance) {
+    logger.log('getMapInfo started');
+    let store = affordance.store; 
     const content_vocabularies = {
         "title":[
             'http://purl.org/dc/elements/1.1/title',
@@ -253,49 +234,49 @@ function getMapInfo(mia_entity) {
         ]
     }
 
-    let content = getDataViaConfig(mia_entity.uri,content_vocabularies, store, mia_entity.lang);
-    console.log(content);
+    let content = getDataViaConfig(affordance.uri,content_vocabularies, store, affordance.lang);
+    logger.log(content);
 
     //perform a second function that will map the properties that were collected to 4 components of the popup template
     //the components are title, affordances ,description, image/map (affordances will be added later)
     let template_config = {
         "title": content.title[0],
         "description": content.description[0],
-        "map": content.geom[0],
+        "other": `<div url="${content.geom[0]}" class="toload"><img src="https://raw.githubusercontent.com/vliz-be-opsci/MIA/main/src/css/logo_mi.svg" class="loader" alt="MIA logo"></div>`,
         "affordances": ""
     }
 
     return template_config;
 }
 
-function getInfoPopup(mia_entity){
+function getInfoPopup(affordance){
 
-    //get language of the broweer or by checking the closest dom element with lang attribute to the mia_entity
-    //get dom entity of the mia_entity
-    mia_entity.lang = getLang(mia_entity);
+    //get language of the broweer or by checking the closest dom element with lang attribute to the affordance
+    //get dom entity of the affordance
+    affordance.lang = getLang(affordance);
     //strategy pattern here to decide which function to call based on the rdf:type
     //get the rdf:type
-    let rdf_types = mia_entity.rdf_types;
-    //console.log(rdf_types);
+    let rdf_types = getRdfTypeArray(affordance);
+    //logger.log(rdf_types);
     //loop through the rdf_types and put the _object in a new array
     let rdf_types_array = [];
     rdf_types.forEach((rdf_type) => {
         rdf_types_array.push(rdf_type._object.id);
     });
-    //console.log(rdf_types_array);
+    //logger.log(rdf_types_array);
     //check if http://marineregions.org/ns/ontology#MRGeoObject in the array
     //if true => call getMapInfo otherwise call getDefaultInfo
     if (rdf_types_array.includes("http://marineregions.org/ns/ontology#MRGeoObject")) {
-        return getMapInfo(mia_entity);
+        return getMapInfo(affordance);
     } else if (rdf_types_array.includes("https://schema.org/Person")) {
-        return getPersonInfo(mia_entity);
+        return getPersonInfo(affordance);
     } else {
-        return getDefaultInfo(mia_entity);
+        return getDefaultInfo(affordance);
     }
 }
 
-function getLang(mia_entity) {
-    let dom_entity = mia_entity.span;
+function getLang(affordance) {
+    let dom_entity = affordance.span;
     //iterate over all the parents and stop when the lang attribute is found
     let lang = null;
     let parent = dom_entity;
@@ -307,12 +288,13 @@ function getLang(mia_entity) {
     if (lang == null) {
         lang = document.querySelector('html').getAttribute('lang');
     }
+    /*
     //if lang is still null then get the language of the browser
     if (lang == null) {
         lang = navigator.language;
     }
+    */
     return lang;
 }
-
 
 export {getRdfTypeArray, getInfoPopup, getBoundryInfo};
