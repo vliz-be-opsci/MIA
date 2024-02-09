@@ -13,16 +13,20 @@
             {
                 "prefix": "dcterms",
                 "uri": "http://purl.org/dc/terms/"
+            },
+            {
+                "prefix": "gsp",
+                "uri": "http://www.opengis.net/ont/geosparql#"
             }
         ],
         "ASSERTION_PATHS": [
-            "mr:hasGeometry",
-            "<http://www.w3.org/ns/dcat#centroid>"
+            "mr:hasGeometry/gsp:asWKT",
+            "<http://www.w3.org/ns/dcat#centroid>/gsp:asWKT"
         ],
         "TEMPLATE": "map",
         "MAPPING": {
-            "mapwkt": "dcterms:isVersionOf/mr:hasGeometry/gsp:asWKT",
-            "centroid": "dcterms:isVersionOf/<http://www.w3.org/ns/dcat#centroid/gsp:asWKT>"
+            "mapwkt": "mr:hasGeometry/gsp:asWKT",
+            "centroid": "<http://www.w3.org/ns/dcat#centroid>/gsp:asWKT"
         }
     }
 ]
