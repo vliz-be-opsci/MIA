@@ -1,6 +1,9 @@
 //this file will be the interface between the linked data store and the mia entity
 // this for possible future port to rdflib instead of n3
 
+import N3 from 'n3'
+import * as $rdf from 'rdflib';
+
 export function createEmptyStore() {
   var storerdf = $rdf.graph();
   console.log("store", storerdf); //rdflib works
@@ -53,7 +56,7 @@ export async function getLinkedDataNQuads(uri) {
         break;
       case "text/html":
         //search for fair signposting links in the head
-        parser = new DOMParser();
+        const parser = new DOMParser();
         const doc = parser.parseFromString(text, "text/html");
         //get all head links with rel describedby
         const links = doc.querySelectorAll('head link[rel="describedby"]');
@@ -63,6 +66,9 @@ export async function getLinkedDataNQuads(uri) {
           // if the format is not supported then throw an error
           for (const link of links) {
             let href = link.getAttribute("href");
+            if (href === null) {
+              continue;
+            }
             const type = link.getAttribute("type");
             //if href doesn't include http in the beginning then prepend the uri
             if (!href.includes("http")) {
@@ -71,7 +77,7 @@ export async function getLinkedDataNQuads(uri) {
             //fetch the href with the correct accept header
             const response = await fetch(href, {
               headers: {
-                Accept: type,
+                'Accept': type || "text/turtle",
               },
             });
 
@@ -112,7 +118,7 @@ async function getData(uri, formats) {
       const response = await fetch(uri, { headers: { Accept: format } });
       const contentType = response.headers.get("Content-Type");
 
-      if (response.ok && contentType.includes(format)) {
+      if (response.ok && contentType?.includes(format)) {
         return { format, response };
       }
     } catch (error) {

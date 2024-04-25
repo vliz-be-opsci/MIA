@@ -1,8 +1,8 @@
 //this file will contain the entity class which keeps all info about the affordance and some actions that manipulate the affordance
-import { addMiaIcon, addLoader, deleteLoader, addInfoIcon, addFailed } from "./node_modifications.js";
-import { createEmptyStore, storeSize , getLinkedDataNQuads, addDataToStore} from "./linked_data_store.js";
-import { getBoundryInfo, getInfoPopup } from "./info_extraction.js";
-import Popup from "./popup.js";
+import { addMiaIcon, addLoader, deleteLoader, addInfoIcon, addFailed } from "./node_modifications"
+import { createEmptyStore, storeSize , getLinkedDataNQuads, addDataToStore} from "./linked_data_store"
+import { getBoundryInfo, getInfoPopup } from "./info_extraction";
+import Popup from "./popup";
 
 export default class AffordanceEntity {
     constructor(affordance) {
