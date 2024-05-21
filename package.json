@@ -26,7 +26,8 @@
     "@terraformer/wkt": "^2.2.0",
     "leaflet": "^1.9.4",
     "n3": "^1.17.3",
-    "rdflib": "^2.2.32"
+    "rdflib": "^2.2.32",
+    "url": "^0.11.3"
   },
   "devDependencies": {
     "@types/leaflet": "^1.9.12",

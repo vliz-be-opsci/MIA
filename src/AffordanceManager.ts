@@ -1,10 +1,57 @@
-import AffordanceEntity from './AffordanceEntity.js';
-import CollectingScheduler from './CollectingScheduler.js';
-import DerefInfoCollector from "./DerefInfoCollector.js";
+import AffordanceEntity from './AffordanceEntity';
+import CollectingScheduler from './CollectingScheduler';
+import DerefInfoCollector from "./DerefInfoCollector";
+
+export interface DerefConfig {
+    //shape derefconfig
+    /*
+    [
+    {
+        "RDF_TYPE": "http://marineregions.org/ns/ontology#MRGeoObject",
+        "PREFIXES": [
+            {
+                "prefix": "mr",
+                "uri": "http://marineregions.org/ns/ontology#"
+            },
+            {
+                "prefix": "skos",
+                "uri": "http://www.w3.org/2004/02/skos/core#"
+            },
+            {
+                "prefix": "dcterms",
+                "uri": "http://purl.org/dc/terms/"
+            },
+            {
+                "prefix": "gsp",
+                "uri": "http://www.opengis.net/ont/geosparql#"
+            }
+        ],
+        "ASSERTION_PATHS": [
+            "mr:hasGeometry/gsp:asWKT",
+            "<http://www.w3.org/ns/dcat#centroid>/gsp:asWKT"
+        ],
+        "TEMPLATE": "map",
+        "MAPPING": {
+            "mapwkt": "mr:hasGeometry/gsp:asWKT",
+            "centroid": "<http://www.w3.org/ns/dcat#centroid>/gsp:asWKT"
+        }
+    }
+]
+*/
+    RDF_TYPE: string;
+    PREFIXES: { prefix: string, uri: string }[];
+    ASSERTION_PATHS: string[];
+    TEMPLATE: string;
+    MAPPING: { [key: string]: string };
+}
 
 
 export default class AffordanceManager {
-    constructor(derefconfig) {
+    private affordances: AffordanceEntity[];
+    private collectingScheduler: CollectingScheduler;
+    derefInfoCollector: DerefInfoCollector;
+    private documentWatcher: DocumentWatcher;
+    constructor(derefconfig: DerefConfig) {
         console.log('Affordance Manager initialised');
         this.affordances = [];
         this.collectingScheduler = new CollectingScheduler();
@@ -14,7 +61,7 @@ export default class AffordanceManager {
         
     }
 
-    initAffordances(derefinfocollector) {
+    initAffordances(derefinfocollector: DerefInfoCollector) {
         const links = document.querySelectorAll('a');
         links.forEach((link) => {
             if (link.href !== '') {
@@ -25,7 +72,7 @@ export default class AffordanceManager {
         console.log('Ammount of affordances: ' + this.affordances.length);
     }
 
-    addAffordance(affordance, derefinfocollector) {
+    addAffordance(affordance: any, derefinfocollector: DerefInfoCollector) {
         //log the type of node and the inner html of the node
         //console.log(affordance.parentNode.nodeName + ' ' + affordance.parentNode.innerHTML);
         let new_ae = new AffordanceEntity(affordance, derefinfocollector);
@@ -33,7 +80,7 @@ export default class AffordanceManager {
         this.collectingScheduler.queueAffordance(new_ae);
     }
 
-    removeAffordance(affordance) {
+    removeAffordance(affordance: AffordanceEntity) {
         const index = this.affordances.indexOf(affordance);
         if (index > -1) {
             this.affordances.splice(index, 1);
@@ -41,15 +88,11 @@ export default class AffordanceManager {
         }
     }
 
-
-    getAffordanceByNode(node) {
-        return this.affordances.find((affordance) => {
-            return affordance.node === node;
-        });
-    }
 }
 
 class DocumentWatcher {
+    private affordanceManager: AffordanceManager;
+    private observer: MutationObserver;
     constructor(affordanceManager) {
         this.affordanceManager = affordanceManager;
         this.observe();
@@ -78,7 +121,7 @@ class DocumentWatcher {
         links.forEach((link) => {
             if (link.href !== '') {
                 console.log('link added: ' + link.href);
-                this.affordanceManager.addAffordance(link);
+                this.affordanceManager.addAffordance(link, this.affordanceManager.derefInfoCollector);
                 
             }
         });

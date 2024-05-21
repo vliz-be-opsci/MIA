@@ -1,11 +1,20 @@
-import Affordances from "./src/affordances.js";
-// import Logger from "./src/utils/logger.js";
-import { basicTemplate } from "./src/components/templates.js";
+//file that will initialise the marine info affordances
+import AffordanceManager from "./src/AffordanceManager";
+import fetchderefconfig from "./src/DerefAndMappingConfig";
 
-// const logger = new Logger('debug');
-// logger.log('index.js started');
+// on document ready init the Affordance Manager
+document.addEventListener("DOMContentLoaded", function () {
+    //extract the path of the deref config file if it exists by looking at the script tag of the mia.js file in the html and looking for the deref-config attribute
+    const script_tag = document.getElementById("mia_script");
+    if (script_tag === null) {
+        console.error('mia_script DOM element not found')
+        return;
+    }
+    const deref_config_path = script_tag.getAttribute("deref-config");
 
-export const PROXYURL = '';
-
-document.body.innerHTML += basicTemplate;
-const affordances = new Affordances();
+    //fetch the deref config file then initialise the Affordance Manager
+    fetchderefconfig(deref_config_path).then((derefconfig) => {
+        console.log(derefconfig);
+        new AffordanceManager(derefconfig);
+    });
+});

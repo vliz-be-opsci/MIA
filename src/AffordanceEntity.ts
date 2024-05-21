@@ -1,7 +1,13 @@
 //contains the code for the entity of the affordance
-import Entity from './Entity.js';
+import Entity from './Entity';
+import DerefInfoCollector from './DerefInfoCollector';
 
 export default class AffordanceEntity {
+    private element: any;
+    private link: string;
+    private collected_info: Entity;
+    private derefinfocollector: DerefInfoCollector;
+
     constructor(affordance, derefinfocollector) {
         console.log('Affordance Entity initialised');
         this.element = affordance;

@@ -2,6 +2,7 @@
 const DELAYMS = 666;
 
 export default class CollectingScheduler {
+    schedule: any[];
     constructor(){
         console.log('Collecting Scheduler initialised');
         this.schedule = [];

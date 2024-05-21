@@ -1,6 +1,7 @@
 
 
 export default class Entity {
+    content: any;
     constructor() {
         console.log('Entity initialised');
         this.content = {};
