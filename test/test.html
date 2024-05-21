@@ -1,34 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Web Widget</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <link rel="stylesheet" href="../src/css/mia.css">  <!-- dev src should be ../src/css/mia.css => live version is currently located at https://open-science.vliz.be/MIA/src/css/mia.css -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="../src/css/mia.css">
+    <!-- dev src should be ../src/css/mia.css => live version is currently located at https://open-science.vliz.be/MIA/src/css/mia.css -->
     <link rel="describedby" href="http://localhost/test.html">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/terraformer/1.0.8/terraformer.min.js"></script>
     <script src="https://unpkg.com/@terraformer/wkt"></script>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
+
 <body>
     <p>This is a test page to see if stuff works as it should work</p>
     <p><a href="http://dev.marineinfo.org/id/person/37869">Mystery person</a></p>
     <p>I've been here => <a href="https://marineregions.org/mrgid/8361">Canari islands</a></p>
-    <p> much text to see whether or not the popup will be on the bottom or top left <a href="https://marineregions.org/mrgid/3293">Belgian EEZ</a></p>
+    <p> much text to see whether or not the popup will be on the bottom or top left <a
+            href="https://marineregions.org/mrgid/3293">Belgian EEZ</a></p>
     <p lang="nl"><a href="http://dev.marineinfo.org/id/institute/36">institute</a></p>
     <div lang="fr">
-    <p><a href="http://dev.marineinfo.org/id/institute/5436">other institute</a></p>
-    <p><a href="http://dev.marineinfo.org/id/project/2078">project</a></p>
-    <p><a href="http://dev.marineinfo.org/id/dataset/6430">dataset</a></p>
-    <p><a href="http://dev.marineinfo.org/id/publication/205458">publication</a></p>
+        <p><a href="http://dev.marineinfo.org/id/institute/5436">other institute</a></p>
+        <p><a href="http://dev.marineinfo.org/id/project/2078">project</a></p>
+        <p><a href="http://dev.marineinfo.org/id/dataset/6430">dataset</a></p>
+        <p><a href="http://dev.marineinfo.org/id/publication/205458">publication</a></p>
     </div>
     <p><a href="http://dev.marineinfo.org/id/event/3255">event</a></p>
     <p><a href="https://google.com">not a MIA here</a></p>
-    <p><a href="https://data.arms-mbon.org/">ARMS</a>. This URI will not return anything because of the way the URL's are given in the triples. TODO => figure out how to deal with CNAME's and how to apply this into pysubyt to make the ttl files.</p>
-    <p> much text to see whether or not the popup will be on the bottom or top left <a href="https://marineregions.org/mrgid/3293">Belgian EEZ</a></p>
+    <p><a href="https://data.arms-mbon.org/">ARMS</a>. This URI will not return anything because of the way the URL's
+        are given in the triples. TODO => figure out how to deal with CNAME's and how to apply this into pysubyt to make
+        the ttl files.</p>
+    <p> much text to see whether or not the popup will be on the bottom or top left <a
+            href="https://marineregions.org/mrgid/3293">Belgian EEZ</a></p>
     <p lang="nl"><a href="https://marineregions.org/mrgid/3293">Belgian EEZ bL</a></p>
 </body>
-<script src="../src/utils/rdflib.min.js" ></script>
+<script src="../src/utils/rdflib.min.js"></script>
 <script src="https://unpkg.com/n3/browser/n3.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jsonld/8.3.1/jsonld.min.js" integrity="sha512-2OPP4fxUM023yo4P052o0ZPY+BqxeiMlSvEX7LJL0GS/IOqTNY3oaFcVtXpGPUqa0g898GRnkmAnzh7Tvuz/sw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="../mia.js" type="module" id="mia_script" deref-config="./deref_config.json" ></script> <!-- dev src should be ../index.js => live version is currently located at https://open-science.vliz.be/MIA/index.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsonld/8.3.1/jsonld.min.js"
+    integrity="sha512-2OPP4fxUM023yo4P052o0ZPY+BqxeiMlSvEX7LJL0GS/IOqTNY3oaFcVtXpGPUqa0g898GRnkmAnzh7Tvuz/sw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="../dist/mia.bundle.js" type="module" id="mia_script" deref-config="./deref_config.json"></script>
+<!-- dev src should be ../index.js => live version is currently located at https://open-science.vliz.be/MIA/index.js -->
+
 </html>
