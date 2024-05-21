@@ -1,5 +1,6 @@
-import { getLinkedDataNQuads } from "./linked_data_store";
+import { createEmptyStore, getLinkedDataNQuads } from "./linked_data_store";
 import { DerefConfig } from "./AffordanceManager";
+import * as $rdf from 'rdflib';
 
 export default class DerefInfoCollector {
   cashedInfo: any;
@@ -18,16 +19,17 @@ export default class DerefInfoCollector {
       console.log("info already collected");
       return this.cashedInfo[url];
     }
-    this.getInfoGraph(url);
+    let emptystore = createEmptyStore();
+    this.getInfoGraph(url, emptystore);
     return {
       url: url,
-      info: "info",
+      info: emptystore,
     };
   }
 
-  getInfoGraph(url) {
+  getInfoGraph(url, store) {
     console.log("getting info graph");
-    getLinkedDataNQuads(url).then((triplestore) => {
+    getLinkedDataNQuads(url, store).then((triplestore: $rdf.Store) => {
       console.log(triplestore);
       let urls = [url];
       if (url.startsWith("https")) {
@@ -37,12 +39,20 @@ export default class DerefInfoCollector {
       }
 
       for (const url of urls) {
-        const query = `
+        const queryString = `
               SELECT ?type WHERE {
                   <${url}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type .
               }
           `;
-        console.log(query);
+        
+          const query = $rdf.SPARQLToQuery(queryString, false, store);
+          if (query instanceof $rdf.Query) {
+            triplestore.query(query, (result) => {
+              console.log(result);
+            });
+          } else {
+            console.error('Failed to parse SPARQL query');
+          }
       }
     });
   }

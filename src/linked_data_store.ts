@@ -1,13 +1,11 @@
 //this file will be the interface between the linked data store and the mia entity
 // this for possible future port to rdflib instead of n3
 
-import N3 from 'n3'
 import * as $rdf from 'rdflib';
 
 export function createEmptyStore() {
   var storerdf = $rdf.graph();
   console.log("store", storerdf); //rdflib works
-  const store = new N3.Store();
   return storerdf;
 }
 
@@ -15,14 +13,13 @@ export async function combineTripleStores(TStore1, TStore2) {
   return TStore1.addAll(TStore2);
 }
 
-export async function getLinkedDataNQuads(uri) {
+export async function getLinkedDataNQuads(uri, store) {
   // flow function
   // 1. check different formats of the uri and fetch the uri with the correct accept header
   // 2. if the uri has a return format then fetch the uri with the correct accept header
   // 3. if it doesn't ttl or jsonld then fetch the html page of the uri and search for fair signposting links in the head
   // 4. if there are fair signposting links then fetch the uri with the correct accept header given in the fair signposting link // check if this catches all the cases
 
-  const store = $rdf.graph();
 
   //all formats to check for // TODO: check to make this a global variable in a config file
 
