@@ -5,11 +5,12 @@ import * as $rdf from 'rdflib';
 export default class DerefInfoCollector {
   cashedInfo: any;
   derefconfig: DerefConfig;
+  triplestore: $rdf.Store;
+  rdf_deref_info: any;
   constructor(config) {
     this.cashedInfo = {};
     this.derefconfig = config;
   }
-
   collectInfo(url) {
     console.log("collecting info");
     console.log(this.cashedInfo);
@@ -20,17 +21,16 @@ export default class DerefInfoCollector {
       return this.cashedInfo[url];
     }
     let emptystore = createEmptyStore();
-    this.getInfoGraph(url, emptystore);
-    return {
-      url: url,
-      info: emptystore,
-    };
+    this.get_rdf_deref_info(url, emptystore);
+    console.log(this.rdf_deref_info);
+    // continue here with dereferencing
   }
 
-  getInfoGraph(url, store) {
+  get_rdf_deref_info(url, store) {
     console.log("getting info graph");
     getLinkedDataNQuads(url, store).then((triplestore: $rdf.Store) => {
       console.log(triplestore);
+      this.triplestore = triplestore;
       let urls = [url];
       if (url.startsWith("https")) {
         urls.push(url.replace("https://", "http://"));
@@ -48,7 +48,15 @@ export default class DerefInfoCollector {
           const query = $rdf.SPARQLToQuery(queryString, false, store);
           if (query instanceof $rdf.Query) {
             triplestore.query(query, (result) => {
-              console.log(result);
+              for(const key in result){
+                const rdf_type = result[key].value;
+                let type_config = get_config_for_rdf_type(rdf_type, this.derefconfig);
+                if (type_config !== null) {
+                  //leave forloop
+                  this.rdf_deref_info = type_config;
+                  return;
+                }
+              }
             });
           } else {
             console.error('Failed to parse SPARQL query');
@@ -56,4 +64,14 @@ export default class DerefInfoCollector {
       }
     });
   }
+}
+
+function get_config_for_rdf_type(rdf_type: string, derefconfig: DerefConfig) {
+  for (const key in derefconfig) {
+    const config = derefconfig[key];
+    if (config.RDF_TYPE === rdf_type) {
+      return config;
+    }
+  }
+  return null;
 }
