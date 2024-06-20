@@ -24,6 +24,7 @@ export default class AffordanceEntity {
             if(Object.keys(this.collected_info.content).length === 0){
                 console.log('no info collected yet');
                 this.collectInfo();
+                this.collected_info.content = this.derefinfocollector.cashedInfo[this.link];
                 this.produce_HTML_loader();
                 return;
             }
@@ -35,11 +36,14 @@ export default class AffordanceEntity {
     async collectInfo() {
         //function to collect info
         console.log('collecting info for ' + this.link);
+        //this one is also needed since there are 2 ways to trigger this
+        // via the hover effect or via the scheduler
         if(Object.keys(this.collected_info.content).length !== 0){
             console.log('info already collected');
             return;
         }
         this.derefinfocollector.collectInfo(this.link);
+        this.collected_info.content = this.derefinfocollector.cashedInfo[this.link];
     };
 
     produce_HTML_view() {

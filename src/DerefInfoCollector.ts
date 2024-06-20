@@ -27,25 +27,9 @@ export default class DerefInfoCollector {
   }
 
   async collect_info(url: any) {
+    let to_cache = {}
     let emptystore = createEmptyStore();
-
     emptystore = await getLinkedDataNQuads(url, emptystore);
-
-    /*
-    let query = `SELECT ?s ?p ?o WHERE {?s ?p ?o}`;
-    let sources:QueryStringContext[] = [url];
-    let result = await comunicaQuery(query, sources);
-    // use result 
-    console.log(result);
-    result.on('data', (binding) => {
-      this.insert_binding_into_graph(binding, emptystore);
-    });
-    result.on('end', () => {
-      console.log('done');
-      console.log(emptystore);
-      this.get_type_uri(url, emptystore);
-    });
-    */
     console.log(emptystore);
     const types = await this.get_type_uri(url);
     console.log(types);
@@ -53,12 +37,13 @@ export default class DerefInfoCollector {
     console.log(config_type_info);
     const ppaths = this.ppath_for_type(config_type_info);
     for( const ppath in ppaths) {
-      await test(ppaths[ppath], url);
-      /*
-      const result = await traverseUri(url, [url], ppaths[ppath]);
-      console.log(result);
-      */
+      const mapping_key = Object.keys(config_type_info.MAPPING)[ppath]
+      console.log(mapping_key);
+      const value_path = await test(ppaths[ppath], url, emptystore);
+      console.log(value_path);
+      to_cache[mapping_key] = value_path;
     }
+    this.cashedInfo[url] = to_cache;
   }
 
   insert_binding_into_graph(binding: any, store: $rdf.Store) {
