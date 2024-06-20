@@ -1,5 +1,6 @@
-import { createEmptyStore, getLinkedDataNQuads } from "./linked_data_store";
+import { createEmptyStore, getLinkedDataNQuads, traverseUri ,comunicaQuery, test } from "./linked_data_store";
 import { DerefConfig } from "./AffordanceManager";
+import { QueryStringContext, QuerySourceUnidentified } from '@comunica/types';
 import * as $rdf from 'rdflib';
 
 export default class DerefInfoCollector {
@@ -11,7 +12,8 @@ export default class DerefInfoCollector {
     this.cashedInfo = {};
     this.derefconfig = config;
   }
-  collectInfo(url) {
+
+  async collectInfo(url) {
     console.log("collecting info");
     console.log(this.cashedInfo);
     console.log(this.derefconfig);
@@ -20,58 +22,136 @@ export default class DerefInfoCollector {
       console.log("info already collected");
       return this.cashedInfo[url];
     }
-    let emptystore = createEmptyStore();
-    this.get_rdf_deref_info(url, emptystore);
-    console.log(this.rdf_deref_info);
-    // continue here with dereferencing
+    // colect info
+    await this.collect_info(url);
   }
 
-  get_rdf_deref_info(url, store) {
-    console.log("getting info graph");
-    getLinkedDataNQuads(url, store).then((triplestore: $rdf.Store) => {
-      console.log(triplestore);
-      this.triplestore = triplestore;
-      let urls = [url];
-      if (url.startsWith("https")) {
-        urls.push(url.replace("https://", "http://"));
-      } else if (url.startsWith("http")) {
-        urls.push(url.replace("http://", "https://"));
-      }
+  async collect_info(url: any) {
+    let emptystore = createEmptyStore();
 
-      for (const url of urls) {
-        const queryString = `
-              SELECT ?type WHERE {
-                  <${url}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type .
-              }
-          `;
-        
-          const query = $rdf.SPARQLToQuery(queryString, false, store);
-          if (query instanceof $rdf.Query) {
-            triplestore.query(query, (result) => {
-              for(const key in result){
-                const rdf_type = result[key].value;
-                let type_config = get_config_for_rdf_type(rdf_type, this.derefconfig);
-                if (type_config !== null) {
-                  //leave forloop
-                  this.rdf_deref_info = type_config;
-                  return;
-                }
-              }
-            });
-          } else {
-            console.error('Failed to parse SPARQL query');
-          }
-      }
+    emptystore = await getLinkedDataNQuads(url, emptystore);
+
+    /*
+    let query = `SELECT ?s ?p ?o WHERE {?s ?p ?o}`;
+    let sources:QueryStringContext[] = [url];
+    let result = await comunicaQuery(query, sources);
+    // use result 
+    console.log(result);
+    result.on('data', (binding) => {
+      this.insert_binding_into_graph(binding, emptystore);
     });
+    result.on('end', () => {
+      console.log('done');
+      console.log(emptystore);
+      this.get_type_uri(url, emptystore);
+    });
+    */
+    console.log(emptystore);
+    const types = await this.get_type_uri(url);
+    console.log(types);
+    const config_type_info = get_config_for_rdf_type(types, this.derefconfig);
+    console.log(config_type_info);
+    const ppaths = this.ppath_for_type(config_type_info);
+    for( const ppath in ppaths) {
+      await test(ppaths[ppath], url);
+      /*
+      const result = await traverseUri(url, [url], ppaths[ppath]);
+      console.log(result);
+      */
+    }
+  }
+
+  insert_binding_into_graph(binding: any, store: $rdf.Store) {
+    console.log(binding.toString()); // Quick way to print bindings for testing
+  
+    let subject = this.createTerm(binding.get('s'));
+    let predicate = this.createTerm(binding.get('p'));
+    let object = this.createTerm(binding.get('o'));
+  
+    // Create a triple with the subject, predicate, and object
+    let triple = $rdf.triple(subject, predicate, object);
+    store.add(triple);
+  }
+  
+  createTerm(term) {
+    if (term.termType === 'NamedNode') {
+      return $rdf.namedNode(term.value);
+    } else if (term.termType === 'Literal') {
+      return $rdf.literal(term.value, term.language);
+    } else {
+      throw new Error(`Unsupported term type: ${term.termType}`);
+    }
+  }
+
+  async get_type_uri(url:any): Promise<string[]> {
+    let urls = [url];
+    if (url.startsWith("https")) {
+      urls.push(url.replace("https://", "http://"));
+    } else if (url.startsWith("http")) {
+      urls.push(url.replace("http://", "https://"));
+    }
+
+    let types = [];
+
+    for (const url of urls) {
+      const query = `
+            SELECT ?type WHERE {
+                <${url}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type .
+            }
+        `;
+      let result = await comunicaQuery(query, url);
+      const bindings = await result.toArray();
+      bindings.forEach((binding) => {
+        console.log(binding.toString())
+        let type = binding.get('type').value;
+        types.push(type);
+      });
+    }
+    return types; // Add a return statement here
+  }
+
+  ppath_for_type(config: any) {
+    console.log(config)
+    let REGEXP = /\s*\/\s*(?![^<]*>)/;
+    let all_ppaths = [];
+    for (const assertion_path of config.ASSERTION_PATHS) {
+      // split up in parts
+      let parts = assertion_path.split(REGEXP);
+      console.log(parts);
+      let new_parts = []
+      //check if part is uri
+      for (const part of parts) {
+        if (part.startsWith("<") && part.endsWith(">")) {
+          new_parts.push(part);
+          continue;
+        } 
+        //check if there is a match between the value and the prefix uri
+        // do a match replacement
+        for (const prefix in config.PREFIXES) {
+          if (part.startsWith(config.PREFIXES[prefix]["prefix"])) {
+            let new_part = part.replace(config.PREFIXES[prefix]["prefix"]+":", config.PREFIXES[prefix]["uri"]);
+            new_part = "<"+new_part+">";
+            new_parts.push(new_part);
+            break;
+          }
+        }
+      }
+      all_ppaths.push(new_parts);
+    }
+    return all_ppaths;
   }
 }
 
-function get_config_for_rdf_type(rdf_type: string, derefconfig: DerefConfig) {
-  for (const key in derefconfig) {
-    const config = derefconfig[key];
-    if (config.RDF_TYPE === rdf_type) {
-      return config;
+function get_config_for_rdf_type(rdf_type: string[], derefconfig: DerefConfig) {
+  for (const rtype of rdf_type) {
+    console.log(rtype);
+    for (const key in derefconfig) {
+      const config = derefconfig[key];
+      if (config.RDF_TYPE === rtype) {
+        return config;
+      }
     }
   }
   return null;
 }
+

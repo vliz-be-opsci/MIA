@@ -2,6 +2,113 @@
 // this for possible future port to rdflib instead of n3
 
 import * as $rdf from 'rdflib';
+import * as N3 from 'n3';
+import { DataFactory } from 'n3';
+import { Store } from 'n3';
+import { QueryEngine as QueryEngineTraversal } from '@comunica/query-sparql-link-traversal';
+import { QueryEngine } from '@comunica/query-sparql';
+import { QueryStringContext, QuerySourceUnidentified } from '@comunica/types';
+
+const engine = new QueryEngine();
+const linkengine = new QueryEngineTraversal();
+
+export const test_two = async (store: $rdf.Store) => {
+
+};
+
+export const test = async (trajectory_path: any, og_uri:string) => {
+  /*
+  console.log(store);
+  //convert the rdf.store into an N3 store
+  const n3_store = new Store();
+
+  store.statements.forEach(statement => {
+    const quad = DataFactory.quad(
+      DataFactory.namedNode(statement.subject.value),
+      DataFactory.namedNode(statement.predicate.value),
+      statement.object.termType === 'NamedNode' ? DataFactory.namedNode(statement.object.value) : DataFactory.literal(statement.object.value),
+      statement.graph.termType === 'NamedNode' ? DataFactory.namedNode(statement.graph.value) : undefined
+    );
+    n3_store.addQuad(quad);
+  });
+  console.log(n3_store)
+  */
+
+  let urls = [og_uri];
+  if (og_uri.startsWith("https")) {
+    urls.push(og_uri.replace("https://", "http://"));
+  } else if (og_uri.startsWith("http")) {
+    urls.push(og_uri.replace("http://", "https://"));
+  }
+  for (const url of urls) {
+    for( const part in trajectory_path) {
+      console.log(part);
+      //change the current trajectory path to the slice of the path
+      let current_trajectory = trajectory_path.slice(0, part+1).join("/");
+      let query = `SELECT ?value WHERE {<${url}> ${current_trajectory} ?value . }`;
+      console.log(query);
+      const results = await linkengine.queryBindings(
+        query,
+        {
+          sources: [og_uri+".ttl"],
+        }
+      )
+  
+      results.on('data', (binding) => {
+        console.log("value found for query: " + query)
+        console.log(binding.get('value').value);
+      });
+    }
+  }
+}
+
+export const comunicaQuery = async (query:string, og_sources:string): Promise<any> => {
+  return await engine.queryBindings(
+    query,
+    {
+      sources: [og_sources],
+    }
+  )
+
+}
+
+export const traverseUri = async (og_uri:string, og_sources:QueryStringContext[], trajectory_path:any): Promise<any> => {
+
+  let current_trajectory = "";
+  let all_current_sources = og_sources;
+
+  for( const part in trajectory_path) {
+    console.log(part);
+    //change the current trajectory path to the slice of the path
+    current_trajectory = trajectory_path.slice(0, part+1).join("/");
+    let query = `SELECT ?value WHERE {<${og_uri}> ${current_trajectory} ?value . }`;
+    console.log(query);
+    let all_sources: [QuerySourceUnidentified, ...QuerySourceUnidentified[]];
+    const mappedSources = all_current_sources.map(source => {
+      // Convert each source to QuerySourceUnidentified
+      // This is just a placeholder, replace it with actual conversion logic
+      return source as unknown as QuerySourceUnidentified;
+    });
+
+    if (mappedSources.length === 0) {
+      throw new Error("No sources provided");
+    } else {
+      all_sources = mappedSources as [QuerySourceUnidentified, ...QuerySourceUnidentified[]];
+    }
+    const results = await engine.queryBindings(
+      query,
+      {
+        sources: all_sources,
+      }
+    )
+
+    results.on('data', (binding) => {
+      console.log(binding.get('value').value);
+    });
+  }
+  return "done";
+};
+
 
 export function createEmptyStore() {
   var storerdf = $rdf.graph();
