@@ -1,57 +1,71 @@
 //this file will be the interface between the linked data store and the mia entity
 // this for possible future port to rdflib instead of n3
 
-import * as $rdf from 'rdflib';
 import * as N3 from 'n3';
-import { DataFactory } from 'n3';
 import { Store } from 'n3';
-import { QueryEngine as QueryEngineTraversal } from '@comunica/query-sparql-link-traversal';
+import { QueryEngine as QueryEngineTraversal} from '@comunica/query-sparql-link-traversal';
 import { QueryEngine } from '@comunica/query-sparql';
+import { BindingsStream, Bindings } from '@comunica/types';
 import { QueryStringContext, QuerySourceUnidentified } from '@comunica/types';
+
 
 const engine = new QueryEngine();
 const linkengine = new QueryEngineTraversal();
 
-export const test_two = async (store: $rdf.Store) => {
 
-};
-
-export const test = async (trajectory_path: any, og_uri:string, store:N3.Store) => {
+export const traverseURI = async (trajectory_path: any, og_uri:string, store:N3.Store): Promise<string> => {
+  /*
+  const linkengine = await new QueryEngineFactory().create(
+    {configPath: './follow_all.json'}
+  );
+  */
+  let N3store: N3.Store = store;
   let urls = [og_uri];
-  if (og_uri.startsWith("https")) {
+  console.log("trajectory path: ",trajectory_path);
+  if (og_uri.startsWith("https:")) {
     urls.push(og_uri.replace("https://", "http://"));
-  } else if (og_uri.startsWith("http")) {
+  } else if (og_uri.startsWith("http:")) {
     urls.push(og_uri.replace("http://", "https://"));
   }
   for (const url of urls) {
-    for( const part in trajectory_path) {
+    for(let index = 0; index < trajectory_path.length; index++) {
       //console.log(part);
       //console log store length
       //console.log(storeSize(store));
       //change the current trajectory path to the slice of the path
-      let current_trajectory = trajectory_path.slice(0, part+1).join("/");
+      let current_trajectory = trajectory_path.slice(0, index + 1).join("/");
       let query = `SELECT ?value WHERE {<${url}> ${current_trajectory} ?value . }`;
-      //console.log(query);
+      console.log(query);
       const results = await linkengine.queryBindings(
         query,
         {
-          sources: [store],
+          sources: [N3store],
         }
       )
 
       const bindings = await results.toArray();
-      if (bindings.length === 0) {
+      if (bindings.length === 0){
         console.log("no value found for query: " + query);
         //continue to next in forloop
         continue;
       }
+
+      const binding: Bindings = bindings[0];
+
+      if (!binding) {
+        console.log("no value found for query: " + query);
+        //continue to next in forloop
+        continue;
+      }
+
       //take the first value of the array and get the value
       //check if bindings value is uri , if so get the linked data
       //if not then add the whole binding to the store
-      if (bindings[0].get('value').termType === 'NamedNode') {
-        store = await getLinkedDataNQuads(bindings[0].get('value').value, store);
+      let term = binding.get('value') as N3.Term;
+      if (term.termType === 'NamedNode') {
+        N3store = await getLinkedDataNQuads(term.value,  N3store);
       } else {
-        return bindings[0].get('value');
+        return term.value;
       }
     }
   }
@@ -59,7 +73,7 @@ export const test = async (trajectory_path: any, og_uri:string, store:N3.Store) 
   return "";
 }
 
-export const comunicaQuery = async (query:string, og_sources:string): Promise<any> => {
+export const comunicaQuery = async (query:string, og_sources:string|N3.Store): Promise<BindingsStream> => {
   return await engine.queryBindings(
     query,
     {
@@ -69,50 +83,13 @@ export const comunicaQuery = async (query:string, og_sources:string): Promise<an
 
 }
 
-export const traverseUri = async (og_uri:string, og_sources:QueryStringContext[], trajectory_path:any): Promise<any> => {
-
-  let current_trajectory = "";
-  let all_current_sources = og_sources;
-
-  for( const part in trajectory_path) {
-    console.log(part);
-    //change the current trajectory path to the slice of the path
-    current_trajectory = trajectory_path.slice(0, part+1).join("/");
-    let query = `SELECT ?value WHERE {<${og_uri}> ${current_trajectory} ?value . }`;
-    console.log(query);
-    let all_sources: [QuerySourceUnidentified, ...QuerySourceUnidentified[]];
-    const mappedSources = all_current_sources.map(source => {
-      // Convert each source to QuerySourceUnidentified
-      // This is just a placeholder, replace it with actual conversion logic
-      return source as unknown as QuerySourceUnidentified;
-    });
-
-    if (mappedSources.length === 0) {
-      throw new Error("No sources provided");
-    } else {
-      all_sources = mappedSources as [QuerySourceUnidentified, ...QuerySourceUnidentified[]];
-    }
-    const results = await engine.queryBindings(
-      query,
-      {
-        sources: all_sources,
-      }
-    )
-
-    results.on('data', (binding) => {
-      console.log(binding.get('value').value);
-    });
-  }
-  return "done";
-};
-
 export function createEmptyStore() {
   var storeN3 = new Store();
   console.log("store", storeN3); //N3 works
   return storeN3;
 }
 
-export async function getLinkedDataNQuads(uri, store) {
+export async function getLinkedDataNQuads(uri:string, store:N3.Store): Promise<N3.Store> {
   const return_formats = [
     "text/turtle",
     "application/ld+json",
@@ -124,26 +101,28 @@ export async function getLinkedDataNQuads(uri, store) {
     "text/html",
   ];
 
+  const data = await getData(uri, return_formats);
+  let text = await data.response.text();
+  console.log(text);
+  
+  const parser = new N3.Parser({ format: data.format });
+  let quads
   try {
-    const data = await getData(uri, return_formats);
-    let text = await data.response.text();
-    console.log(text);
-
-    const parser = new N3.Parser({ format: data.format });
-    const quads = parser.parse(text);
-
-    for (const quad of quads) {
-      store.addQuad(quad);
-    }
-
-    console.log(store);
-    return store;
+    quads = parser.parse(text);
   } catch (error) {
-    console.log(error);
+    console.log("parsing error", error);
+    throw error;
   }
+
+  for (const quad of quads) {
+    store.addQuad(quad);
+  }
+
+  console.log(store);
+  return store;
 }
 
-async function getData(uri, formats) {
+async function getData(uri:string, formats:string[]) {
   for (const format of formats) {
     try {
       const response = await fetch(uri, { headers: { Accept: format } });
@@ -154,11 +133,12 @@ async function getData(uri, formats) {
       }
     } catch (error) {
       console.log(error);
+      throw error;
     }
   }
   throw new Error("No acceptable format found");
 }
 
-export function storeSize(store) {
+export function storeSize(store: N3.Store) {
   return store.size;
 }

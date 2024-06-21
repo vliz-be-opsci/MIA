@@ -1,3 +1,4 @@
+import AffordanceEntity from './AffordanceEntity';
 
 const DELAYMS = 666;
 
@@ -8,9 +9,9 @@ export default class CollectingScheduler {
         this.schedule = [];
     }
 
-    async queueAffordance(affordance) {
+    async queueAffordance(affordance: AffordanceEntity) {
         this.schedule.push(affordance);
-        console.log('Affordance queued: ' + affordance);
+        console.log('Affordance queued: ', affordance);
         if (this.schedule.length === 1){ // only restart scheduler if it was empty before
             this.queueNextInSchedule();
         }

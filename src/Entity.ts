@@ -11,7 +11,7 @@ export default class Entity {
         console.log('getting rdf type of entity');
     }
 
-    updateContent(content){
+    updateContent(content: any){
         console.log('updating content of entity');
         this.content = content;
     }

@@ -1,11 +1,3 @@
-/*
- * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
- * This devtool is neither made for production nor for readable output files.
- * It uses "eval()" calls to create a separate source file in the browser devtools.
- * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
- * or disable the default devtool with "devtool: false".
- * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
- */
 (self["webpackChunkmia"] = self["webpackChunkmia"] || []).push([["_2b19"],{
 
 /***/ "?2b19":
@@ -14,8 +6,9 @@
   \*************************************/
 /***/ (() => {
 
-eval("/* (ignored) */\n\n//# sourceURL=webpack://mia/rdf-canonize-native_(ignored)?");
+/* (ignored) */
 
 /***/ })
 
 }]);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiXzJiMTkubWlhLmJ1bmRsZS5qcyIsIm1hcHBpbmdzIjoiOzs7Ozs7OztBQUFBIiwic291cmNlcyI6WyJ3ZWJwYWNrOi8vbWlhL2lnbm9yZWR8QzpcXFVzZXJzXFxjZWRyaWNkXFxEb2N1bWVudHNcXEdpdEh1YlxcTUlBXFxub2RlX21vZHVsZXNcXHJkZi1jYW5vbml6ZVxcbGlifHJkZi1jYW5vbml6ZS1uYXRpdmUiXSwic291cmNlc0NvbnRlbnQiOlsiLyogKGlnbm9yZWQpICovIl0sIm5hbWVzIjpbXSwic291cmNlUm9vdCI6IiJ9

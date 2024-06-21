@@ -2,6 +2,14 @@ import AffordanceEntity from './AffordanceEntity';
 import CollectingScheduler from './CollectingScheduler';
 import DerefInfoCollector from "./DerefInfoCollector";
 
+
+export interface DerefConfigType {
+    RDF_TYPE: string;
+    PREFIXES: { prefix: string, uri: string }[];
+    ASSERTION_PATHS: string[];
+    TEMPLATE: string;
+    MAPPING: { [key: string]: string };
+}
 export interface DerefConfig {
     //shape derefconfig
     /*
@@ -37,13 +45,11 @@ export interface DerefConfig {
         }
     }
 ]
-*/
-    RDF_TYPE: string;
-    PREFIXES: { prefix: string, uri: string }[];
-    ASSERTION_PATHS: string[];
-    TEMPLATE: string;
-    MAPPING: { [key: string]: string };
+*/ 
+    [key: string]: DerefConfigType;
 }
+
+
 
 
 export default class AffordanceManager {
@@ -92,8 +98,8 @@ export default class AffordanceManager {
 
 class DocumentWatcher {
     private affordanceManager: AffordanceManager;
-    private observer: MutationObserver;
-    constructor(affordanceManager) {
+    //private observer: MutationObserver;
+    constructor(affordanceManager: AffordanceManager) {
         this.affordanceManager = affordanceManager;
         this.observe();
     }
@@ -104,7 +110,7 @@ class DocumentWatcher {
                 if (mutation.type === 'childList') {
                     mutation.addedNodes.forEach((node) => {
                         if (node.nodeType === 1) {
-                            this.checkNode(node);
+                            this.checkNode(node as Element);
                         }
                     });
                 }
@@ -116,7 +122,7 @@ class DocumentWatcher {
         });
     }
 
-    checkNode(node) {
+    checkNode(node: Element) {
         const links = node.querySelectorAll('a');
         links.forEach((link) => {
             if (link.href !== '') {
