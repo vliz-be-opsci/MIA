@@ -47,9 +47,11 @@ export function generateEventCardTemplate(data: { [key: string]: any }, html_ele
 export function generateMapCardTemplate(data: { [key: string]: any }, html_element: HTMLElement): HTMLElement {
     console.log(data);
     const title = data.title || 'Map Location';
+    const mapwkt = data.mapwkt || 'POINT(0 0)'; // Default to 0 if not provided
+    const centroid = data.centroid || {}; // Default to 0 if not provided
     const description = data.description || 'No description available';
-    const latitude = data.latitude || 0; // Default to 0 if not provided
-    const longitude = data.longitude || 0; // Default to 0 if not provided
+    const latitude = data.latitude || 53; // Default to 0 if not provided
+    const longitude = data.longitude || 4; // Default to 0 if not provided
     const uniqueId = 'map-' + Math.random().toString(36).substr(2, 9); // Generate a unique ID for the map
 
     // injection of needed scripts into the html file
@@ -76,7 +78,7 @@ export function generateMapCardTemplate(data: { [key: string]: any }, html_eleme
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">${title}</h5>
-                <p class="card-text">${description}</p>
+                <p class="card-text">${mapwkt}</p>
                 <div id="${uniqueId}" style="height: 400px;"></div>
             </div>
         </div>
@@ -87,10 +89,13 @@ export function generateMapCardTemplate(data: { [key: string]: any }, html_eleme
     document.body.appendChild(html_element);
 
     // Initialize the map after the template is inserted
-    const map = L.map(uniqueId).setView([latitude, longitude], 13);
+    const map = L.map(uniqueId).setView([latitude, longitude], 6);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
+
+    // do a fake window resize to make sure the map is displayed correctly
+    window.dispatchEvent(new Event('resize'));
 
     return html_element;
 

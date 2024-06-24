@@ -21,6 +21,10 @@ export default class AffordanceEntity {
 
     async onHover() {
         this.element.addEventListener('mouseover', () => {
+            if (this.incardview()) {
+                console.log('card already in view');
+                return;
+            }
             console.log(this.collected_info);
             console.log(this.collected_info.content);
             this.produce_HTML_loader();
@@ -41,6 +45,16 @@ export default class AffordanceEntity {
             return;
         });
     };
+
+    incardview(): boolean {
+        //check if the card is already in view
+        //if any card is already in view, return true
+        //the link does not matter, since the card is unique
+        if (document.querySelector('.card') !== null) {
+            return true;
+        }
+        return false;
+    }
 
     removeLoader() {
         let loader = document.querySelector('.spinner-border');
