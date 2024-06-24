@@ -1,7 +1,7 @@
 //contains the code for the entity of the affordance
 import Entity from './Entity';
 import DerefInfoCollector from './DerefInfoCollector';
-import { generateInfoCardTemplate, generateEventCardTemplate } from './Templates';
+import { generateInfoCardTemplate, generateEventCardTemplate, generateMapCardTemplate } from './Templates';
 
 export default class AffordanceEntity {
     private element: any;
@@ -27,19 +27,25 @@ export default class AffordanceEntity {
             if(this.collected_info.content === undefined || Object.keys(this.collected_info.content).length === 0){
                 console.log('no info collected yet');
                 
-                this.collectInfo();
-                this.collected_info.content = this.derefinfocollector.cashedInfo[this.link];
+                this.collectInfo().then(() => {
+                    this.collected_info.content = this.derefinfocollector.cashedInfo[this.link];
+                    this.produce_HTML_view();
+                }).catch((error) => {
+                    console.log(error);
+                    this.removeLoader();
+                });
+                return;
             }
             this.produce_HTML_view();
-            this.removeLoader();
+
             return;
         });
-    }
+    };
 
     removeLoader() {
         let loader = document.querySelector('.spinner-border');
         loader?.remove();
-    }
+    };
 
     async collectInfo() {
         //function to collect info
@@ -60,8 +66,9 @@ export default class AffordanceEntity {
 
     _get_template_name(name:string) {
         const mapping: any = {
-            'map': generateInfoCardTemplate,
+            'map': generateMapCardTemplate,
             'Event': generateEventCardTemplate,
+            "default": generateInfoCardTemplate,
         }
         let toreturn = mapping[name];
         if (toreturn === undefined) {
@@ -74,6 +81,7 @@ export default class AffordanceEntity {
 
     produce_HTML_view() {
         console.log('producing HTML view');
+        this.removeLoader();
         console.log(this.collected_info);
 
         //make id for modal based on the link
@@ -88,12 +96,9 @@ export default class AffordanceEntity {
 
         let template_name = Object.keys(this.collected_info.content)[0];
         console.log(template_name);
-        let card_template = this._get_template_name(template_name)(this.collected_info.content[template_name]);
+        
         //create card
         let card = document.createElement('div');
-        card.innerHTML = card_template;
-        card.classList.add("card");
-        
         //based in the size of the window and the position of the affordance, the card will be placed in a different position
         //the card must always be placed in the same position as the affordance
         //get position of affordance
@@ -113,15 +118,14 @@ export default class AffordanceEntity {
         card.style.border = '1px solid black';
         //set id of card
         card.id = card_id;
-        //add card to body
-        document.body.appendChild(card);
+        card.classList.add("card");
+        //add template to card
+        card = this._get_template_name(template_name)(this.collected_info.content[template_name], card);
+        
         //add event listener to remove card on click
         card.addEventListener('click', () => {
             card.remove();
         });
-
-
-
     };
 
     produce_HTML_loader() {
@@ -131,6 +135,11 @@ export default class AffordanceEntity {
             <span class="visually-hidden">Loading...</span>
         </div>
         */
+        //check if loader already exists
+        if(document.querySelector('.spinner-border') !== null){
+            console.log('loader already exists');
+            return;
+        }
         let loader = document.createElement('div');
         loader.classList.add("spinner-border");
         loader.setAttribute('role', 'status');
