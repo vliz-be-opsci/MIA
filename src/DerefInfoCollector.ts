@@ -1,7 +1,7 @@
 import { createEmptyStore, getLinkedDataNQuads,comunicaQuery, traverseURI } from "./linked_data_store";
 import { DerefConfig, DerefConfigType } from "./AffordanceManager";
 import { Bindings, Variable } from '@rdfjs/types';
-import { QueryStringContext, QuerySourceUnidentified, BindingsStream } from '@comunica/types';
+//import { QueryStringContext, QuerySourceUnidentified, BindingsStream } from '@comunica/types';
 import { Store, Term } from 'n3';
 
 

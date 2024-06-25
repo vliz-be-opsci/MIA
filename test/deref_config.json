@@ -30,6 +30,26 @@
         }
     },
     {
+        "RDF_TYPE": "https://schema.org/Person",
+        "PREFIXES": [
+            {
+                "prefix": "schema",
+                "uri": "https://schema.org/"
+            }
+        ],
+        "ASSERTION_PATHS": [
+            "schema:givenName",
+            "schema:familyName",
+            "schema:image"
+        ],
+        "TEMPLATE": "person",
+        "MAPPING": {
+            "name": "schema:givenName",
+            "family": "schema:familyName",
+            "image": "schema:image"
+        }
+    },
+    {
         "RDF_TYPE": "https://schema.org/Event",
         "PREFIXES": [
             {

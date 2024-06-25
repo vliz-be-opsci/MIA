@@ -63,7 +63,13 @@ export const traverseURI = async (trajectory_path: any, og_uri:string, store:N3.
       //if not then add the whole binding to the store
       let term = binding.get('value') as N3.Term;
       if (term.termType === 'NamedNode') {
-        N3store = await getLinkedDataNQuads(term.value,  N3store);
+        //try catch here for named nodes that were not meant to be retrieved
+        //eg: images 
+        try {
+          N3store = await getLinkedDataNQuads(term.value,  N3store);
+        } catch (error) {
+          return term.value;
+        }
       } else {
         return term.value;
       }

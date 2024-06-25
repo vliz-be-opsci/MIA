@@ -1,7 +1,7 @@
 //contains the code for the entity of the affordance
 import Entity from './Entity';
 import DerefInfoCollector from './DerefInfoCollector';
-import { generateInfoCardTemplate, generateEventCardTemplate, generateMapCardTemplate } from './Templates';
+import { generateInfoCardTemplate, generateEventCardTemplate, generateMapCardTemplate, generatePersonCardTemplate } from './Templates';
 
 export default class AffordanceEntity {
     private element: any;
@@ -82,6 +82,7 @@ export default class AffordanceEntity {
         const mapping: any = {
             'map': generateMapCardTemplate,
             'Event': generateEventCardTemplate,
+            "person": generatePersonCardTemplate,
             "default": generateInfoCardTemplate,
         }
         let toreturn = mapping[name];
@@ -133,6 +134,7 @@ export default class AffordanceEntity {
         //set id of card
         card.id = card_id;
         card.classList.add("card");
+        //
         //add template to card
         card = this._get_template_name(template_name)(this.collected_info.content[template_name], card);
         
