@@ -1,5 +1,4 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const webpack = require("webpack"); // to access built-in plugins
 const path = require("path");
 
 module.exports = {
@@ -16,6 +15,10 @@ module.exports = {
       {
         test: /\.css$/,
         use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.svg$/,
+        loader: "file-loader",
       },
     ],
   },

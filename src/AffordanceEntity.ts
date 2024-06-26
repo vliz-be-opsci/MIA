@@ -22,7 +22,7 @@ export default class AffordanceEntity {
 
     async onHover() {
         this.element.addEventListener('mouseover', (event:MouseEvent) => {
-            if (this.incardview()) {
+            if (this.incardview(event)) {
                 console.log('card already in view');
                 return;
             }
@@ -49,9 +49,21 @@ export default class AffordanceEntity {
         });
     };
 
-    incardview(): boolean {
+    incardview(event:MouseEvent): boolean {
         //check if the card is already in view
-        if (document.querySelector('.card') !== null){
+        let link_id = this.link.replace(/\//g, '-');
+
+        let x = event.clientX;
+        let y = event.clientY;
+
+        let card_bbox = document.querySelector('.card')?.getBoundingClientRect();
+        if (card_bbox !== undefined && card_bbox !== null){
+            if (x >= card_bbox.left && x <= card_bbox.right && y >= card_bbox.top && y <= card_bbox.bottom){
+                return true;
+            }
+        }
+
+        if (document.querySelector('.card') !== null && document.getElementById(link_id) !== null){
             return true;
         }
         return false;
@@ -102,6 +114,8 @@ export default class AffordanceEntity {
         let current_window_width = window.innerWidth;
         let affordance_position_top = affordance_position.top;
         let affordance_position_bottom = current_window_height - affordance_position.top;
+        let scrolled_height =  window.pageYOffset || document.documentElement.scrollTop;
+        let scrolled_width = window.pageXOffset || document.documentElement.scrollLeft;
         //let affordance_position_left = affordance_position.left;
         //let affordance_position_right = current_window_width - affordance_position.right;
 
@@ -109,14 +123,15 @@ export default class AffordanceEntity {
         // if the affordance is closer to the top of the window, place the card below the link
         if (affordance_position_top < current_window_height / 2) {
             //the top of the card should be 25px below the bottom of the link
-            card.style.top = affordance_position.bottom + 10 + 'px';
+            card.style.top = affordance_position.bottom + scrolled_height + 10 + 'px';
         }
         else{
         //the top of the card should be 25px below the bottom of the link
-        card.style.top = affordance_position.bottom + 10 + 'px';
+        //keep in mind that the page might be scrolled
+        card.style.top = affordance_position.bottom + scrolled_height + 10 + 'px';
         }
         //make the left of the card the same as the left of the link
-        card.style.left = event.x - 20 + 'px';
+        card.style.left = event.x + scrolled_width - 20 + 'px';
         return card;
 
     }
@@ -158,37 +173,8 @@ export default class AffordanceEntity {
         //add template to card
         card = this._get_template_name(template_name)(this.collected_info.content[template_name], card);
         
-        //add an event listener to check when the mouse moves
-        // only remove the card if the mouse is not over the card
-        /*
+
         document.body.addEventListener('mousemove', (event) => {
-
-            //if no card return
-            if(document.querySelector('.card') === null){
-                return;
-            }
-
-            // add timeout of x ms to remove the card
-            setTimeout(() => {
-                // if mouse if not in the card, remove the card
-                // and mouse not over the element that triggered the card
-                // this.element but also check if the card is not in view
-                //there can be multiple links so check for all 
-                let link_elements = document.querySelectorAll('a[href="'+this.link+'"]');
-                let mouse_in_link = false;
-                for (let i = 0; i < link_elements.length; i++){
-                    let link_element = link_elements[i];
-                    let link_bbox = link_element.getBoundingClientRect();
-                    //is mouse in bbox of the link 
-                    if(event.clientX >= link_bbox.left-10 && event.clientX <= link_bbox.right+10 && event.clientY >= link_bbox.top-10 && event.clientY <= link_bbox.bottom+10){
-                        mouse_in_link = true;
-                    }
-                }
-                if(document.querySelector('.card:hover') === null && !mouse_in_link && this.link !== window.location.href){
-                    this._remove_card();
-                }
-            }, 1000);
-
             //check if mouse is on triangle 
             let rect = card.getBoundingClientRect();
             let isInTriangle = (event.clientX > rect.right - 20) && (event.clientY < rect.top + 20); // Adjust the 30px based on the triangle size
@@ -199,7 +185,7 @@ export default class AffordanceEntity {
                 card.classList.remove("hover-triangle")
             }
         });
-        */
+        
 
         card.addEventListener('mouseleave', () => {
             //wait 1 second before removing the card
@@ -232,11 +218,11 @@ export default class AffordanceEntity {
     };
 
     private _remove_card() {
-        let card = document.querySelector('.card');
-        if (card) {
-            card.classList.add('fade-out');
-            card.addEventListener('animationend', () => {
-                card.remove();
+        let card = document.querySelectorAll('.card');
+        for (let i = 0; i < card.length; i++) {
+            card[i].classList.add('fade-out');
+            card[i].addEventListener('animationend', () => {
+                card[i].remove();
             });
         }
     }

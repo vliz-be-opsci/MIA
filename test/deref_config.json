@@ -37,18 +37,25 @@
             {
                 "prefix": "schema",
                 "uri": "https://schema.org/"
+            },
+            {
+                "prefix":"org",
+                "uri": "http://www.w3.org/ns/org#"
             }
         ],
         "ASSERTION_PATHS": [
             "schema:givenName",
             "schema:familyName",
-            "schema:image"
+            "schema:image",
+            "schema:identifier"
         ],
         "TEMPLATE": "person",
         "MAPPING": {
             "name": "schema:givenName",
             "family": "schema:familyName",
-            "image": "schema:image"
+            "image": "schema:image",
+            "orcid": "schema:identifier",
+            "organization": "org:hasMembership ?membership \n ?membership schema:name"
         }
     },
     {

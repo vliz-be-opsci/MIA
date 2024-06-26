@@ -66,3 +66,25 @@
 .card.fade-out {
   animation: fadeDropOut 0.5s ease forwards;
 }
+
+.person-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.person-card .card-body {
+  flex: 1;
+  order: 1; /* Info on the left */
+}
+
+.person-card img.card-img-top {
+  order: 2; /* Image on the right */
+  max-width: 40%; /* Adjust based on your preference */
+  margin-left: 10px; /* Space between image and info */
+}
+
+.svg_icon {
+  width: 20px;
+  height: 20px;
+}

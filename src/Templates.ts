@@ -1,5 +1,6 @@
 /* all generic templates here */
 import * as L from 'leaflet';
+import orcidSVG from './css/orcid.svg';
 
 export function generatePersonCardTemplate(data: { [key: string]: any }, html_element: HTMLElement): HTMLElement {
     console.log(data);
@@ -9,11 +10,17 @@ export function generatePersonCardTemplate(data: { [key: string]: any }, html_el
     let surname = data.name || "";
     let familyname = data.family || "";
     let image = data.image || "";
+
+    //if orcid data then add it to the card
+
     let innerHTML = `
-        <img src="${cleanURI(image)}" class="card-img-top" id="person_image" alt="...">
-        <div class="card-body">
-            <h5 class="card-title">${surname} ${familyname}</h5>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
+        <div class="person-card">
+            <div class="card-body">
+                <h5 class="card-title">${surname} ${familyname}</h5>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+                <a href="https://orcid.org/${data.orcid}" target="_blank"><img class="svg_icon" src="${orcidSVG}" alt="ORCID iD" class="orcid-logo"></a>
+            </div>
+            <img src="${cleanURI(image)}" class="card-img-top" id="person_image" alt="${surname} ${familyname} image">
         </div>
     `;
     html_element.innerHTML = innerHTML;
