@@ -34,6 +34,12 @@ export function generateInfoCardTemplate(data: { [key: string]: any }, html_elem
     //for each undefined value, replace with a default value
     let title = data.title || 'No title available';
     let description = data.description || 'No description available';
+
+    // if description is loner then 300 characters, truncate it
+    if (description.length > 300) {
+        description = description.substring(0, 300) + '...';
+    }
+
     let innerHTML = `
         <img src="..." class="card-img-top" alt="...">
         <div class="card-body">

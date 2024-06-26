@@ -26,6 +26,8 @@ export default class AffordanceEntity {
                 console.log('card already in view');
                 return;
             }
+            //remove all other cards
+            this._remove_card();
             console.log(this.collected_info);
             console.log(this.collected_info.content);
             this.produce_HTML_loader();
@@ -49,9 +51,7 @@ export default class AffordanceEntity {
 
     incardview(): boolean {
         //check if the card is already in view
-        //if any card is already in view, return true
-        //the link does not matter, since the card is unique
-        if (document.querySelector('.card') !== null) {
+        if (document.querySelector('.card') !== null){
             return true;
         }
         return false;
@@ -160,6 +160,7 @@ export default class AffordanceEntity {
         
         //add an event listener to check when the mouse moves
         // only remove the card if the mouse is not over the card
+        /*
         document.body.addEventListener('mousemove', (event) => {
 
             //if no card return
@@ -179,14 +180,14 @@ export default class AffordanceEntity {
                     let link_element = link_elements[i];
                     let link_bbox = link_element.getBoundingClientRect();
                     //is mouse in bbox of the link 
-                    if(event.clientX >= link_bbox.left && event.clientX <= link_bbox.right && event.clientY >= link_bbox.top && event.clientY <= link_bbox.bottom){
+                    if(event.clientX >= link_bbox.left-10 && event.clientX <= link_bbox.right+10 && event.clientY >= link_bbox.top-10 && event.clientY <= link_bbox.bottom+10){
                         mouse_in_link = true;
                     }
                 }
-                if(document.querySelector('.card:hover') === null && !mouse_in_link){
+                if(document.querySelector('.card:hover') === null && !mouse_in_link && this.link !== window.location.href){
                     this._remove_card();
                 }
-            }, 500);
+            }, 1000);
 
             //check if mouse is on triangle 
             let rect = card.getBoundingClientRect();
@@ -198,17 +199,25 @@ export default class AffordanceEntity {
                 card.classList.remove("hover-triangle")
             }
         });
+        */
 
-        //add event listener to the card on mouseout to remvoe it after 1500ms
-        card.addEventListener('mouseout', () => {
+        card.addEventListener('mouseleave', () => {
+            //wait 1 second before removing the card
             setTimeout(() => {
-                // if mouse if not in the card, remove the card
-                // and mouse not over the element that triggered the card
-                // this.element
-                if(document.querySelector('.card:hover') === null){
+                // check if the mouse is not over the card
+                // and the mouse is not over the element that triggered the card
+                // and the link is not the current page
+                if(document.querySelector('.card:hover') === null && this.link !== window.location.href){
                     this._remove_card();
                 }
-            }, 1500);
+            }, 1000);
+        });
+
+        document.addEventListener('click', (event) => {
+            //if the click is not in the card, remove the card
+            if(document.querySelector('.card:hover') === null){
+                this._remove_card();
+            }
         });
 
         //add card to body

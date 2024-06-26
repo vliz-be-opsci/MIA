@@ -26,7 +26,7 @@
   position: absolute;
   top: -10px; /* Adjust based on your margin and padding */
   left: 10px; /* Adjust to position the triangle correctly */
-  border-width: 0 10px 10px 10px; /* Creates the triangle */
+  border-width: 0 15px 15px 15px; /* Creates the triangle */
   border-style: solid;
   border-color: transparent transparent #eff transparent; /* Adjust colors */
 }
@@ -40,7 +40,7 @@
 @keyframes fadeDropIn {
   from {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
