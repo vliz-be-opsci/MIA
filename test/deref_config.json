@@ -21,12 +21,14 @@
         ],
         "ASSERTION_PATHS": [
             "mr:hasGeometry/gsp:asWKT",
-            "<http://www.w3.org/ns/dcat#centroid>/gsp:asWKT"
+            "<http://www.w3.org/ns/dcat#centroid>/gsp:asWKT",
+            "skos:prefLabel"
         ],
         "TEMPLATE": "map",
         "MAPPING": {
             "mapwkt": "mr:hasGeometry/gsp:asWKT",
-            "centroid": "<http://www.w3.org/ns/dcat#centroid>/gsp:asWKT"
+            "centroid": "<http://www.w3.org/ns/dcat#centroid>/gsp:asWKT",
+            "name": "skos:prefLabel"
         }
     },
     {
@@ -83,6 +85,42 @@
             "name": "schema:name",
             "location": "schema:location",
             "type": "dcterms:type"
+        }
+    },
+    {
+        "RDF_TYPE": "https://schema.org/Dataset",
+        "PREFIXES": [
+            {
+                "prefix": "mr",
+                "uri": "http://marineregions.org/ns/ontology#"
+            },
+            {
+                "prefix": "skos",
+                "uri": "http://www.w3.org/2004/02/skos/core#"
+            },
+            {
+                "prefix": "dcterms",
+                "uri": "http://purl.org/dc/terms/"
+            },
+            {
+                "prefix": "gsp",
+                "uri": "http://www.opengis.net/ont/geosparql#"
+            },
+            {
+                "prefix": "schema",
+                "uri": "https://schema.org/"
+            }
+        ],
+        "ASSERTION_PATHS": [
+            "dcterms:title",
+            "dcterms:license",
+            "dcterms:abstract"
+        ],
+        "TEMPLATE": "Dataset",
+        "MAPPING": {
+            "title": "dcterms:title",
+            "license": "dcterms:license",
+            "abstract": "dcterms:abstract"
         }
     }
 ]

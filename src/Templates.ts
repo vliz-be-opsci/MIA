@@ -71,7 +71,7 @@ export function generateEventCardTemplate(data: { [key: string]: any }, html_ele
 
 export function generateMapCardTemplate(data: { [key: string]: any }, html_element: HTMLElement): HTMLElement {
     console.log(data);
-    const title = data.title || 'Map Location';
+    const name = data.name || 'Map Location';
     const mapwkt = data.mapwkt || null; // Default to 0 if not provided
     const centroid = data.centroid || null; // Default to 0 if not provided
     const description = data.description || 'No description available';
@@ -100,10 +100,10 @@ export function generateMapCardTemplate(data: { [key: string]: any }, html_eleme
     document.head.appendChild(leafletJs);
 
     let innerHTML = `
-            <div class="card-body">
-                <h5 class="card-title">${title}</h5>
-                <div id="${uniqueId}" style="height: 400px;"></div>
-            </div>
+        <div class="card-body">
+            <h5 class="card-title">${name}</h5>
+            <div id="${uniqueId}" style="height: 150px;width: 300px"></div>
+        </div>
         `
 
     html_element.innerHTML = innerHTML;

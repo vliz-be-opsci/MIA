@@ -1,277 +1,68 @@
-
-/*format tables */
-table {
-    border-collapse: collapse;
-    border-spacing: 0;
-    width: 100%;
-    border: 1px solid #ddd;
+.card {
+  background-color: #eff;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  max-width: 400px;
+  width: fit-content;
+  max-height: 250px;
 }
 
-th, td {
-    text-align: left;
-    padding: 8px;
-}
-
-tr:nth-child(even){background-color: #f2f2f2}
-
-.underline {
-    text-decoration: underline;
-}
-
-/*loader*/
-.lds-ring,
-.lds-ring div {
-  box-sizing: border-box;
-}
-.lds-ring {
-  display: inline-block;
-  position: relative;
-  width:20px;
-  height: 20px;
-}
-.lds-ring div {
-  box-sizing: border-box;
-  display: block;
+.card::after {
+  content: "";
   position: absolute;
-  width: 16px;
-  height: 16px;
-  margin: 2px;
-  border: 2px solid currentColor;
-  border-radius: 50%;
-  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  border-color: currentColor transparent transparent transparent;
-}
-.lds-ring div:nth-child(1) {
-  animation-delay: -0.45s;
-}
-.lds-ring div:nth-child(2) {
-  animation-delay: -0.3s;
-}
-.lds-ring div:nth-child(3) {
-  animation-delay: -0.15s;
-}
-@keyframes lds-ring {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/*css for a modal*/
-/*div class modal*/
-.modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  left: 0;
   top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  right: 0;
+  border-left: 15px solid transparent;
+  border-top: 15px solid #007bff; /* Change the color to match your design */
+  width: 0;
+  height: 0;
+  z-index: 20;
+  cursor: pointer; /* Indicates the element is clickable */
 }
 
-/* Modal Content/Box */
-.modal-content {
-  background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
-  padding: 20px;
-  border: 1px solid #888;
-  border-radius: 5px;
-  /*min width of 50% or the width of the content*/
-  min-width: 50%;
-  width: 70%;
-}
-
-/* The Close Button */
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.show {
-  display: block;
-}
-
-.hidden {
-  display: none;
-}
-
-.mia_icon {
-  width: 15px;
-  height: 15px;
-  fill: aqua;
-  margin: 0 auto;
-  margin-right: 3px;
-  margin-left: 3px;
-}
-
-.mia-popup {
+.card::before {
+  content: "";
   position: absolute;
+  top: -10px; /* Adjust based on your margin and padding */
+  left: 10px; /* Adjust to position the triangle correctly */
+  border-width: 0 10px 10px 10px; /* Creates the triangle */
+  border-style: solid;
+  border-color: transparent transparent #eff transparent; /* Adjust colors */
 }
 
-/*put a scroll bar on the mia-popup-content*/
-.mia-popup-content {
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: white;
+.card.hover-triangle::after {
+  border-top: 20px solid #020066; /* Change the color to match your design */
+  border-left: 20px solid transparent;
+  cursor: pointer; /* Indicates the element is clickable */
 }
 
-.hide-popup {
-  /*animation here that will fade out the popup and slide it down*/
-  animation: fadeOut 0,5s ease-in-out;
-}
-
-@keyframes fadeOut {
-  0% {
+@keyframes fadeDropIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
     opacity: 1;
     transform: translateY(0);
   }
-  100% {
+}
+
+@keyframes fadeDropOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
     opacity: 0;
     transform: translateY(20px);
   }
 }
 
-/*loading class will add flickering to the element to signal loading*/
-.loading {
-  animation: flickerAnimation 0.7s infinite;
-  background-color: #f2f2f2;
+.card.fade-in {
+  animation: fadeDropIn 0.5s ease forwards;
 }
 
-.failed {
-  background-color: #f2f2f2;
-}
-
-@keyframes flickerAnimation {
-  /*also make the object rotate*/
-  0%   { opacity:1;}
-  50%  { 
-    opacity:0;
-    }
-  100% { opacity:1; 
-    transform: rotate(360deg);
-  }
-}
-
-/* loader for the map.laoder */
-
-.toload > .loader {
-  /*loading animation here */
-  animation: flickerAnimation 2s infinite;
-  height: 75px;
-  align-self: center;
-}
-
-.fadeout {
-  /*text effect where bottom is faded out*/
-  background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(255,255,255,0) 100%) !important;
-  z-index: 1;
-}
-
-/* Tooltip container */
-.tooltip {
-  position: relative;
-  display: inline-block;
-  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
-}
-
-/* Tooltip text */
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 120px;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  padding: 5px 0;
-  border-radius: 6px;
- 
-  /* Position the tooltip text - see examples below! */
-  position: absolute;
-  z-index: 1;
-}
-
-/* Show the tooltip text when you mouse over the tooltip container */
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-}
-
-/*self_affordance_entity*/
-/* Makt the class be in the top right corner absolute , and make it be a triangle*/
-.self_affordance_entity {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 0;
-  height: 0;
-  border-top: 0px solid transparent;
-  border-left: 0px solid transparent;
-  border-bottom: 50px solid transparent;
-  border-right: 50px solid #ccc;
-}
-
-/*onhover make the top right corner peel to the middlle of the triangle to signify that the user can copy the url*/
-.self_affordance_entity:hover {
-  animation: emphisize 0.5s ease-in-out forwards 1;
-}
-
-.self_affordance_entity:hover .copy-icon {
-  animation: movecopy 0.5s ease-in-out forwards 1;
-}
-
-@keyframes movecopy {
-  0% {
-    /*move the icon 10px to the right*/
-    right: -45px;
-  }
-  100% {
-    /*move the icon 10px to the left*/
-    right: -53px;
-    top: 7px
-  }
-}
-
-@keyframes emphisize {
-  0% {
-    border-top: 0px solid transparent;
-    border-left: 0px solid transparent;
-    border-bottom: 50px solid transparent;
-    border-right: 50px solid #ccc;
-  }
-  100% {
-    border-top: 0px solid transparent;
-    border-left: 0px solid transparent;
-    border-bottom: 60px solid transparent;
-    border-right: 60px solid #aaa;
-  }
-}
-
-/*make the content be a copy icon */
-.self_affordance_entity .copy-icon {
-  position: absolute;
-  top: 5px;
-  right: -45px;
-  width: 20px;
-  height: 20px;
-}
-
-#copy-message {
-  position: absolute;
-  top: 0;
-  right: 50px;
-  width: 100px;
-  height: 0;
+.card.fade-out {
+  animation: fadeDropOut 0.5s ease forwards;
 }
