@@ -131,6 +131,11 @@ export async function getLinkedDataNQuads(uri:string, store:N3.Store): Promise<N
 async function getData(uri:string, formats:string[]) {
   for (const format of formats) {
     try {
+      //make uri https if http and log this 
+      //this is to prevent mixed content errors
+      if (uri.startsWith("http:")) {
+        uri = uri.replace("http://", "https://");
+      }
       const response = await fetch(uri, { headers: { Accept: format } });
       const contentType = response.headers.get("Content-Type");
 
