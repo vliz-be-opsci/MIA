@@ -1,7 +1,7 @@
 //contains the code for the entity of the affordance
 import Entity from './Entity';
 import DerefInfoCollector from './DerefInfoCollector';
-import { generateInfoCardTemplate, generateEventCardTemplate, generateMapCardTemplate, generatePersonCardTemplate } from './Templates';
+import { generateInfoCardTemplate, generateEventCardTemplate, generateMapCardTemplate, generatePersonCardTemplate, generateBibliographicResourceCardTemplate } from './Templates';
 import './css/mia.css';
 
 export default class AffordanceEntity {
@@ -96,6 +96,7 @@ export default class AffordanceEntity {
             'map': generateMapCardTemplate,
             'Event': generateEventCardTemplate,
             "person": generatePersonCardTemplate,
+            "bibresource": generateBibliographicResourceCardTemplate,
             "default": generateInfoCardTemplate,
         }
         let toreturn = mapping[name];

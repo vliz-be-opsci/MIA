@@ -17,7 +17,6 @@ export function generatePersonCardTemplate(data: { [key: string]: any }, html_el
         <div class="person-card">
             <div class="card-body">
                 <h5 class="card-title">${surname} ${familyname}</h5>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
                 <a href="https://orcid.org/${data.orcid}" target="_blank"><img class="svg_icon" src="${orcidSVG}" alt="ORCID iD" class="orcid-logo"></a>
             </div>
             <img src="${cleanURI(image)}" class="card-img-top" id="person_image" alt="${surname} ${familyname} image">
@@ -52,7 +51,29 @@ export function generateInfoCardTemplate(data: { [key: string]: any }, html_elem
         <div class="card-body">
             <h5 class="card-title">${title}</h5>
             <p class="card-text">${description}</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+    `;
+    html_element.innerHTML = innerHTML;
+    //add element to body
+    document.body.appendChild(html_element);
+    return html_element;
+  }
+
+  export function generateBibliographicResourceCardTemplate(data: { [key: string]: any }, html_element: HTMLElement): HTMLElement {
+
+    console.log(data);
+    //for each undefined value, replace with a default value
+    let title = `<h5 class="card-title">${data.title}</h5>` || 'No title available';
+    let type = `<p class="card-text">${data.type}</p>` || '';
+    let description = `<p class="card-text">${data.description}</p>` || '';
+    let publishDate =`<p class="card-text">${data.publishDate}</p>` || '';
+
+    let innerHTML = `
+        <div class="card-body">
+            ${title}
+            ${type}
+            ${description}
+            ${publishDate}
         </div>
     `;
     html_element.innerHTML = innerHTML;
@@ -66,14 +87,15 @@ export function generateEventCardTemplate(data: { [key: string]: any }, html_ele
     console.log(data);
     //for each undefined value, replace with a default value
     let title = data.name || 'No title available';
-    let description = data.location || 'No description available';
+    let location = data.location || 'No location available';
+    let description = data.description || 'No description available';
 
     let innerHTML = `
         <img src="..." class="card-img-top" alt="...">
         <div class="card-body">
             <h5 class="card-title">${title}</h5>
+            <p class="card-text">${location}</p>
             <p class="card-text">${description}</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
         </div>
     `;
     html_element.innerHTML = innerHTML;
