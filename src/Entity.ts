@@ -1,0 +1,19 @@
+
+
+export default class Entity {
+    content: any;
+    constructor() {
+        console.log('Entity initialised');
+        this.content = {};
+    }
+
+    getType(){
+        console.log('getting rdf type of entity');
+    }
+
+    updateContent(content: any){
+        console.log('updating content of entity');
+        this.content = content;
+    }
+
+}
