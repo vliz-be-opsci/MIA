@@ -17,7 +17,7 @@ export function generatePersonCardTemplate(data: { [key: string]: any }, html_el
         <div class="person-card">
             <div class="card-body">
                 <h5 class="card-title">${surname} ${familyname}</h5>
-                <a href="https://orcid.org/${data.orcid}" target="_blank"><img class="svg_icon" src="${orcidSVG}" alt="ORCID iD" class="orcid-logo"></a>
+                <a href="${data.orcid}" target="_blank"><img class="svg_icon" src="${orcidSVG}" alt="ORCID iD" class="orcid-logo"></a>
             </div>
             <img src="${cleanURI(image)}" class="card-img-top" id="person_image" alt="${surname} ${familyname} image">
         </div>
