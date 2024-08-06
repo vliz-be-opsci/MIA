@@ -6,7 +6,6 @@ import { Store } from "n3";
 import { QueryEngine as QueryEngineTraversal } from "@comunica/query-sparql-link-traversal";
 import { QueryEngine } from "@comunica/query-sparql";
 import { BindingsStream, Bindings } from "@comunica/types";
-import { QueryStringContext, QuerySourceUnidentified } from "@comunica/types";
 
 const engine = new QueryEngine();
 const linkengine = new QueryEngineTraversal();

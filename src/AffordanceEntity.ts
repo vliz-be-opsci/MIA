@@ -116,6 +116,11 @@ export default class AffordanceEntity {
     }
   }
 
+  // if special keys are needed to display the info, they can be added here
+  private type_to_keys: any = {
+    person: ["name", "family"],
+  };
+
   private _update_dom_uri() {
     // self element
     let element = this.element;
@@ -135,10 +140,25 @@ export default class AffordanceEntity {
           //this should be either the title or name key of the collected info
           let content = collected_info[Object.keys(collected_info)[0]];
           console.info("content: ", collected_info);
-
-          //check if there is a key name or title in the content
-          //if yes update inner html
-          if (content.name !== undefined) {
+          //first check if there are special keys for the type
+          if (this.type_to_keys[Object.keys(collected_info)[0]] !== undefined) {
+            //get all the keys and map them on the content
+            let to_display_content = [];
+            for (let key in this.type_to_keys[Object.keys(collected_info)[0]]) {
+              try {
+                to_display_content.push(
+                  content[
+                    this.type_to_keys[Object.keys(collected_info)[0]][key]
+                  ]
+                );
+              } catch (error) {
+                console.log("key not found");
+                continue;
+              }
+            }
+            //update inner html
+            element.innerHTML = to_display_content.join(" ");
+          } else if (content.name !== undefined) {
             element.innerHTML = content.name;
           } else if (content.title !== undefined) {
             element.innerHTML = content.title;
