@@ -125,6 +125,16 @@ export default class AffordanceEntity {
     // self element
     let element = this.element;
     console.info("element: ", element);
+
+    //if the element href contains marineinfo or marineregions in it
+    //add class confluence_box to elemnt if not already there
+    if (
+      this.link.includes("marineinfo") ||
+      this.link.includes("marineregions")
+    ) {
+      element.classList.add("confluence_box");
+    }
+
     if (!this.initial_updated) {
       // check every 1 second if there is any cashed info
       const intervalId = setInterval(() => {
