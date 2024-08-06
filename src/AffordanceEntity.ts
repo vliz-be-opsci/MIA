@@ -122,7 +122,7 @@ export default class AffordanceEntity {
     console.info("element: ", element);
     if (!this.initial_updated) {
       // check every 1 second if there is any cashed info
-      setInterval(() => {
+      const intervalId = setInterval(() => {
         // if the cashed info is not empty, update the dom
         if (
           this.derefinfocollector.cashedInfo[this.link] !== undefined &&
@@ -134,7 +134,7 @@ export default class AffordanceEntity {
           //change the inner html of the element
           //this should be either the title or name key of the collected info
           let content = collected_info[Object.keys(collected_info)[0]];
-          console.info("content: ", content);
+          console.info("content: ", collected_info);
 
           //check if there is a key name or title in the content
           //if yes update inner html
@@ -145,6 +145,7 @@ export default class AffordanceEntity {
           }
 
           this.initial_updated = true;
+          clearInterval(intervalId); // Stop the interval
         }
       }, 1000);
     }
