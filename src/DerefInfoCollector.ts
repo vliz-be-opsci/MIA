@@ -8,7 +8,7 @@ import {
 import { DerefConfig, DerefConfigType } from "./AffordanceManager";
 import { Bindings, Variable } from "@rdfjs/types";
 //import { QueryStringContext, QuerySourceUnidentified, BindingsStream } from '@comunica/types';
-import { Store, Term } from "n3";
+import { Store, Term, Quad } from "n3";
 import { Config } from "ldes-client";
 
 export default class DerefInfoCollector {
@@ -35,12 +35,18 @@ export default class DerefInfoCollector {
     await this.collect_info(url);
   }
 
+  private _combine_triplestores(store1: Store, store2: Store): Store {
+    const quads: Quad[] = store2.getQuads(null, null, null, null);
+    quads.forEach((quad) => store1.addQuad(quad));
+    return store1;
+  }
+
   async collect_info(url: string) {
     let info_keys: any = {};
-    let emptystore = createEmptyStore();
+    let emptystore: Store = createEmptyStore();
     emptystore = await getLinkedDataNQuads(url, emptystore);
     console.log(emptystore);
-    this.triplestore = emptystore;
+    this.triplestore = this._combine_triplestores(this.triplestore, emptystore);
     const types = await this.get_type_uri(url);
     console.log(types);
     const config_type_info = get_config_for_rdf_type(types, this.derefconfig);
@@ -75,7 +81,8 @@ export default class DerefInfoCollector {
     const template_name = config_type_info.TEMPLATE;
     const to_cache: any = {};
     to_cache[template_name] = info_keys;
-    this.triplestore = emptystore;
+    //add empty store to the triplestore
+    this.triplestore = this._combine_triplestores(this.triplestore, emptystore);
     this.cashedInfo[url] = to_cache;
   }
 
