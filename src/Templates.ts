@@ -10,6 +10,8 @@ export function generatePersonCardTemplate(data: { [key: string]: any }, html_el
     let surname = data.name || "";
     let familyname = data.family || "";
     let image = data.image || "";
+    let organization = data.organization || "";
+    let job_position = data.job_position || "";
 
     //if orcid data then add it to the card
 
@@ -17,7 +19,9 @@ export function generatePersonCardTemplate(data: { [key: string]: any }, html_el
         <div class="person-card">
             <div class="card-body">
                 <h5 class="card-title">${surname} ${familyname}</h5>
-                <a href="${data.orcid}" target="_blank"><img class="svg_icon" src="${orcidSVG}" alt="ORCID iD" class="orcid-logo"></a>
+                <p>${job_position}</p>
+                <p>${organization}</p>
+                <a href="${data.orcid}" target="_blank"><img class="svg_icon" src="${orcidSVG}" alt="ORCID" class="orcid-logo"></a>
             </div>
             <img src="${cleanURI(image)}" class="card-img-top" id="person_image" alt="${surname} ${familyname} image">
         </div>

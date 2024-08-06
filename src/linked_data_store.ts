@@ -1,19 +1,21 @@
 //this file will be the interface between the linked data store and the mia entity
 // this for possible future port to rdflib instead of n3
 
-import * as N3 from 'n3';
-import { Store } from 'n3';
-import { QueryEngine as QueryEngineTraversal} from '@comunica/query-sparql-link-traversal';
-import { QueryEngine } from '@comunica/query-sparql';
-import { BindingsStream, Bindings } from '@comunica/types';
-import { QueryStringContext, QuerySourceUnidentified } from '@comunica/types';
-
+import * as N3 from "n3";
+import { Store } from "n3";
+import { QueryEngine as QueryEngineTraversal } from "@comunica/query-sparql-link-traversal";
+import { QueryEngine } from "@comunica/query-sparql";
+import { BindingsStream, Bindings } from "@comunica/types";
+import { QueryStringContext, QuerySourceUnidentified } from "@comunica/types";
 
 const engine = new QueryEngine();
 const linkengine = new QueryEngineTraversal();
 
-
-export const traverseURI = async (trajectory_path: any, og_uri:string, store:N3.Store): Promise<string> => {
+export const traverseURI = async (
+  trajectory_path: any,
+  og_uri: string,
+  store: N3.Store
+): Promise<string> => {
   /*
   const linkengine = await new QueryEngineFactory().create(
     {configPath: './follow_all.json'}
@@ -21,14 +23,14 @@ export const traverseURI = async (trajectory_path: any, og_uri:string, store:N3.
   */
   let N3store: N3.Store = store;
   let urls = [og_uri];
-  console.log("trajectory path: ",trajectory_path);
+  console.log("trajectory path: ", trajectory_path);
   if (og_uri.startsWith("https:")) {
     urls.push(og_uri.replace("https://", "http://"));
   } else if (og_uri.startsWith("http:")) {
     urls.push(og_uri.replace("http://", "https://"));
   }
   for (const url of urls) {
-    for(let index = 0; index < trajectory_path.length; index++) {
+    for (let index = 0; index < trajectory_path.length; index++) {
       //console.log(part);
       //console log store length
       //console.log(storeSize(store));
@@ -36,58 +38,195 @@ export const traverseURI = async (trajectory_path: any, og_uri:string, store:N3.
       let current_trajectory = trajectory_path.slice(0, index + 1).join("/");
       let query = `SELECT ?value WHERE {<${url}> ${current_trajectory} ?value . }`;
       console.log(query);
-      const results = await linkengine.queryBindings(
-        query,
-        {
+      try {
+        const results = await linkengine.queryBindings(query, {
           sources: [N3store],
+        });
+
+        console.log(results);
+
+        const bindings = await results.toArray();
+        if (bindings.length === 0) {
+          console.log("no value found for query: " + query);
+          //continue to next in forloop
+          continue;
         }
-      )
 
-      const bindings = await results.toArray();
-      if (bindings.length === 0){
-        console.log("no value found for query: " + query);
-        //continue to next in forloop
-        continue;
-      }
+        const binding: Bindings = bindings[0];
 
-      const binding: Bindings = bindings[0];
+        if (!binding) {
+          console.log("no value found for query: " + query);
+          //continue to next in forloop
+          continue;
+        }
 
-      if (!binding) {
-        console.log("no value found for query: " + query);
-        //continue to next in forloop
-        continue;
-      }
+        //take the first value of the array and get the value
+        //check if bindings value is uri , if so get the linked data
+        //if not then add the whole binding to the store
+        let term = binding.get("value") as N3.Term;
+        console.log("term value: ", term.value);
+        console.log("term type: ", term.termType);
+        if (term.termType === "NamedNode") {
+          //try catch here for named nodes that were not meant to be retrieved
+          //eg: images
+          try {
+            N3store = await getLinkedDataNQuads(term.value, N3store);
+          } catch (error) {
+            if (term.value.startsWith("bc_")) {
+              continue;
+            }
+            return term.value;
+          }
 
-      //take the first value of the array and get the value
-      //check if bindings value is uri , if so get the linked data
-      //if not then add the whole binding to the store
-      let term = binding.get('value') as N3.Term;
-      if (term.termType === 'NamedNode') {
-        //try catch here for named nodes that were not meant to be retrieved
-        //eg: images 
-        try {
-          N3store = await getLinkedDataNQuads(term.value,  N3store);
-        } catch (error) {
+          //see if the term is a blank node
+          // if yes then still get the linked data so continue
+          // blank node terms are prefixed by bc_
+          if (term.value.startsWith("bc_")) {
+            continue;
+          }
+        } else {
+          if (term.value.startsWith("bc_")) {
+            continue;
+          }
           return term.value;
         }
-      } else {
-        return term.value;
+      } catch (error) {
+        console.log("error in query", error);
+        // assume that the query is invalid and continue to next in forloop
+        continue;
       }
     }
   }
-  console.log("end store size: "+storeSize(store))
+  console.log("end store size: " + storeSize(store));
   return "";
-}
+};
 
-export const comunicaQuery = async (query:string, og_sources:string|N3.Store): Promise<BindingsStream> => {
-  return await engine.queryBindings(
-    query,
-    {
-      sources: [og_sources],
+export const collectInfoMappingKey = async (
+  mapping_key: any,
+  og_uri: string,
+  store: N3.Store,
+  config: any
+): Promise<string> => {
+  try {
+    let query = `SELECT ?value WHERE {<${og_uri}> ${config.MAPPING[mapping_key]} ?value . }`;
+    let value = await comunicaQueryString(query, store, config.PREFIXES);
+    console.info("value: ", value);
+    if (value == "") {
+      console.log("no value found for query: " + mapping_key);
+      // try and get value with trajectory path
+      const trajectory_path = _ppath_parts_for_ppath(
+        config.MAPPING[mapping_key],
+        config
+      );
+      let value = await traverseURI(trajectory_path, og_uri, store);
+      return value;
     }
-  )
+    return value;
+  } catch (error) {
+    console.log("error in query", error);
+    // try and get value with trajectory path
+    const trajectory_path = _ppath_parts_for_ppath(
+      config.MAPPING[mapping_key],
+      config
+    );
+    let value = await traverseURI(trajectory_path, og_uri, store);
+    return value;
+  }
+};
 
-}
+export const comunicaQuery = async (
+  query: string,
+  og_sources: string | N3.Store
+): Promise<BindingsStream> => {
+  return await engine.queryBindings(query, {
+    sources: [og_sources],
+  });
+};
+
+const _prefixed_query = (query: string, prefixes: any) => {
+  let prefix_query = "";
+  for (const prefix in prefixes) {
+    prefix_query += `PREFIX ${prefixes[prefix]["prefix"]}: <${prefixes[prefix]["uri"]}> \n `;
+  }
+  return prefix_query + query;
+};
+
+export const comunicaQueryString = async (
+  query: string,
+  store: N3.Store,
+  prefixes: any
+): Promise<string> => {
+  let N3store: N3.Store = store;
+  let query_prefixed = _prefixed_query(query, prefixes);
+  console.info("query prefixed: ", query_prefixed);
+  //try accept here to make sure that the query is valid
+  try {
+    const results = await engine.queryBindings(query_prefixed, {
+      sources: [N3store],
+    });
+
+    const bindings = await results.toArray();
+    if (bindings.length === 0) {
+      console.log("no value found for query: " + query);
+      //continue to next in forloop
+      return "";
+    }
+
+    const binding: Bindings = bindings[0];
+
+    if (!binding) {
+      console.log("no value found for query: " + query);
+      //continue to next in forloop
+      return "";
+    }
+
+    //take the first value of the array and get the value
+    //check if bindings value is uri , if so get the linked data
+    //if not then add the whole binding to the store
+    let term = binding.get("value") as N3.Term;
+    console.log("term value: ", term.value);
+    console.log("term type: ", term.termType);
+    if (term.termType === "NamedNode") {
+      //try catch here for named nodes that were not meant to be retrieved
+      //eg: images
+      try {
+        N3store = await getLinkedDataNQuads(term.value, N3store);
+      } catch (error) {
+        if (term.value.startsWith("bc_")) {
+          console.info(
+            "blank node detected for search, redefine search so no blank node is returned!!"
+          );
+          return term.value;
+        }
+        return term.value;
+      }
+
+      //see if the term is a blank node
+      // if yes then still get the linked data so continue
+      // blank node terms are prefixed by bc_
+      if (term.value.startsWith("bc_")) {
+        console.info(
+          "blank node detected for search, redefine search so no blank node is returned!!"
+        );
+        return term.value;
+      }
+    } else {
+      if (term.value.startsWith("bc_")) {
+        console.info(
+          "blank node detected for search, redefine search so no blank node is returned!!"
+        );
+        return term.value;
+      }
+      return term.value;
+    }
+    // typescript made me put this here
+    // this will never be reached
+    return "";
+  } catch (error) {
+    console.log("query error", error);
+    return "";
+  }
+};
 
 export function createEmptyStore() {
   var storeN3 = new Store();
@@ -95,7 +234,10 @@ export function createEmptyStore() {
   return storeN3;
 }
 
-export async function getLinkedDataNQuads(uri:string, store:N3.Store): Promise<N3.Store> {
+export async function getLinkedDataNQuads(
+  uri: string,
+  store: N3.Store
+): Promise<N3.Store> {
   const return_formats = [
     "text/turtle",
     "application/ld+json",
@@ -110,9 +252,9 @@ export async function getLinkedDataNQuads(uri:string, store:N3.Store): Promise<N
   const data = await getData(uri, return_formats);
   let text = await data.response.text();
   console.log(text);
-  
+
   const parser = new N3.Parser({ format: data.format });
-  let quads
+  let quads;
   try {
     quads = parser.parse(text);
   } catch (error) {
@@ -128,10 +270,10 @@ export async function getLinkedDataNQuads(uri:string, store:N3.Store): Promise<N
   return store;
 }
 
-async function getData(uri:string, formats:string[]) {
+async function getData(uri: string, formats: string[]) {
   for (const format of formats) {
     try {
-      //make uri https if http and log this 
+      //make uri https if http and log this
       //this is to prevent mixed content errors
       if (uri.startsWith("http:")) {
         uri = uri.replace("http://", "https://");
@@ -152,4 +294,33 @@ async function getData(uri:string, formats:string[]) {
 
 export function storeSize(store: N3.Store) {
   return store.size;
+}
+
+function _ppath_parts_for_ppath(ppath: string, config: any): string[] {
+  let REGEXP = /\s*\/\s*(?![^<]*>)/;
+  // split up in parts
+  let parts = ppath.split(REGEXP);
+  console.log(parts);
+  let new_parts = [];
+  //check if part is uri
+  for (const part of parts) {
+    if (part.startsWith("<") && part.endsWith(">")) {
+      new_parts.push(part);
+      continue;
+    }
+    //check if there is a match between the value and the prefix uri
+    // do a match replacement
+    for (const prefix in config.PREFIXES) {
+      if (part.startsWith(config.PREFIXES[prefix]["prefix"])) {
+        let new_part = part.replace(
+          config.PREFIXES[prefix]["prefix"] + ":",
+          config.PREFIXES[prefix]["uri"]
+        );
+        new_part = "<" + new_part + ">";
+        new_parts.push(new_part);
+        break;
+      }
+    }
+  }
+  return new_parts;
 }

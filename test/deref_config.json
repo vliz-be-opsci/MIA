@@ -39,15 +39,21 @@
                 "uri": "https://schema.org/"
             },
             {
-                "prefix":"org",
+                "prefix": "org",
                 "uri": "http://www.w3.org/ns/org#"
+            },
+            {
+                "prefix": "skos",
+                "uri": "http://www.w3.org/2004/02/skos/core#"
             }
         ],
         "ASSERTION_PATHS": [
             "schema:givenName",
             "schema:familyName",
             "schema:image",
-            "schema:identifier"
+            "schema:identifier",
+            "org:hasMembership/org:organization/schema:name",
+            "org:hasMembership/org:role/skos:prefLabel"
         ],
         "TEMPLATE": "person",
         "MAPPING": {
@@ -55,7 +61,8 @@
             "family": "schema:familyName",
             "image": "schema:image",
             "orcid": "schema:identifier",
-            "organization": "org:hasMembership ?membership \n ?membership schema:name"
+            "organization": "org:hasMembership/org:organization ?a. \n ?a a org:Organization .\n ?a schema:name",
+            "job_position": "org:hasMembership/org:role/skos:prefLabel"
         }
     },
     {
@@ -93,7 +100,7 @@
             "name": "schema:name",
             "location": "schema:location",
             "type": "dcterms:type",
-            "description":"schema:description"
+            "description": "schema:description"
         }
     },
     {

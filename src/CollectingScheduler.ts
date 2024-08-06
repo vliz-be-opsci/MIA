@@ -1,6 +1,6 @@
 import AffordanceEntity from './AffordanceEntity';
 
-const DELAYMS = 666;
+const DELAYMS = 666; // TODO: make this a smart delay
 
 export default class CollectingScheduler {
     schedule: any[];

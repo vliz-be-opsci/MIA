@@ -1,9 +1,15 @@
-import { createEmptyStore, getLinkedDataNQuads,comunicaQuery, traverseURI } from "./linked_data_store";
+import {
+  createEmptyStore,
+  getLinkedDataNQuads,
+  comunicaQuery,
+  traverseURI,
+  collectInfoMappingKey,
+} from "./linked_data_store";
 import { DerefConfig, DerefConfigType } from "./AffordanceManager";
-import { Bindings, Variable } from '@rdfjs/types';
+import { Bindings, Variable } from "@rdfjs/types";
 //import { QueryStringContext, QuerySourceUnidentified, BindingsStream } from '@comunica/types';
-import { Store, Term } from 'n3';
-
+import { Store, Term } from "n3";
+import { Config } from "ldes-client";
 
 export default class DerefInfoCollector {
   cashedInfo: any;
@@ -30,7 +36,7 @@ export default class DerefInfoCollector {
   }
 
   async collect_info(url: string) {
-    let info_keys: any = {}
+    let info_keys: any = {};
     let emptystore = createEmptyStore();
     emptystore = await getLinkedDataNQuads(url, emptystore);
     console.log(emptystore);
@@ -43,13 +49,28 @@ export default class DerefInfoCollector {
       return;
     }
     const ppaths = this.ppath_for_type(config_type_info);
-    for( const ppath in ppaths) {
-      const mapping_key = Object.keys(config_type_info.MAPPING)[ppath]
-      console.log(mapping_key);
+    // first deref all the paths so we have all the triples needed
+    for (const ppath in ppaths) {
       const value_path = await traverseURI(ppaths[ppath], url, emptystore);
-      console.log(value_path);
-      info_keys[mapping_key] = value_path;
     }
+    // collect info for the template
+    const mapping = Object.keys(config_type_info.MAPPING);
+    for (const key in mapping) {
+      // new function here specifically to collect info
+      console.log(mapping);
+      console.log("key: ", key);
+      console.log(config_type_info.MAPPING[mapping[key]]);
+      console.log(ppaths);
+      const value_path = await collectInfoMappingKey(
+        mapping[key],
+        url,
+        emptystore,
+        config_type_info
+      );
+      console.info("value_path: ", value_path);
+      info_keys[mapping[key]] = value_path;
+    }
+
     //template for the info
     const template_name = config_type_info.TEMPLATE;
     const to_cache: any = {};
@@ -58,7 +79,7 @@ export default class DerefInfoCollector {
     this.cashedInfo[url] = to_cache;
   }
 
-  async get_type_uri(url:any): Promise<string[]> {
+  async get_type_uri(url: any): Promise<string[]> {
     let urls = [url];
     if (url.startsWith("https")) {
       urls.push(url.replace("https://", "http://"));
@@ -67,7 +88,7 @@ export default class DerefInfoCollector {
     }
 
     let types: string[] = [];
-  
+
     for (const url of urls) {
       const query = `
             SELECT ?type WHERE {
@@ -77,8 +98,8 @@ export default class DerefInfoCollector {
       let result = await comunicaQuery(query, this.triplestore);
       const bindings = await result.toArray();
       bindings.forEach((binding: Bindings) => {
-        console.log(binding.toString())
-        let type = (binding.get('type') as Term).value;
+        console.log(binding.toString());
+        let type = (binding.get("type") as Term).value;
         types.push(type);
       });
     }
@@ -86,26 +107,29 @@ export default class DerefInfoCollector {
   }
 
   ppath_for_type(config: DerefConfigType): string[][] {
-    console.log(config)
+    console.log(config);
     let REGEXP = /\s*\/\s*(?![^<]*>)/;
     let all_ppaths = [];
     for (const assertion_path of config.ASSERTION_PATHS) {
       // split up in parts
       let parts = assertion_path.split(REGEXP);
       console.log(parts);
-      let new_parts = []
+      let new_parts = [];
       //check if part is uri
       for (const part of parts) {
         if (part.startsWith("<") && part.endsWith(">")) {
           new_parts.push(part);
           continue;
-        } 
+        }
         //check if there is a match between the value and the prefix uri
         // do a match replacement
         for (const prefix in config.PREFIXES) {
           if (part.startsWith(config.PREFIXES[prefix]["prefix"])) {
-            let new_part = part.replace(config.PREFIXES[prefix]["prefix"]+":", config.PREFIXES[prefix]["uri"]);
-            new_part = "<"+new_part+">";
+            let new_part = part.replace(
+              config.PREFIXES[prefix]["prefix"] + ":",
+              config.PREFIXES[prefix]["uri"]
+            );
+            new_part = "<" + new_part + ">";
             new_parts.push(new_part);
             break;
           }
@@ -117,7 +141,10 @@ export default class DerefInfoCollector {
   }
 }
 
-function get_config_for_rdf_type(rdf_type: string[], derefconfig: DerefConfig) : DerefConfigType | null {
+function get_config_for_rdf_type(
+  rdf_type: string[],
+  derefconfig: DerefConfig
+): DerefConfigType | null {
   for (const rtype of rdf_type) {
     console.log(rtype);
     for (const key in derefconfig) {
@@ -129,4 +156,3 @@ function get_config_for_rdf_type(rdf_type: string[], derefconfig: DerefConfig) :
   }
   return null;
 }
-
