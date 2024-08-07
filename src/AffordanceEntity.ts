@@ -133,6 +133,10 @@ export default class AffordanceEntity {
       this.link.includes("marineregions")
     ) {
       element.classList.add("confluence_box");
+      //add <div class="svg-background"></div> to the inner html of the element before the text
+      let background = document.createElement("div");
+      background.classList.add("svg_background");
+      element.insertBefore(background, element.firstChild);
     }
 
     if (!this.initial_updated) {
@@ -173,7 +177,9 @@ export default class AffordanceEntity {
           } else if (content.title !== undefined) {
             element.innerHTML = content.title;
           }
-
+          let background = document.createElement("div");
+          background.classList.add("svg_background");
+          element.insertBefore(background, element.firstChild);
           this.initial_updated = true;
           clearInterval(intervalId); // Stop the interval
         }
