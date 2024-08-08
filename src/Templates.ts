@@ -22,9 +22,9 @@ export function generatePersonCardTemplate(
   let innerHTML = `
         <div class="person-card">
             <div class="card-body">
-                <h5 class="card-title">${surname} ${familyname}</h5>
-                <p>${job_position}</p>
-                <p>${organization}</p>
+                <div class="card-title">${surname} ${familyname}</div>
+                <div class="small-bold">${job_position}</div>
+                <div class="small-bold">${organization}</div>
                 <a href="${
                   data.orcid
                 }" target="_blank"><img class="svg_icon" src="${orcidSVG}" alt="ORCID" class="orcid-logo"></a>

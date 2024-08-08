@@ -9,7 +9,6 @@ import { DerefConfig, DerefConfigType } from "./AffordanceManager";
 import { Bindings, Variable } from "@rdfjs/types";
 //import { QueryStringContext, QuerySourceUnidentified, BindingsStream } from '@comunica/types';
 import { Store, Term, Quad } from "n3";
-import { Config } from "ldes-client";
 
 export default class DerefInfoCollector {
   cashedInfo: any;

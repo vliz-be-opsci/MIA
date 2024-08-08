@@ -1,35 +1,25 @@
 .card {
-  background-color: #eff;
+  background-color: white;
   padding: 10px;
+  border-radius: 2px;
+  border: 1px solid black;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 10;
   max-width: 400px;
   width: fit-content;
   max-height: 250px;
 }
-
-.card::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  border-left: 15px solid transparent;
-  border-top: 15px solid #007bff; /* Change the color to match your design */
-  width: 0;
-  height: 0;
-  z-index: 20;
-  cursor: pointer; /* Indicates the element is clickable */
-}
-
+/*
 .card::before {
   content: "";
   position: absolute;
-  top: -10px; /* Adjust based on your margin and padding */
-  left: 10px; /* Adjust to position the triangle correctly */
-  border-width: 0 15px 15px 15px; /* Creates the triangle */
+  top: -10px;
+  left: 10px; 
+  border-width: 0 15px 15px 15px; 
   border-style: solid;
-  border-color: transparent transparent #eff transparent; /* Adjust colors */
+  border-color: transparent transparent black transparent;
 }
+*/
 
 .card.hover-triangle::after {
   border-top: 20px solid #020066; /* Change the color to match your design */
@@ -120,4 +110,10 @@
   margin-right: 4px;
   vertical-align: text-top;
   margin-left: 2px;
+}
+
+.small-bold {
+  font-weight: bold;
+  font-size: smaller;
+  margin-top: 1px;
 }
