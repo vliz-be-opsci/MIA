@@ -34,7 +34,24 @@ export function generatePersonCardTemplate(
             )}" class="card-img-top" id="person_image" alt="${surname} ${familyname} image">
         </div>
     `;
-  html_element.innerHTML = innerHTML;
+  let newInnerHTML = `
+  <div class="card">
+        <div class="card-content">
+            <h2 class="title">${surname} ${familyname}</h2>
+            <p class="subtitle">${job_position}</p>
+            <p class="subtitle">${organization}</p>
+            <div class="icons">
+                <a href="${data.orcid}" target="_blank"><img class="svg_icon" src="${orcidSVG}" alt="Orcid"></a>
+                <a href="#" target="_blank"><img class="svg_icon" src="${orcidSVG}" alt="Comment"></a>
+                <a href="#" target="_blank"><img class="svg_icon" src="${orcidSVG}" alt="Share"></a>
+            </div>
+        </div>
+        <div class="card-image">
+            <img src="${cleanURI(image)}" class="card-img-top" id="person_image" alt="Cedric Decruw image">
+        </div>
+    </div>
+  `;
+  html_element.innerHTML = newInnerHTML;
   //add element to body
   document.body.appendChild(html_element);
   return html_element;
