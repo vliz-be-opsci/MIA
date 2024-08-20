@@ -10,7 +10,9 @@
     "dev": "webpack serve",
     "build": "webpack build",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "watch": "nodemon --watch src --exec \"npm run build\"",
+    "build:css": "tailwindcss -i ./src/css/tailwind.css -o ./src/css/styles.css --watch"
   },
   "repository": {
     "type": "git",
@@ -43,10 +45,12 @@
     "autoprefixer": "^10.4.19",
     "css-loader": "^7.1.2",
     "html-webpack-plugin": "^5.6.0",
+    "nodemon": "^3.1.4",
     "postcss-loader": "^8.1.1",
     "sass": "^1.77.6",
     "sass-loader": "^14.2.1",
     "style-loader": "^4.0.0",
+    "tailwindcss": "^3.4.10",
     "ts-loader": "^9.5.1",
     "typescript": "^5.4.5",
     "webpack": "^5.91.0",

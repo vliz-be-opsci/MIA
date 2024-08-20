@@ -2,6 +2,7 @@
 import * as L from "leaflet";
 import orcidSVG from "./css/orcid.svg";
 import clipboard from "./css/clipboard.svg";
+import marininfologo from "./css/Marine Info_logosymbool.svg";
 
 export function generatePersonCardTemplate(
   data: { [key: string]: any },
@@ -17,41 +18,32 @@ export function generatePersonCardTemplate(
   let organization = data.organization || "";
   let job_position = data.job_position || "";
 
-  //if orcid data then add it to the card
-
-  let innerHTML = `
-        <div class="person-card">
-            <div class="card-body">
-                <div class="card-title">${surname} ${familyname}</div>
-                <div class="small-bold">${job_position}</div>
-                <div class="small-bold">${organization}</div>
-                <a href="${
-                  data.orcid
-                }" target="_blank"><img class="svg_icon" src="${orcidSVG}" alt="ORCID" class="orcid-logo"></a>
+  //tailwind
+  let person_html = `
+     <div class="flex items-center bg-white rounded-lg shadow-lg">
+        <img src="${cleanURI(image)}" alt="Profile Image" class="h-30">
+        <div class="ml-4">
+            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5"><img class="h-4 w-4 mr-1" src="${marininfologo}" alt="Orcid">${surname} ${familyname}</h2>
+            <p class="text-sm text-gray-500 mr-5">${job_position}</p>
+            <p class="text-sm text-gray-500 mr-5">${organization}</p>
+            <div class="mt-2 flex space-x-4">
+                <a href="#orcidhere" class="text-gray-500 hover:text-gray-700">
+                    <img class="h-6 w-6" src="${orcidSVG}" alt="Orcid">
+                </a>
+                <button class="text-gray-500 hover:text-gray-700">
+                     <img class="h-6 w-6" src="${clipboard}" alt="Orcid">
+                </button>
+                <button class="text-gray-500 hover:text-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                </button>
             </div>
-            <img src="${cleanURI(
-              image
-            )}" class="card-img-top" id="person_image" alt="${surname} ${familyname} image">
-        </div>
-    `;
-  let newInnerHTML = `
-  <div class="card">
-        <div class="card-content">
-            <h2 class="title">${surname} ${familyname}</h2>
-            <p class="subtitle">${job_position}</p>
-            <p class="subtitle">${organization}</p>
-            <div class="icons">
-                <a href="${data.orcid}" target="_blank"><img class="svg_icon" src="${orcidSVG}" alt="Orcid"></a>
-                <a href="#" target="_blank"><img class="svg_icon" src="${orcidSVG}" alt="Comment"></a>
-                <a href="#" target="_blank"><img class="svg_icon" src="${orcidSVG}" alt="Share"></a>
-            </div>
-        </div>
-        <div class="card-image">
-            <img src="${cleanURI(image)}" class="card-img-top" id="person_image" alt="Cedric Decruw image">
         </div>
     </div>
   `;
-  html_element.innerHTML = newInnerHTML;
+
+  html_element.innerHTML = person_html;
   //add element to body
   document.body.appendChild(html_element);
   return html_element;
