@@ -17,6 +17,7 @@ export function generatePersonCardTemplate(
   let image = data.image || "";
   let organization = data.organization || "";
   let job_position = data.job_position || "";
+  let orcid = data.orcid || "";
 
   //tailwind
   let person_html = `
@@ -27,7 +28,7 @@ export function generatePersonCardTemplate(
             <p class="text-sm text-gray-500 mr-5">${job_position}</p>
             <p class="text-sm text-gray-500 mr-5">${organization}</p>
             <div class="mt-2 flex space-x-4">
-                <a href="#orcidhere" class="text-gray-500 hover:text-gray-700">
+                <a href="${orcid}" class="text-gray-500 hover:text-gray-700">
                     <img class="h-6 w-6" src="${orcidSVG}" alt="Orcid">
                 </a>
                 <button class="text-gray-500 hover:text-gray-700">
