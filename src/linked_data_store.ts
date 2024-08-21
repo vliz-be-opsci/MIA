@@ -65,9 +65,15 @@ export const traverseURI = async (
         let term = binding.get("value") as N3.Term;
         console.log("term value: ", term.value);
         console.log("term type: ", term.termType);
+
+        if (term.value.includes("doi.org")) {
+          return term.value;
+        }
+
         if (term.termType === "NamedNode") {
           //try catch here for named nodes that were not meant to be retrieved
           //eg: images
+
           try {
             N3store = await getLinkedDataNQuads(term.value, N3store);
           } catch (error) {

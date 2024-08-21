@@ -227,14 +227,21 @@
         "ASSERTION_PATHS": [
             "dcterms:title",
             "schema:datePublished",
-            "dcterms:type"
+            "dcterms:type",
+            "schema:isAccessibleForFree",
+            "schema:author/schema:givenName",
+            "dcterms:references/schema:accessURL",
+            "dcterms:bibliographicCitation"
         ],
         "TEMPLATE": "bibresource",
         "MAPPING": {
             "title": "dcterms:title",
             "type": "dcterms:type",
-            "description": "schema:description",
-            "publishDate": "schema:datePublished"
+            "publishDate": "schema:datePublished",
+            "author": "schema:author/schema:givenName",
+            "free": "schema:isAccessibleForFree",
+            "download": "dcterms:references/schema:accessURL",
+            "citation": "dcterms:bibliographicCitation"
         }
     }
 ]

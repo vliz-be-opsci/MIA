@@ -5,6 +5,12 @@ import clipboard from "./css/clipboard.svg";
 import marininfologo from "./css/Marine Info_logosymbool.svg";
 import globe from "./css/globe.svg";
 import zoomlocation from "./css/zoom_location.svg";
+import copyright_bad from "./css/copyright_bad.svg";
+import copyright_good from "./css/copyright_good.svg";
+import download_svg from "./css/download.svg";
+import book from "./css/book.svg";
+import scroll from "./css/scroll.svg";
+import photo_film from "./css/photo_film.svg";
 
 export function generatePersonCardTemplate(
   data: { [key: string]: any },
@@ -98,6 +104,16 @@ export function generateInfoCardTemplate(
   return html_element;
 }
 
+function stringlengthshortener(str: string, length: number): string {
+  if (str.length > length) {
+    let returnstring = `
+    <div title="${str}"> ${str.substring(0, length) + "..."} </div>
+    `;
+    return returnstring;
+  }
+  return str;
+}
+
 export function generateBibliographicResourceCardTemplate(
   data: { [key: string]: any },
   html_element: HTMLElement,
@@ -109,21 +125,69 @@ export function generateBibliographicResourceCardTemplate(
   //for each undefined value, replace with a default value
   let title = data.title || "";
   let type = data.type || "";
-  let description = `<p class="card-text">${data.description}</p>` || "";
+  let free_type = data.free || "";
   let publishDate = data.publishDate || "";
+  let download_url = data.download || "";
+  let citation = data.citation || "";
+
+  console.info("download url: ", download_url);
+
+  let download_button = "";
+  let copyright_badge = `<button class="text-gray-500 hover:text-gray-700">
+                     <img class="h-6 w-6 icon_svg" src="${copyright_bad}" alt="Orcid">
+                </button>`;
+
+  if (free_type == "true") {
+    copyright_badge = `<button class="text-gray-500 hover:text-gray-700">
+                    <img class="h-6 w-6 icon_svg" src="${copyright_good}" alt="Orcid">
+              </button>`;
+  }
+
+  if (free_type != "") {
+    if (download_url != "") {
+      download_button = `
+      <button class="text-gray-500 hover:text-gray-700">
+            <img id="download-button" title="${download_url}" class="h-6 w-6 icon_svg" src="${download_svg}" alt="Orcid">
+      </button>
+      `;
+    }
+  }
 
   let innerHTML = `
-     <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;">
+     <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;height:150px;max-height:150px;">
         <div class="ml-4">
-            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5"><img id="marineinfo_logo" class="h-4 w-4 mr-1" src="${marininfologo}" alt="Orcid">${title}</h2>
-            <p class="text-sm text-gray-500 mr-5">${type}</p>
-            <p class="text-sm text-gray-500 mr-5">${publishDate}</p>
+            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5"><img id="marineinfo_logo" class="h-4 w-4 mr-1" src="${marininfologo}" alt="Orcid">${stringlengthshortener(
+    title,
+    50
+  )}</h2>
+            <p class="text-sm text-gray-500 mr-5"><b>type: </b>${type}</p>
+            <p class="text-sm text-gray-500 mr-5"><b>release date: </b>${publishDate}</p>
+            <div class="mt-2 flex space-x-4">
+                ${copyright_badge}
+                ${download_button}
+                <button class="text-gray-500 hover:text-gray-700">
+                     <img id="clipboard-button" title="copy citation to clipboard" class="h-6 w-6 icon_svg" src="${clipboard}" alt="Orcid">
+                </button>
+            </div>
         </div>
     </div>
   `;
   html_element.innerHTML = innerHTML;
   //add element to body
   document.body.appendChild(html_element);
+
+  const clipboardButton = document.getElementById("clipboard-button");
+  clipboardButton?.addEventListener("click", () => {
+    //copy the _link to the clipboard
+    navigator.clipboard.writeText(citation);
+    console.log("Citation copied to clipboard");
+  });
+
+  const downloadButton = document.getElementById("download-button");
+  downloadButton?.addEventListener("click", () => {
+    //copy the _link to the clipboard
+    window.open(download_url, "_blank");
+  });
 
   const marineinfoLogo = document.getElementById("marineinfo_logo");
   marineinfoLogo?.addEventListener("click", () => {
