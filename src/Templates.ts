@@ -202,7 +202,11 @@ export function generateMapCardTemplate(
   //add element to body
   document.body.appendChild(html_element);
 
-  //
+  // marineinfo click event
+  const marineinfoLogo = document.getElementById("marineinfo_logo");
+  marineinfoLogo?.addEventListener("click", () => {
+    window.open(_link, "_blank");
+  });
 
   // Initialize the map after the template is inserted
   const map = L.map(uniqueId, {
@@ -259,7 +263,7 @@ export function generateMapCardTemplate(
             const center = wkt.Centroid(centroid);
             map.setView(center, 0); // Zoom out to the whole map
           }
-          container.style.backgroundImage = `url('${globe}')`;
+          container.style.backgroundImage = `url('${zoomlocation}')`;
         }
         if (zoomedOut) {
           if (mapwkt !== null) {
@@ -270,7 +274,7 @@ export function generateMapCardTemplate(
             map.setView(center);
             map.setZoom(13);
           }
-          container.style.backgroundImage = `url('${zoomlocation}')`;
+          container.style.backgroundImage = `url('${globe}')`;
         }
         zoomedOut = !zoomedOut;
       };
