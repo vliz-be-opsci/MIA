@@ -107,23 +107,29 @@ export function generateBibliographicResourceCardTemplate(
 
   console.log(data);
   //for each undefined value, replace with a default value
-  let title =
-    `<h5 class="card-title">${data.title}</h5>` || "No title available";
-  let type = `<p class="card-text">${data.type}</p>` || "";
+  let title = data.title || "";
+  let type = data.type || "";
   let description = `<p class="card-text">${data.description}</p>` || "";
-  let publishDate = `<p class="card-text">${data.publishDate}</p>` || "";
+  let publishDate = data.publishDate || "";
 
   let innerHTML = `
-        <div class="card-body">
-            ${title}
-            ${type}
-            ${description}
-            ${publishDate}
+     <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;">
+        <div class="ml-4">
+            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5"><img id="marineinfo_logo" class="h-4 w-4 mr-1" src="${marininfologo}" alt="Orcid">${title}</h2>
+            <p class="text-sm text-gray-500 mr-5">${type}</p>
+            <p class="text-sm text-gray-500 mr-5">${publishDate}</p>
         </div>
-    `;
+    </div>
+  `;
   html_element.innerHTML = innerHTML;
   //add element to body
   document.body.appendChild(html_element);
+
+  const marineinfoLogo = document.getElementById("marineinfo_logo");
+  marineinfoLogo?.addEventListener("click", () => {
+    window.open(_link, "_blank");
+  });
+
   return html_element;
 }
 
