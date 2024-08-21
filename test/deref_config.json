@@ -28,7 +28,8 @@
         "MAPPING": {
             "mapwkt": "mr:hasGeometry/gsp:asWKT",
             "centroid": "<http://www.w3.org/ns/dcat#centroid>/gsp:asWKT",
-            "name": "skos:prefLabel"
+            "name": "skos:prefLabel",
+            "type_place": "rdf:type"
         }
     },
     {

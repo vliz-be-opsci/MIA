@@ -134,10 +134,6 @@ export default class AffordanceEntity {
       this.link.includes("marineregions")
     ) {
       element.classList.add("confluence_box");
-      //add <div class="svg-background"></div> to the inner html of the element before the text
-      let background = document.createElement("div");
-      background.classList.add("svg_background");
-      element.insertBefore(background, element.firstChild);
     }
 
     if (!this.initial_updated) {
@@ -178,9 +174,6 @@ export default class AffordanceEntity {
           } else if (content.title !== undefined) {
             element.innerHTML = content.title;
           }
-          let background = document.createElement("div");
-          background.classList.add("svg_background");
-          element.insertBefore(background, element.firstChild);
           this.initial_updated = true;
           clearInterval(intervalId); // Stop the interval
         }
@@ -212,10 +205,7 @@ export default class AffordanceEntity {
     // the popup should be placed under or above the link depending on the position of the link
     let affordance_position = this.element.getBoundingClientRect();
     let current_window_height = window.innerHeight;
-    let current_window_width = window.innerWidth;
     let affordance_position_top = affordance_position.top;
-    let affordance_position_bottom =
-      current_window_height - affordance_position.top;
     let scrolled_height =
       window.pageYOffset || document.documentElement.scrollTop;
     let scrolled_width =
@@ -227,11 +217,11 @@ export default class AffordanceEntity {
     // if the affordance is closer to the top of the window, place the card below the link
     if (affordance_position_top < current_window_height / 2) {
       //the top of the card should be 25px below the bottom of the link
-      card.style.top = affordance_position.bottom + scrolled_height + 10 + "px";
+      card.style.top = affordance_position.bottom + scrolled_height + 1 + "px";
     } else {
       //the top of the card should be 25px below the bottom of the link
       //keep in mind that the page might be scrolled
-      card.style.top = affordance_position.bottom + scrolled_height + 10 + "px";
+      card.style.top = affordance_position.bottom + scrolled_height + 1 + "px";
     }
     //make the left of the card the same as the left of the link
     card.style.left = event.x + scrolled_width - 20 + "px";
@@ -274,20 +264,13 @@ export default class AffordanceEntity {
     //add template to card
     card = this._get_template_name(template_name)(
       this.collected_info.content[template_name],
-      card
+      card,
+      affordance_link
     );
 
     document.body.addEventListener("mousemove", (event) => {
       //check if mouse is on triangle
       let rect = card.getBoundingClientRect();
-      let isInTriangle =
-        event.clientX > rect.right - 20 && event.clientY < rect.top + 20; // Adjust the 30px based on the triangle size
-      if (isInTriangle) {
-        card.classList.add("hover-triangle");
-        card.style.content = `url:${affordance_link}`;
-      } else {
-        card.classList.remove("hover-triangle");
-      }
     });
 
     card.addEventListener("mouseleave", () => {
@@ -317,9 +300,6 @@ export default class AffordanceEntity {
       var rect = card.getBoundingClientRect();
       var isInTriangle =
         e.clientX > rect.right - 20 && e.clientY < rect.top + 20; // Adjust the 30px based on the triangle size
-      if (isInTriangle) {
-        window.location.href = affordance_link; // Change to your desired URL
-      }
     });
   }
 

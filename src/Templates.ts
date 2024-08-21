@@ -3,10 +3,13 @@ import * as L from "leaflet";
 import orcidSVG from "./css/orcid.svg";
 import clipboard from "./css/clipboard.svg";
 import marininfologo from "./css/Marine Info_logosymbool.svg";
+import globe from "./css/globe.svg";
+import zoomlocation from "./css/zoom_location.svg";
 
 export function generatePersonCardTemplate(
   data: { [key: string]: any },
-  html_element: HTMLElement
+  html_element: HTMLElement,
+  affordance_link: string
 ): HTMLElement {
   console.log(data);
   console.log(html_element);
@@ -18,26 +21,22 @@ export function generatePersonCardTemplate(
   let organization = data.organization || "";
   let job_position = data.job_position || "";
   let orcid = data.orcid || "";
+  let _link = affordance_link || "";
 
   //tailwind
   let person_html = `
      <div class="flex items-center bg-white rounded-lg shadow-lg">
         <img src="${cleanURI(image)}" alt="Profile Image" class="h-30">
         <div class="ml-4">
-            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5"><img class="h-4 w-4 mr-1" src="${marininfologo}" alt="Orcid">${surname} ${familyname}</h2>
+            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5"><img id="marineinfo_logo" class="h-4 w-4 mr-1" src="${marininfologo}" alt="Orcid">${surname} ${familyname}</h2>
             <p class="text-sm text-gray-500 mr-5">${job_position}</p>
             <p class="text-sm text-gray-500 mr-5">${organization}</p>
             <div class="mt-2 flex space-x-4">
                 <a href="${orcid}" class="text-gray-500 hover:text-gray-700">
-                    <img class="h-6 w-6" src="${orcidSVG}" alt="Orcid">
+                    <img class="h-6 w-6 icon_svg" src="${orcidSVG}" alt="Orcid">
                 </a>
                 <button class="text-gray-500 hover:text-gray-700">
-                     <img class="h-6 w-6" src="${clipboard}" alt="Orcid">
-                </button>
-                <button class="text-gray-500 hover:text-gray-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                    </svg>
+                     <img id="clipboard-button" title="copy to clipboard" class="h-6 w-6 icon_svg" src="${clipboard}" alt="Orcid">
                 </button>
             </div>
         </div>
@@ -47,6 +46,19 @@ export function generatePersonCardTemplate(
   html_element.innerHTML = person_html;
   //add element to body
   document.body.appendChild(html_element);
+
+  const clipboardButton = document.getElementById("clipboard-button");
+  clipboardButton?.addEventListener("click", () => {
+    //copy the _link to the clipboard
+    navigator.clipboard.writeText(_link);
+    console.log("Copied to clipboard");
+  });
+
+  const marineinfoLogo = document.getElementById("marineinfo_logo");
+  marineinfoLogo?.addEventListener("click", () => {
+    window.open(_link, "_blank");
+  });
+
   return html_element;
 }
 
@@ -56,10 +68,13 @@ function cleanURI(uri: string): string {
 
 export function generateInfoCardTemplate(
   data: { [key: string]: any },
-  html_element: HTMLElement
+  html_element: HTMLElement,
+  affordance_link: string
 ): HTMLElement {
   console.log(data);
   console.log(html_element);
+
+  let _link = affordance_link || "";
 
   //for each undefined value, replace with a default value
   let title = data.title || "No title available";
@@ -85,8 +100,11 @@ export function generateInfoCardTemplate(
 
 export function generateBibliographicResourceCardTemplate(
   data: { [key: string]: any },
-  html_element: HTMLElement
+  html_element: HTMLElement,
+  affordance_link: string
 ): HTMLElement {
+  let _link = affordance_link || "";
+
   console.log(data);
   //for each undefined value, replace with a default value
   let title =
@@ -135,8 +153,11 @@ export function generateEventCardTemplate(
 
 export function generateMapCardTemplate(
   data: { [key: string]: any },
-  html_element: HTMLElement
+  html_element: HTMLElement,
+  affordance_link: string
 ): HTMLElement {
+  let _link = affordance_link || "";
+
   console.log(data);
   const name = data.name || "Map Location";
   const mapwkt = data.mapwkt || null; // Default to 0 if not provided
@@ -166,21 +187,27 @@ export function generateMapCardTemplate(
   };
   document.head.appendChild(leafletJs);
 
-  let innerHTML = `
-        <div class="card-body">
-            <h5 class="card-title">${name}</h5>
-            <div id="${uniqueId}" style="height: 150px;width: 300px"></div>
+  let InnerHTML = `
+    <div class="items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;">
+        <div class="ml-4">
+          <div class="mt-2 flex space-x-4">
+            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5"><img id="marineinfo_logo" class="h-4 w-4 mr-1" src="${marininfologo}" alt="marineregions">${name}</h2>
+          </div>
         </div>
-        `;
+        <div id="${uniqueId}" style="height: 150px;width: 100%"></div>
+    </div>
+  `;
 
-  html_element.innerHTML = innerHTML;
+  html_element.innerHTML = InnerHTML;
   //add element to body
   document.body.appendChild(html_element);
 
   //
 
   // Initialize the map after the template is inserted
-  const map = L.map(uniqueId);
+  const map = L.map(uniqueId, {
+    attributionControl: false,
+  });
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution:
@@ -201,6 +228,58 @@ export function generateMapCardTemplate(
     map.setView(center);
     map.setZoom(13);
   }
+
+  //add custom control to the map
+  const customControl = L.Control.extend({
+    options: {
+      position: "topright",
+    },
+    onAdd: function (map: any) {
+      const container = L.DomUtil.create(
+        "div",
+        "leaflet-bar leaflet-control leaflet-control-custom"
+      );
+      container.style.backgroundColor = "white";
+      container.style.backgroundImage = `url('${globe}')`;
+      container.style.backgroundSize = "20px 20px";
+      container.style.backgroundRepeat = "no-repeat";
+      container.style.backgroundPosition = "center";
+      container.style.width = "30px";
+      container.style.height = "30px";
+
+      let zoomedOut = false;
+
+      container.onclick = function () {
+        if (!zoomedOut) {
+          if (mapwkt !== null) {
+            const polygon = wkt.ToPolygon(mapwkt, { color: "red" });
+            const center = polygon.getBounds().getCenter();
+            map.setView(center, 0); // Zoom out to the whole map
+          } else if (centroid !== null) {
+            const center = wkt.Centroid(centroid);
+            map.setView(center, 0); // Zoom out to the whole map
+          }
+          container.style.backgroundImage = `url('${globe}')`;
+        }
+        if (zoomedOut) {
+          if (mapwkt !== null) {
+            const polygon = wkt.ToPolygon(mapwkt, { color: "red" });
+            map.fitBounds(polygon.getBounds());
+          } else {
+            const center = wkt.Centroid(centroid);
+            map.setView(center);
+            map.setZoom(13);
+          }
+          container.style.backgroundImage = `url('${zoomlocation}')`;
+        }
+        zoomedOut = !zoomedOut;
+      };
+
+      return container;
+    },
+  });
+
+  map.addControl(new customControl());
 
   // do a fake window resize to make sure the map is displayed correctly
   window.dispatchEvent(new Event("resize"));
