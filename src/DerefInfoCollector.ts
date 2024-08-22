@@ -22,10 +22,6 @@ export default class DerefInfoCollector {
   }
 
   async collectInfo(url: string) {
-    console.log("collecting info");
-    console.log(this.cashedInfo);
-    console.log(this.derefconfig);
-    console.log(url);
     if (this.cashedInfo[url] !== undefined) {
       console.log("info already collected");
       return this.cashedInfo[url];
@@ -44,10 +40,8 @@ export default class DerefInfoCollector {
     let info_keys: any = {};
     let emptystore: Store = createEmptyStore();
     emptystore = await getLinkedDataNQuads(url, emptystore);
-    console.log(emptystore);
     this.triplestore = this._combine_triplestores(this.triplestore, emptystore);
     const types = await this.get_type_uri(url);
-    console.log(types);
     const config_type_info = get_config_for_rdf_type(types, this.derefconfig);
     console.log(config_type_info);
     if (config_type_info === null) {
@@ -62,10 +56,12 @@ export default class DerefInfoCollector {
     const mapping = Object.keys(config_type_info.MAPPING);
     for (const key in mapping) {
       // new function here specifically to collect info
+      /*
       console.log(mapping);
       console.log("key: ", key);
       console.log(config_type_info.MAPPING[mapping[key]]);
       console.log(ppaths);
+      */
       const value_path = await collectInfoMappingKey(
         mapping[key],
         url,
@@ -104,7 +100,6 @@ export default class DerefInfoCollector {
       let result = await comunicaQuery(query, this.triplestore);
       const bindings = await result.toArray();
       bindings.forEach((binding: Bindings) => {
-        console.log(binding.toString());
         let type = (binding.get("type") as Term).value;
         types.push(type);
       });
@@ -113,13 +108,11 @@ export default class DerefInfoCollector {
   }
 
   ppath_for_type(config: DerefConfigType): string[][] {
-    console.log(config);
     let REGEXP = /\s*\/\s*(?![^<]*>)/;
     let all_ppaths = [];
     for (const assertion_path of config.ASSERTION_PATHS) {
       // split up in parts
       let parts = assertion_path.split(REGEXP);
-      console.log(parts);
       let new_parts = [];
       //check if part is uri
       for (const part of parts) {
@@ -152,7 +145,6 @@ function get_config_for_rdf_type(
   derefconfig: DerefConfig
 ): DerefConfigType | null {
   for (const rtype of rdf_type) {
-    console.log(rtype);
     for (const key in derefconfig) {
       const config = derefconfig[key];
       if (config.RDF_TYPE === rtype) {

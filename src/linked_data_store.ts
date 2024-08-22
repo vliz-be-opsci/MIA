@@ -38,13 +38,13 @@ export const traverseURI = async (
       //change the current trajectory path to the slice of the path
       let current_trajectory = trajectory_path.slice(0, index + 1).join("/");
       let query = `SELECT ?value WHERE {<${url}> ${current_trajectory} ?value . }`;
-      console.log(query);
+      //console.log(query);
       try {
         const results = await linkengine.queryBindings(query, {
           sources: [N3store],
         });
 
-        console.log(results);
+        //console.log(results);
 
         const bindings = await results.toArray();
         if (bindings.length === 0) {
@@ -74,8 +74,8 @@ export const traverseURI = async (
         //check if bindings value is uri , if so get the linked data
         //if not then add the whole binding to the store
         let term = binding.get("value") as N3.Term;
-        console.log("term value: ", term.value);
-        console.log("term type: ", term.termType);
+        //console.log("term value: ", term.value);
+        //console.log("term type: ", term.termType);
 
         if (term.value.includes("doi.org")) {
           return term.value;
@@ -210,8 +210,8 @@ export const comunicaQueryString = async (
     //check if bindings value is uri , if so get the linked data
     //if not then add the whole binding to the store
     let term = binding.get("value") as N3.Term;
-    console.log("term value: ", term.value);
-    console.log("term type: ", term.termType);
+    //console.log("term value: ", term.value);
+    //console.log("term type: ", term.termType);
     if (term.termType === "NamedNode") {
       //try catch here for named nodes that were not meant to be retrieved
       //eg: images
@@ -256,7 +256,7 @@ export const comunicaQueryString = async (
 
 export function createEmptyStore() {
   var storeN3 = new Store();
-  console.log("store", storeN3); //N3 works
+  //console.log("store", storeN3); //N3 works
   return storeN3;
 }
 
@@ -277,7 +277,7 @@ export async function getLinkedDataNQuads(
 
   const data = await getData(uri, return_formats);
   let text = await data.response.text();
-  console.log(text);
+  //console.log(text);
 
   const parser = new N3.Parser({ format: data.format });
   let quads;
@@ -292,7 +292,7 @@ export async function getLinkedDataNQuads(
     store.addQuad(quad);
   }
 
-  console.log(store);
+  //console.log(store);
   return store;
 }
 
@@ -326,7 +326,7 @@ function _ppath_parts_for_ppath(ppath: string, config: any): string[] {
   let REGEXP = /\s*\/\s*(?![^<]*>)/;
   // split up in parts
   let parts = ppath.split(REGEXP);
-  console.log(parts);
+  //console.log(parts);
   let new_parts = [];
   //check if part is uri
   for (const part of parts) {
