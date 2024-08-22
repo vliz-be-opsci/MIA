@@ -26,10 +26,22 @@
         ],
         "TEMPLATE": "map",
         "MAPPING": {
-            "mapwkt": "mr:hasGeometry/gsp:asWKT",
-            "centroid": "<http://www.w3.org/ns/dcat#centroid>/gsp:asWKT",
-            "name": "skos:prefLabel",
-            "type_place": "rdf:type"
+            "mapwkt": {
+                "query": "mr:hasGeometry/gsp:asWKT",
+                "type": "single"
+            },
+            "centroid": {
+                "query": "<http://www.w3.org/ns/dcat#centroid>/gsp:asWKT",
+                "type": "single"
+            },
+            "name": {
+                "query": "skos:prefLabel",
+                "type": "single"
+            },
+            "type_place": {
+                "query": "rdf:type",
+                "type": "list"
+            }
         }
     },
     {
@@ -58,12 +70,30 @@
         ],
         "TEMPLATE": "person",
         "MAPPING": {
-            "name": "schema:givenName",
-            "family": "schema:familyName",
-            "image": "schema:image",
-            "orcid": "schema:identifier",
-            "organization": "org:hasMembership/org:organization ?a. \n ?a a org:Organization .\n ?a schema:name",
-            "job_position": "org:hasMembership/org:role/skos:prefLabel"
+            "name": {
+                "query": "schema:givenName",
+                "type": "single"
+            },
+            "family": {
+                "query": "schema:familyName",
+                "type": "single"
+            },
+            "image": {
+                "query": "schema:image",
+                "type": "single"
+            },
+            "orcid": {
+                "query": "schema:identifier",
+                "type": "single"
+            },
+            "organization": {
+                "query": "org:hasMembership/org:organization ?a. \n ?a a org:Organization .\n ?a schema:name",
+                "type": "single"
+            },
+            "job_position": {
+                "query": "org:hasMembership/org:role/skos:prefLabel",
+                "type": "single"
+            }
         }
     },
     {
@@ -98,10 +128,22 @@
         ],
         "TEMPLATE": "Event",
         "MAPPING": {
-            "name": "schema:name",
-            "location": "schema:location",
-            "type": "dcterms:type",
-            "description": "schema:description"
+            "name": {
+                "query": "schema:name",
+                "type": "single"
+            },
+            "location": {
+                "query": "schema:location",
+                "type": "single"
+            },
+            "type": {
+                "query": "dcterms:type",
+                "type": "single"
+            },
+            "description": {
+                "query": "schema:description",
+                "type": "single"
+            }
         }
     },
     {
@@ -135,9 +177,18 @@
         ],
         "TEMPLATE": "Dataset",
         "MAPPING": {
-            "title": "dcterms:title",
-            "license": "dcterms:license",
-            "description": "dcterms:abstract"
+            "title": {
+                "query": "dcterms:title",
+                "type": "single"
+            },
+            "license": {
+                "query": "dcterms:license",
+                "type": "single"
+            },
+            "description": {
+                "query": "dcterms:abstract",
+                "type": "single"
+            }
         }
     },
     {
@@ -170,8 +221,14 @@
         ],
         "TEMPLATE": "Project",
         "MAPPING": {
-            "title": "schema:name",
-            "description": "schema:description"
+            "title": {
+                "query": "schema:name",
+                "type": "single"
+            },
+            "description": {
+                "query": "schema:description",
+                "type": "single"
+            }
         }
     },
     {
@@ -204,8 +261,14 @@
         ],
         "TEMPLATE": "default",
         "MAPPING": {
-            "title": "schema:name",
-            "description": "schema:description"
+            "title": {
+                "query": "schema:name",
+                "type": "single"
+            },
+            "description": {
+                "query": "schema:description",
+                "type": "single"
+            }
         }
     },
     {
@@ -235,13 +298,34 @@
         ],
         "TEMPLATE": "bibresource",
         "MAPPING": {
-            "title": "dcterms:title",
-            "type": "dcterms:type",
-            "publishDate": "schema:datePublished",
-            "author": "schema:author/schema:givenName",
-            "free": "schema:isAccessibleForFree",
-            "download": "dcterms:references/schema:accessURL",
-            "citation": "dcterms:bibliographicCitation"
+            "title": {
+                "query": "dcterms:title",
+                "type": "single"
+            },
+            "type": {
+                "query": "dcterms:type",
+                "type": "single"
+            },
+            "publishDate": {
+                "query": "schema:datePublished",
+                "type": "single"
+            },
+            "author": {
+                "query": "schema:author/schema:givenName",
+                "type": "list"
+            },
+            "free": {
+                "query": "schema:isAccessibleForFree",
+                "type": "single"
+            },
+            "download": {
+                "query": "dcterms:references/schema:accessURL",
+                "type": "single"
+            },
+            "citation": {
+                "query": "dcterms:bibliographicCitation",
+                "type": "single"
+            }
         }
     }
 ]

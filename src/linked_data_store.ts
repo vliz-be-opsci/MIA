@@ -13,8 +13,9 @@ const linkengine = new QueryEngineTraversal();
 export const traverseURI = async (
   trajectory_path: any,
   og_uri: string,
-  store: N3.Store
-): Promise<string> => {
+  store: N3.Store,
+  type_result?: string
+): Promise<string | string[]> => {
   /*
   const linkengine = await new QueryEngineFactory().create(
     {configPath: './follow_all.json'}
@@ -49,6 +50,15 @@ export const traverseURI = async (
           console.log("no value found for query: " + query);
           //continue to next in forloop
           continue;
+        }
+
+        if (type_result == "list"){
+          let values = [];
+          for (const binding of bindings){
+            let term = binding.get("value") as N3.Term;
+            values.push(term.value);
+          }
+          return values;
         }
 
         const binding: Bindings = bindings[0];
@@ -111,19 +121,19 @@ export const collectInfoMappingKey = async (
   og_uri: string,
   store: N3.Store,
   config: any
-): Promise<string> => {
+): Promise<string | string[]> => {
   try {
-    let query = `SELECT ?value WHERE {<${og_uri}> ${config.MAPPING[mapping_key]} ?value . }`;
+    let query = `SELECT ?value WHERE {<${og_uri}> ${config.MAPPING[mapping_key]["query"]} ?value . }`;
     let value = await comunicaQueryString(query, store, config.PREFIXES);
     console.info("value: ", value);
     if (value == "") {
       console.log("no value found for query: " + mapping_key);
       // try and get value with trajectory path
       const trajectory_path = _ppath_parts_for_ppath(
-        config.MAPPING[mapping_key],
+        config.MAPPING[mapping_key]["query"],
         config
       );
-      let value = await traverseURI(trajectory_path, og_uri, store);
+      let value = await traverseURI(trajectory_path, og_uri, store,config.MAPPING[mapping_key]["type"]);
       return value;
     }
     return value;
@@ -131,10 +141,10 @@ export const collectInfoMappingKey = async (
     console.log("error in query", error);
     // try and get value with trajectory path
     const trajectory_path = _ppath_parts_for_ppath(
-      config.MAPPING[mapping_key],
+      config.MAPPING[mapping_key]["query"],
       config
     );
-    let value = await traverseURI(trajectory_path, og_uri, store);
+    let value = await traverseURI(trajectory_path, og_uri, store,config.MAPPING[mapping_key]["type"]);
     return value;
   }
 };
