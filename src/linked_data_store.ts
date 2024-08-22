@@ -22,6 +22,7 @@ export const traverseURI = async (
   );
   */
   let N3store: N3.Store = store;
+  let typeR = type_result;
   let urls = [og_uri];
   console.log("trajectory path: ", trajectory_path);
   if (og_uri.startsWith("https:")) {
@@ -52,7 +53,7 @@ export const traverseURI = async (
           continue;
         }
 
-        if (type_result == "list"){
+        if (typeR == "list"){
           let values = [];
           for (const binding of bindings){
             let term = binding.get("value") as N3.Term;
@@ -124,8 +125,8 @@ export const collectInfoMappingKey = async (
 ): Promise<string | string[]> => {
   try {
     let query = `SELECT ?value WHERE {<${og_uri}> ${config.MAPPING[mapping_key]["query"]} ?value . }`;
-    let value = await comunicaQueryString(query, store, config.PREFIXES);
-    console.info("value: ", value);
+    let value = await comunicaQueryString(query, store, config.PREFIXES, config.MAPPING[mapping_key]["type"]);
+    console.debug("value from infomapcollect: ", value);
     if (value == "") {
       console.log("no value found for query: " + mapping_key);
       // try and get value with trajectory path
@@ -169,8 +170,9 @@ const _prefixed_query = (query: string, prefixes: any) => {
 export const comunicaQueryString = async (
   query: string,
   store: N3.Store,
-  prefixes: any
-): Promise<string> => {
+  prefixes: any,
+  type_result: any
+): Promise<string | string[]> => {
   let N3store: N3.Store = store;
   let query_prefixed = _prefixed_query(query, prefixes);
   console.info("query prefixed: ", query_prefixed);
@@ -185,6 +187,15 @@ export const comunicaQueryString = async (
       console.log("no value found for query: " + query);
       //continue to next in forloop
       return "";
+    }
+
+    if (type_result == "list"){
+      let values = [];
+      for (const binding of bindings){
+        let term = binding.get("value") as N3.Term;
+        values.push(term.value);
+      }
+      return values;
     }
 
     const binding: Bindings = bindings[0];

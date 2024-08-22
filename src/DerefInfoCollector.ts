@@ -56,7 +56,7 @@ export default class DerefInfoCollector {
     const ppaths = this.ppath_for_type(config_type_info);
     // first deref all the paths so we have all the triples needed
     for (const ppath in ppaths) {
-      const value_path = await traverseURI(ppaths[ppath], url, emptystore);
+      const value_path = await traverseURI(ppaths[ppath], url, emptystore, "list");
     }
     // collect info for the template
     const mapping = Object.keys(config_type_info.MAPPING);
