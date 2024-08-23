@@ -126,7 +126,7 @@
             "dcterms:type",
             "schema:description"
         ],
-        "TEMPLATE": "Event",
+        "TEMPLATE": "default",
         "MAPPING": {
             "name": {
                 "query": "schema:name",
@@ -175,7 +175,7 @@
             "dcterms:license",
             "dcterms:abstract"
         ],
-        "TEMPLATE": "Dataset",
+        "TEMPLATE": "default",
         "MAPPING": {
             "title": {
                 "query": "dcterms:title",
@@ -219,7 +219,7 @@
             "schema:name",
             "schema:description"
         ],
-        "TEMPLATE": "Project",
+        "TEMPLATE": "default",
         "MAPPING": {
             "title": {
                 "query": "schema:name",

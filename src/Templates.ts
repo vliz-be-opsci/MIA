@@ -97,21 +97,35 @@ export function generateInfoCardTemplate(
 
   //for each undefined value, replace with a default value
   let title = data.title || "No title available";
-  let description = data.description || "No description available";
 
-  // if description is loner then 300 characters, truncate it
-  if (description.length > 300) {
-    description = description.substring(0, 300) + "...";
+  // make object that will go over each key in data and make
+  // <p class="text-sm text-gray-500 mr-5">${value}</p>
+  // except for title
+  let description = "";
+  for (const [key, value] of Object.entries(data)) {
+    if (key != "title") {
+      description += `<p class="text-sm text-gray-500 mr-5">${key}: ${value}</p>`;
+    }
   }
 
-  let innerHTML = `
-        <img src="..." class="card-img-top" alt="...">
-        <div class="card-body">
-            <h5 class="card-title">${title}</h5>
-            <p class="card-text">${description}</p>
+  let defaulthtml = `
+     <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;min-height:150px">
+        <div class="ml-4">
+            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
+              <img id="marineinfo_logo" class="h-4 w-4 mr-1" src="${scroll}">
+              ${title}
+            </h2>
+            ${description}
+            <div class="mt-2 flex space-x-4">
+                <a href="${_link}" class="text-gray-500 hover:text-gray-700" nochange>
+                     <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
+                </a>
+            </div>
         </div>
-    `;
-  html_element.innerHTML = innerHTML;
+    </div>
+  `;
+
+  html_element.innerHTML = defaulthtml;
   //add element to body
   document.body.appendChild(html_element);
   return html_element;
