@@ -53,15 +53,6 @@ export const traverseURI = async (
           continue;
         }
 
-        if (typeR == "list"){
-          let values = [];
-          for (const binding of bindings){
-            let term = binding.get("value") as N3.Term;
-            values.push(term.value);
-          }
-          return values;
-        }
-
         const binding: Bindings = bindings[0];
 
         if (!binding) {
