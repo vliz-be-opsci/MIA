@@ -253,20 +253,32 @@
             {
                 "prefix": "schema",
                 "uri": "https://schema.org/"
+            },
+            {
+                "prefix": "vcard",
+                "uri": "http://www.w3.org/2006/vcard/ns#"
             }
         ],
         "ASSERTION_PATHS": [
             "schema:name",
             "schema:description"
         ],
-        "TEMPLATE": "default",
+        "TEMPLATE": "organization",
         "MAPPING": {
-            "title": {
+            "name": {
                 "query": "schema:name",
                 "type": "single"
             },
-            "description": {
-                "query": "schema:description",
+            "contact": {
+                "query": "vcard:hasTelephone/vcard:hasValue",
+                "type": "single"
+            },
+            "adress": {
+                "query": "schema:address",
+                "type": "single"
+            },
+            "email": {
+                "query": "vcard:hasEmail",
                 "type": "single"
             }
         }

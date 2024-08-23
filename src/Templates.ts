@@ -7,11 +7,16 @@ import globe from "./css/globe.svg";
 import zoomlocation from "./css/zoom_location.svg";
 import copyright_bad from "./css/copyright_bad.svg";
 import copyright_good from "./css/copyright_good.svg";
+import lock_closed from "./css/lock_closed.svg";
+import lock_open from "./css/lock_open.svg";
 import download_svg from "./css/download.svg";
 import person from "./css/person.svg";
 import book from "./css/book.svg";
 import scroll from "./css/scroll.svg";
+import organization from "./css/organization.svg";
 import photo_film from "./css/photo_film.svg";
+import phone from "./css/phone.svg";
+import email from "./css/email.svg";
 import book_atlas from "./css/book_atlas.svg";
 
 export function generatePersonCardTemplate(
@@ -35,7 +40,7 @@ export function generatePersonCardTemplate(
 
   //tailwind
   let person_html = `
-     <div class="flex items-center bg-white rounded-lg shadow-lg">
+     <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;min-height:150px">
         <img src="${cleanURI(image)}" alt="Profile Image" class="h-30">
         <div class="ml-4">
             <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
@@ -112,6 +117,48 @@ export function generateInfoCardTemplate(
   return html_element;
 }
 
+export function generateOrganizationCardTemplate(
+  data: { [key: string]: any },
+  html_element: HTMLElement,
+  affordance_link: string
+): HTMLElement {
+
+  let _link = affordance_link || "";
+  let email_info = data.email || "";
+  let contact = data.contact || "";
+  let adress = data.adress || "";
+  let name = data.name || "";
+
+  let organization_html = `
+     <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;height:150px;max-height:150px;">
+        <div class="ml-4">
+            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
+              <img id="marineinfo_logo" class="h-4 w-4 mr-1" src="${organization}">
+              ${name}
+            </h2>
+            <p class="text-sm text-gray-500 mr-5">${contact}</p>
+            <p class="text-sm text-gray-500 mr-5">${adress}</p>
+            <div class="mt-2 flex space-x-4">
+                <a href="${_link}" class="text-gray-500 hover:text-gray-700" nochange>
+                     <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
+                </a>
+                <a href="mailto:${email_info}" class="text-gray-500 hover:text-gray-700">
+                    <img class="h-6 w-6 icon_svg" src="${email}" alt="Orcid">
+                </a>
+                <a href="tel:${contact}" class="text-gray-500 hover:text-gray-700">
+                    <img class="h-6 w-6 icon_svg" src="${phone}" alt="Phone">
+                </a>
+            </div>
+        </div>
+    </div>
+  `;
+
+  //add element to body
+  html_element.innerHTML = organization_html;
+  document.body.appendChild(html_element);
+  return html_element;
+}
+
 function stringlengthshortener(str: string, length: number): string {
   if (str.length > length) {
     let returnstring = `
@@ -139,16 +186,13 @@ export function generateBibliographicResourceCardTemplate(
   let citation = data.citation || "";
 
   console.info("download url: ", download_url);
-
+  let c_type_image = lock_closed;
+  let citation_button = copyright_bad;
   let download_button = "";
-  let copyright_badge = `<button class="text-gray-500 hover:text-gray-700">
-                     <img class="h-6 w-6 icon_svg" src="${copyright_bad}" alt="Orcid">
-                </button>`;
-
+  
   if (free_type == "true") {
-    copyright_badge = `<button class="text-gray-500 hover:text-gray-700">
-                    <img class="h-6 w-6 icon_svg" src="${copyright_good}" alt="Orcid">
-              </button>`;
+    c_type_image = lock_open;
+    citation_button = copyright_good;
   }
 
   if (free_type != "") {
@@ -162,19 +206,29 @@ export function generateBibliographicResourceCardTemplate(
   }
 
   let innerHTML = `
-     <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;height:150px;max-height:150px;">
+     <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;height:160px;max-height:160px;">
         <div class="ml-4">
-            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">${stringlengthshortener(
-    title,
-    50
-  )}</h2>
+            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
+              <img id="marineinfo_logo" class="h-4 w-4 mr-1" src="${book}">
+              ${stringlengthshortener(
+                title,
+                50
+              )}
+            </h2>
             <p class="text-sm text-gray-500 mr-5"><b>type: </b>${type}</p>
+            <p class="inline-flex text-sm text-gray-500 mr-5">
+              <img class="h-4 w-4 mr-1" src="${citation_button}" alt="Orcid">
+              <img class="h-4 w-4 mr-1" src="${c_type_image}">
+            ${free_type}
+            </p>
             <p class="text-sm text-gray-500 mr-5"><b>release date: </b>${publishDate}</p>
             <div class="mt-2 flex space-x-4">
-                <button class="text-gray-500 hover:text-gray-700">
-                      <img id="marineinfo_logo" class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
+                <a href="${_link}" class="text-gray-500 hover:text-gray-700" nochange>
+                     <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
+                </a>
+                <button id="clipboard-button" title="copy citation" class="text-gray-500 hover:text-gray-700">
+                    <img class="h-6 w-6 icon_svg" src="${clipboard}" alt="copy citation">
                 </button>
-                ${copyright_badge}
                 ${download_button}
             </div>
         </div>
@@ -195,11 +249,6 @@ export function generateBibliographicResourceCardTemplate(
   downloadButton?.addEventListener("click", () => {
     //copy the _link to the clipboard
     window.open(download_url, "_blank");
-  });
-
-  const marineinfoLogo = document.getElementById("marineinfo_logo");
-  marineinfoLogo?.addEventListener("click", () => {
-    window.open(_link, "_blank");
   });
 
   return html_element;
@@ -268,7 +317,7 @@ export function generateMapCardTemplate(
     <div class="items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;">
         <div class="ml-4">
           <div class="mt-2 flex space-x-4">
-            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5"><img class="h-4 w-4 mr-1" src="${book_atlas}" alt="marineregions">${name}</h2>
+            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5"><img class="h-4 w-4 mr-2" src="${book_atlas}" alt="marineregions">${name}</h2>
           </div>
         </div>
         <div id="${uniqueId}" style="height: 150px;width: 100%"></div>

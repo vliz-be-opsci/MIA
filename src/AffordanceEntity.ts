@@ -7,6 +7,7 @@ import {
   generateMapCardTemplate,
   generatePersonCardTemplate,
   generateBibliographicResourceCardTemplate,
+  generateOrganizationCardTemplate,
 } from "./Templates";
 import "./css/mia.css";
 import "./css/styles.css";
@@ -211,6 +212,7 @@ export default class AffordanceEntity {
       Event: generateEventCardTemplate,
       person: generatePersonCardTemplate,
       bibresource: generateBibliographicResourceCardTemplate,
+      organization: generateOrganizationCardTemplate,
       default: generateInfoCardTemplate,
     };
     let toreturn = mapping[name];
