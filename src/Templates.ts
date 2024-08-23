@@ -104,7 +104,9 @@ export function generateInfoCardTemplate(
   let description = "";
   for (const [key, value] of Object.entries(data)) {
     if (key != "title") {
-      description += `<p class="text-sm text-gray-500 mr-5"><b>${key}:</b> ${stringlengthshortener(value,150,"text-sm")}</p>`;
+      if (value != ""){
+        description += `<p class="text-sm text-gray-500 mr-5"><b>${key}:</b> ${stringlengthshortener(value,150,"text-sm text-gray-500 mr-5")}</p>`;
+      }
     }
   }
 
