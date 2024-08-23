@@ -12,6 +12,7 @@ import person from "./css/person.svg";
 import book from "./css/book.svg";
 import scroll from "./css/scroll.svg";
 import photo_film from "./css/photo_film.svg";
+import book_atlas from "./css/book_atlas.svg";
 
 export function generatePersonCardTemplate(
   data: { [key: string]: any },
@@ -239,7 +240,6 @@ export function generateMapCardTemplate(
   const name = data.name || "Map Location";
   const mapwkt = data.mapwkt || null; // Default to 0 if not provided
   const centroid = data.centroid || null; // Default to 0 if not provided
-  const description = data.description || "No description available";
   //const latitude = data.latitude || 53; // Default to 0 if not provided
   //const longitude = data.longitude || 4; // Default to 0 if not provided
   const uniqueId = "map-" + Math.random().toString(36).substr(2, 9); // Generate a unique ID for the map
@@ -268,7 +268,7 @@ export function generateMapCardTemplate(
     <div class="items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;">
         <div class="ml-4">
           <div class="mt-2 flex space-x-4">
-            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5"><img id="marineinfo_logo" class="h-4 w-4 mr-1" src="${marininfologo}" alt="marineregions">${name}</h2>
+            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5"><img class="h-4 w-4 mr-1" src="${book_atlas}" alt="marineregions">${name}</h2>
           </div>
         </div>
         <div id="${uniqueId}" style="height: 150px;width: 100%"></div>
@@ -278,12 +278,6 @@ export function generateMapCardTemplate(
   html_element.innerHTML = InnerHTML;
   //add element to body
   document.body.appendChild(html_element);
-
-  // marineinfo click event
-  const marineinfoLogo = document.getElementById("marineinfo_logo");
-  marineinfoLogo?.addEventListener("click", () => {
-    window.open(_link, "_blank");
-  });
 
   // Initialize the map after the template is inserted
   const map = L.map(uniqueId, {
@@ -309,6 +303,27 @@ export function generateMapCardTemplate(
     map.setView(center);
     map.setZoom(13);
   }
+
+  //add custom control to the bottom left of the map
+  const customControlBL = L.Control.extend({
+    options: {
+      position: "bottomleft",
+    },
+    onAdd: function (map: any) {
+      const container = L.DomUtil.create(
+        "div",
+        "leaflet-bar leaflet-control leaflet-control-custom"
+      );
+      container.innerHTML = `
+      <a href="${_link}" target="_blank" nochange class="flex items-center justify-center h-full w-full p-1">
+        <img id="marineinfo_logo" src="${marininfologo}" alt="marineregions">
+      </a>
+      `;
+      container.style.backgroundColor = "white";
+
+      return container;
+    },
+  });
 
   //add custom control to the map
   const customControl = L.Control.extend({
@@ -361,6 +376,7 @@ export function generateMapCardTemplate(
   });
 
   map.addControl(new customControl());
+  map.addControl(new customControlBL());
 
   // do a fake window resize to make sure the map is displayed correctly
   window.dispatchEvent(new Event("resize"));
