@@ -104,7 +104,7 @@ export function generateInfoCardTemplate(
   let description = "";
   for (const [key, value] of Object.entries(data)) {
     if (key != "title") {
-      description += `<p class="text-sm text-gray-500 mr-5">${key}: ${value}</p>`;
+      description += `<p class="text-sm text-gray-500 mr-5"><b>${key}:</b> ${stringlengthshortener(value,150,"text-sm")}</p>`;
     }
   }
 
@@ -117,7 +117,7 @@ export function generateInfoCardTemplate(
             </h2>
             ${description}
             <div class="mt-2 flex space-x-4">
-                <a href="${_link}" class="text-gray-500 hover:text-gray-700" nochange>
+                <a href="${_link}" class="text-gray-500 hover:text-gray-700 mb-2" nochange>
                      <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
                 </a>
             </div>
@@ -173,8 +173,16 @@ export function generateOrganizationCardTemplate(
   return html_element;
 }
 
-function stringlengthshortener(str: string, length: number): string {
+function stringlengthshortener(str: string, length: number, classes?: string): string {
   if (str.length > length) {
+
+    if (classes != undefined) {
+      let returnstring = `
+      <div title="${str}" class="${classes}"> ${str.substring(0, length) + "..."} </div>
+      `;
+      return returnstring;
+    }
+
     let returnstring = `
     <div title="${str}"> ${str.substring(0, length) + "..."} </div>
     `;
