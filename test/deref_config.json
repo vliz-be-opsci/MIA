@@ -128,7 +128,7 @@
         ],
         "TEMPLATE": "default",
         "MAPPING": {
-            "name": {
+            "title": {
                 "query": "schema:name",
                 "type": "single"
             },
