@@ -8,6 +8,7 @@ import zoomlocation from "./css/zoom_location.svg";
 import copyright_bad from "./css/copyright_bad.svg";
 import copyright_good from "./css/copyright_good.svg";
 import download_svg from "./css/download.svg";
+import person from "./css/person.svg";
 import book from "./css/book.svg";
 import scroll from "./css/scroll.svg";
 import photo_film from "./css/photo_film.svg";
@@ -29,21 +30,27 @@ export function generatePersonCardTemplate(
   let orcid = data.orcid || "";
   let _link = affordance_link || "";
 
+  console.debug("_link: ", _link);
+
   //tailwind
   let person_html = `
      <div class="flex items-center bg-white rounded-lg shadow-lg">
         <img src="${cleanURI(image)}" alt="Profile Image" class="h-30">
         <div class="ml-4">
-            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5"><img id="marineinfo_logo" class="h-4 w-4 mr-1" src="${marininfologo}" alt="Orcid">${surname} ${familyname}</h2>
+            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
+              <img id="marineinfo_logo" class="h-4 w-4 mr-1" src="${person}">
+              ${surname} ${familyname}
+            </h2>
             <p class="text-sm text-gray-500 mr-5">${job_position}</p>
             <p class="text-sm text-gray-500 mr-5">${organization}</p>
             <div class="mt-2 flex space-x-4">
+                <a href="${_link}" class="text-gray-500 hover:text-gray-700" nochange>
+                     <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
+                </a>
                 <a href="${orcid}" class="text-gray-500 hover:text-gray-700">
                     <img class="h-6 w-6 icon_svg" src="${orcidSVG}" alt="Orcid">
                 </a>
-                <button class="text-gray-500 hover:text-gray-700">
-                     <img id="clipboard-button" title="copy to clipboard" class="h-6 w-6 icon_svg" src="${clipboard}" alt="Orcid">
-                </button>
+                
             </div>
         </div>
     </div>
@@ -156,18 +163,18 @@ export function generateBibliographicResourceCardTemplate(
   let innerHTML = `
      <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;height:150px;max-height:150px;">
         <div class="ml-4">
-            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5"><img id="marineinfo_logo" class="h-4 w-4 mr-1" src="${marininfologo}" alt="Orcid">${stringlengthshortener(
+            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">${stringlengthshortener(
     title,
     50
   )}</h2>
             <p class="text-sm text-gray-500 mr-5"><b>type: </b>${type}</p>
             <p class="text-sm text-gray-500 mr-5"><b>release date: </b>${publishDate}</p>
             <div class="mt-2 flex space-x-4">
+                <button class="text-gray-500 hover:text-gray-700">
+                      <img id="marineinfo_logo" class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
+                </button>
                 ${copyright_badge}
                 ${download_button}
-                <button class="text-gray-500 hover:text-gray-700">
-                     <img id="clipboard-button" title="copy citation to clipboard" class="h-6 w-6 icon_svg" src="${clipboard}" alt="Orcid">
-                </button>
             </div>
         </div>
     </div>
@@ -360,7 +367,6 @@ export function generateMapCardTemplate(
 
   return html_element;
 }
-
 class WKT {
   public Centroid(wkt: string): L.LatLng {
     wkt = this.RemoveURI(wkt);

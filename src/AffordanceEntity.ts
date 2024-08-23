@@ -25,8 +25,8 @@ export default class AffordanceEntity {
     this.link = affordance.href;
     this.collected_info = new Entity();
     this.derefinfocollector = derefinfocollector;
-    this.onHover();
     this._update_dom_uri();
+    this.onHover();
   }
 
   async onHover() {
@@ -133,10 +133,25 @@ export default class AffordanceEntity {
       this.link.includes("marineinfo") ||
       this.link.includes("marineregions")
     ) {
-      element.classList.add("confluence_box");
+      // check if the parent element is an <a> tag
+      // if yes then check if there is a element tag nochange
+      // eg: <a nochange>text</a>
+      // if not add the class confluence_box
+      if (element.getAttribute("nochange") === null) {
+        element.classList.add("confluence_box");
+        element.addEventListener("contextmenu", (event:any) => {
+          event.preventDefault();
+          navigator.clipboard.writeText(this.link);
+        });
+      }
     }
 
     if (!this.initial_updated) {
+
+      if (element.getAttribute("nochange") !== null) {
+        this.initial_updated = true;
+        return;
+      }
       // check every 1 second if there is any cashed info
       const intervalId = setInterval(() => {
         // if the cashed info is not empty, update the dom
@@ -167,6 +182,7 @@ export default class AffordanceEntity {
                 continue;
               }
             }
+
             //update inner html
             element.innerHTML = to_display_content.join(" ");
           } else if (content.name !== undefined) {
@@ -174,7 +190,15 @@ export default class AffordanceEntity {
           } else if (content.title !== undefined) {
             element.innerHTML = content.title;
           }
-          this.initial_updated = true;
+          this.initial_updated = true;  
+          
+          // Add a rightclick event listener to the element
+          // that will copy the link to the clipboard
+          element.addEventListener("contextmenu", (event:any) => {
+            event.preventDefault();
+            navigator.clipboard.writeText(this.link);
+          });
+          
           clearInterval(intervalId); // Stop the interval
         }
       }, 1000);
