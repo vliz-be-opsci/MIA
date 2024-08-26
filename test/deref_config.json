@@ -124,9 +124,11 @@
             "schema:name",
             "schema:location",
             "dcterms:type",
-            "schema:description"
+            "schema:description",
+            "schema:startDate",
+            "schema:endDate"
         ],
-        "TEMPLATE": "default",
+        "TEMPLATE": "event",
         "MAPPING": {
             "title": {
                 "query": "schema:name",
@@ -142,6 +144,14 @@
             },
             "description": {
                 "query": "schema:description",
+                "type": "single"
+            },
+            "start_date": {
+                "query": "schema:startDate",
+                "type": "single"
+            },
+            "end_date": {
+                "query": "schema:endDate",
                 "type": "single"
             }
         }

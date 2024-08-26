@@ -214,7 +214,7 @@ export default class AffordanceEntity {
   private _get_template_name(name: string) {
     const mapping: any = {
       map: generateMapCardTemplate,
-      Event: generateEventCardTemplate,
+      event: generateEventCardTemplate,
       person: generatePersonCardTemplate,
       bibresource: generateBibliographicResourceCardTemplate,
       organization: generateOrganizationCardTemplate,

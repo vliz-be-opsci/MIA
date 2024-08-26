@@ -16,6 +16,7 @@ import photo_film from "./css/photo_film.svg";
 import phone from "./css/phone.svg";
 import email from "./css/email.svg";
 import book_atlas from "./css/book_atlas.svg";
+import bullhorn from "./css/bullhorn.svg";
 
 export function generatePersonCardTemplate(
   data: { [key: string]: any },
@@ -36,10 +37,16 @@ export function generatePersonCardTemplate(
 
   console.debug("_link: ", _link);
 
+  let image_html = "";
+
+  if (image != "") {
+    image_html = `<img src="${cleanURI(image)}" alt="Profile Image" class="h-30">`;
+  }
+
   //tailwind
   let person_html = `
      <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;min-height:150px">
-        <img src="${cleanURI(image)}" alt="Profile Image" class="h-30">
+        ${image_html}
         <div class="ml-4">
             <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
               <img id="marineinfo_logo" class="h-4 w-4 mr-1" src="${person}">
@@ -235,11 +242,7 @@ export function generateBibliographicResourceCardTemplate(
                 50
               )}
             </h2>
-            <p class="text-sm text-gray-500 mr-5"><b>type: </b>${type}</p>
-            <p class="inline-flex text-sm text-gray-500 mr-5">
-              <img class="h-4 w-4 mr-1" src="${c_type_image}">
-            ${free_type}
-            </p>
+            <p class="items-center inline-flex text-sm text-gray-500 mr-5"><img class="h-4 w-4 mr-1" src="${c_type_image}">:${type}</p>
             <p class="text-sm text-gray-500 mr-5"><b>release date: </b>${publishDate}</p>
             <div class="mt-2 flex space-x-4">
                 <a href="${_link}" class="text-gray-500 hover:text-gray-700" nochange>
@@ -275,22 +278,40 @@ export function generateBibliographicResourceCardTemplate(
 
 export function generateEventCardTemplate(
   data: { [key: string]: any },
-  html_element: HTMLElement
+  html_element: HTMLElement,
+  affordance_link: string
 ): HTMLElement {
   console.log(data);
   //for each undefined value, replace with a default value
-  let title = data.name || "No title available";
-  let location = data.location || "No location available";
-  let description = data.description || "No description available";
+  let title = data.title || "";
+  let location = data.location || "";
+  let type = data.type || "";
+  let start_date = data.start_date || "";
+  let end_date = data.end_date || "";
+  let _link = affordance_link || "";
+
 
   let innerHTML = `
-        <img src="..." class="card-img-top" alt="...">
-        <div class="card-body">
-            <h5 class="card-title">${title}</h5>
-            <p class="card-text">${location}</p>
-            <p class="card-text">${description}</p>
-        </div>
-    `;
+  <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;height:150px;max-height:150px;">
+     <div class="ml-4">
+         <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
+           <img class="h-6 w-6 mr-1 icon_svg" src="${bullhorn}" alt="location">
+           ${title}
+         </h2>
+         <p class="inline-flex items-center text-sm text-gray-500 mr-5">
+         <img class="h-4 w-4 mr-1 icon_svg" src="${globe}" alt="location">
+         ${location}
+         </p>
+         <p class="text-sm text-gray-500 mr-5"><b>date: </b>${start_date}-->${end_date}</p>
+         <p class="text-sm text-gray-500 mr-5"><b>type: </b>${type}</p>
+         <div class="mt-2 flex space-x-4">
+             <a href="${_link}" class="text-gray-500 hover:text-gray-700" nochange>
+                  <img class="h-6 w-6 icon_svg mb-1" src="${marininfologo}" alt="marineinfo">
+             </a>
+         </div>
+     </div>
+ </div>
+`;
   html_element.innerHTML = innerHTML;
   //add element to body
   document.body.appendChild(html_element);
