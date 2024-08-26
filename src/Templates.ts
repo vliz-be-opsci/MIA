@@ -5,8 +5,6 @@ import clipboard from "./css/clipboard.svg";
 import marininfologo from "./css/Marine Info_logosymbool.svg";
 import globe from "./css/globe.svg";
 import zoomlocation from "./css/zoom_location.svg";
-import copyright_bad from "./css/copyright_bad.svg";
-import copyright_good from "./css/copyright_good.svg";
 import lock_closed from "./css/lock_closed.svg";
 import lock_open from "./css/lock_open.svg";
 import download_svg from "./css/download.svg";
@@ -211,12 +209,10 @@ export function generateBibliographicResourceCardTemplate(
 
   console.info("download url: ", download_url);
   let c_type_image = lock_closed;
-  let citation_button = copyright_bad;
   let download_button = "";
   
   if (free_type == "true") {
     c_type_image = lock_open;
-    citation_button = copyright_good;
   }
 
   if (free_type != "") {
@@ -241,7 +237,6 @@ export function generateBibliographicResourceCardTemplate(
             </h2>
             <p class="text-sm text-gray-500 mr-5"><b>type: </b>${type}</p>
             <p class="inline-flex text-sm text-gray-500 mr-5">
-              <img class="h-4 w-4 mr-1" src="${citation_button}" alt="Orcid">
               <img class="h-4 w-4 mr-1" src="${c_type_image}">
             ${free_type}
             </p>

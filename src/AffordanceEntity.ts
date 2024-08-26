@@ -148,6 +148,10 @@ export default class AffordanceEntity {
     }
 
     if (!this.initial_updated) {
+      if (element.getAttribute("noupdate") !== null) {
+        this.initial_updated = true;
+        return;
+      }
 
       if (element.getAttribute("nochange") !== null) {
         this.initial_updated = true;
