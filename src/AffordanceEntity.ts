@@ -27,7 +27,6 @@ export default class AffordanceEntity {
     this.collected_info = new Entity();
     this.derefinfocollector = derefinfocollector;
     this._update_dom_uri();
-    this.onHover();
   }
 
   async onHover() {
@@ -94,8 +93,9 @@ export default class AffordanceEntity {
   }
 
   removeLoader() {
-    let loader = document.querySelector(".spinner-border");
-    loader?.remove();
+    // remove the confleunce_box_loading class from the element
+    this.element.classList.remove("confluence_box_loading");
+    this.element.classList.add("confluence_box");
   }
 
   async collectInfo() {
@@ -145,6 +145,7 @@ export default class AffordanceEntity {
           navigator.clipboard.writeText(this.link);
         });
       }
+      this.onHover();
     }
 
     if (!this.initial_updated) {
@@ -350,19 +351,14 @@ export default class AffordanceEntity {
             <span class="visually-hidden">Loading...</span>
         </div>
         */
-    //check if loader already exists
-    if (document.querySelector(".spinner-border") !== null) {
-      console.log("loader already exists");
+    //check if the link already has a loader
+    // by checking for the confluence_box_loading class
+    let loader = document.querySelector(".confluence_box_loading");
+    if (loader !== null) {
       return;
     }
-    let loader = document.createElement("div");
-    loader.classList.add("spinner-border");
-    loader.setAttribute("role", "status");
-    let span = document.createElement("span");
-    span.classList.add("visually-hidden");
-    span.innerHTML = "Loading...";
-    loader.appendChild(span);
-    //the spinner should appended to the affordance link parent
-    this.element.parentElement.appendChild(loader);
+    //create loader by adding confluence_box_loading class to this.element
+    this.element.classList.remove("confluence_box");
+    this.element.classList.add("confluence_box_loading");
   }
 }
