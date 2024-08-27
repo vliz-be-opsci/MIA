@@ -1,4 +1,4 @@
-//this file will be the interface between the linked data store and the mia entity
+// this file will be the interface between the linked data store and the mia entity
 // this for possible future port to rdflib instead of n3
 
 import * as N3 from "n3";
@@ -306,9 +306,11 @@ async function getData(uri: string, formats: string[]) {
     try {
       //make uri https if http and log this
       //this is to prevent mixed content errors
+      /*
       if (uri.startsWith("http:")) {
         uri = uri.replace("http://", "https://");
       }
+      */
       const response = await fetch(uri, { headers: { Accept: format } });
       const contentType = response.headers.get("Content-Type");
 

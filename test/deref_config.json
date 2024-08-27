@@ -178,6 +178,18 @@
             {
                 "prefix": "schema",
                 "uri": "https://schema.org/"
+            },
+            {
+                "prefix": "vcard",
+                "uri": "http://www.w3.org/2006/vcard/ns#"
+            },
+            {
+                "prefix": "dcat",
+                "uri": "http://www.w3.org/ns/dcat#"
+            },
+            {
+                "prefix": "dc",
+                "uri": "http://purl.org/dc/elements/1.1/"
             }
         ],
         "ASSERTION_PATHS": [
@@ -185,7 +197,7 @@
             "dcterms:license",
             "dcterms:abstract"
         ],
-        "TEMPLATE": "dataset",
+        "TEMPLATE": "default",
         "MAPPING": {
             "title": {
                 "query": "dcterms:title",
@@ -195,8 +207,20 @@
                 "query": "dcterms:license",
                 "type": "single"
             },
-            "description": {
-                "query": "dcterms:abstract",
+            "date": {
+                "query": "dcterms:issued",
+                "type": "single"
+            },
+            "contact": {
+                "query": "dcat:contactPoint/vcard:hasEmail",
+                "type": "single"
+            },
+            "urls": {
+                "query": "dcat:distribution/dcat:accessURL",
+                "type": "list"
+            },
+            "citation": {
+                "query": "dc:bibliographicCitation",
                 "type": "single"
             }
         }

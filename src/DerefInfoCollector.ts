@@ -39,6 +39,7 @@ export default class DerefInfoCollector {
   async collect_info(url: string) {
     let info_keys: any = {};
     let emptystore: Store = createEmptyStore();
+    console.debug("collecting info for: ", url);
     emptystore = await getLinkedDataNQuads(url, emptystore);
     this.triplestore = this._combine_triplestores(this.triplestore, emptystore);
     const types = await this.get_type_uri(url);
@@ -50,7 +51,12 @@ export default class DerefInfoCollector {
     const ppaths = this.ppath_for_type(config_type_info);
     // first deref all the paths so we have all the triples needed
     for (const ppath in ppaths) {
-      const value_path = await traverseURI(ppaths[ppath], url, emptystore, "list");
+      const value_path = await traverseURI(
+        ppaths[ppath],
+        url,
+        emptystore,
+        "list"
+      );
     }
     // collect info for the template
     const mapping = Object.keys(config_type_info.MAPPING);

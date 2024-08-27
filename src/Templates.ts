@@ -50,7 +50,7 @@ export function generatePersonCardTemplate(
         ${image_html}
         <div class="ml-4">
             <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
-              <img id="marineinfo_logo" class="h-4 w-4 mr-1" src="${person}">
+              <img id="marineinfo_logo" class="h-5 w-5 mr-1" src="${person}">
               ${surname} ${familyname}
             </h2>
             <p class="text-sm text-gray-500 mr-5">${job_position}</p>
@@ -108,7 +108,7 @@ export function generateDatasetCardTemplate(
      <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;min-height:150px">
         <div class="ml-4">
             <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
-              <img id="marineinfo_logo" class="h-4 w-4 mr-1" src="${archive_box}">
+              <img id="marineinfo_logo" class="h-5 w-5 mr-1" src="${archive_box}">
               ${stringlengthshortener(title, 25)}
             </h2>
             <div class="mt-2 flex space-x-4">
@@ -159,7 +159,7 @@ export function generateInfoCardTemplate(
      <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;min-height:150px">
         <div class="ml-4">
             <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
-              <img id="marineinfo_logo" class="h-4 w-4 mr-1" src="${scroll}">
+              <img id="marineinfo_logo" class="h-5 w-5 mr-1" src="${scroll}">
               ${stringlengthshortener(title, 25)}
             </h2>
             ${description}
@@ -193,7 +193,7 @@ export function generateOrganizationCardTemplate(
      <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;height:150px;max-height:150px;">
         <div class="ml-4">
             <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
-              <img id="marineinfo_logo" class="h-4 w-4 mr-1" src="${organization}">
+              <img id="marineinfo_logo" class="h-5 w-5 mr-1" src="${organization}">
               ${name}
             </h2>
             <p class="text-sm text-gray-500 mr-5">${contact}</p>
@@ -280,7 +280,7 @@ export function generateBibliographicResourceCardTemplate(
      <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;height:160px;max-height:160px;">
         <div class="ml-4">
             <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
-              <img id="marineinfo_logo" class="h-4 w-4 mr-1" src="${book}">
+              <img id="marineinfo_logo" class="h-5 w-5 mr-1" src="${book}">
               ${stringlengthshortener(title, 25)}
             </h2>
             <p class="items-center inline-flex text-sm text-gray-500 mr-5"><img class="h-4 w-4 mr-1" src="${c_type_image}">:${type}</p>
@@ -335,7 +335,7 @@ export function generateEventCardTemplate(
   <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;height:150px;max-height:150px;">
      <div class="ml-4">
          <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
-           <img class="h-6 w-6 mr-1 icon_svg" src="${bullhorn}" alt="location">
+           <img class="h-5 w-5 mr-1 icon_svg" src="${bullhorn}" alt="location">
            ${title}
          </h2>
          <p class="inline-flex items-center text-sm text-gray-500 mr-5">
@@ -397,7 +397,10 @@ export function generateMapCardTemplate(
     <div class="items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;">
         <div class="ml-4">
           <div class="mt-2 flex space-x-4">
-            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5"><img class="h-4 w-4 mr-2" src="${book_atlas}" alt="marineregions">${name}</h2>
+            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5"><img class="h-5 w-5 mr-2" src="${book_atlas}" alt="marineregions">${stringlengthshortener(
+    name,
+    25
+  )}</h2>
           </div>
         </div>
         <div id="${uniqueId}" style="height: 150px;width: 100%"></div>
