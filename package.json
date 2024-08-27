@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "webpack serve",
-    "build": "webpack build",
+    "build": "webpack build --config webpack.config.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "check": "tsc --noEmit",
     "watch": "nodemon --watch src --exec \"npm run build\"",
@@ -46,7 +46,9 @@
     "css-loader": "^7.1.2",
     "html-webpack-plugin": "^5.6.0",
     "nodemon": "^3.1.4",
+    "postcss": "^8.4.41",
     "postcss-loader": "^8.1.1",
+    "postcss-preset-env": "^10.0.2",
     "sass": "^1.77.6",
     "sass-loader": "^14.2.1",
     "style-loader": "^4.0.0",
