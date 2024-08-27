@@ -140,7 +140,7 @@ export default class AffordanceEntity {
       // if not add the class confluence_box
       if (element.getAttribute("nochange") === null) {
         element.classList.add("confluence_box");
-        element.addEventListener("contextmenu", (event:any) => {
+        element.addEventListener("contextmenu", (event: any) => {
           event.preventDefault();
           navigator.clipboard.writeText(this.link);
         });
@@ -196,15 +196,15 @@ export default class AffordanceEntity {
           } else if (content.title !== undefined) {
             element.innerHTML = content.title;
           }
-          this.initial_updated = true;  
-          
+          this.initial_updated = true;
+
           // Add a rightclick event listener to the element
           // that will copy the link to the clipboard
-          element.addEventListener("contextmenu", (event:any) => {
+          element.addEventListener("contextmenu", (event: any) => {
             event.preventDefault();
             navigator.clipboard.writeText(this.link);
           });
-          
+
           clearInterval(intervalId); // Stop the interval
         }
       }, 1000);
@@ -233,7 +233,7 @@ export default class AffordanceEntity {
     event: MouseEvent
   ): HTMLDivElement {
     // generate the placement of the popup based in the position of the link,
-    // the popup should be placed under or above the link depending on the position of the link
+    // the popup should be placed under or above the link depending on the position of the mouse
     let affordance_position = this.element.getBoundingClientRect();
     let current_window_height = window.innerHeight;
     let affordance_position_top = affordance_position.top;
@@ -241,19 +241,41 @@ export default class AffordanceEntity {
       window.pageYOffset || document.documentElement.scrollTop;
     let scrolled_width =
       window.pageXOffset || document.documentElement.scrollLeft;
-    //let affordance_position_left = affordance_position.left;
-    //let affordance_position_right = current_window_width - affordance_position.right;
 
-    //logic to place the card above or below the link
-    // if the affordance is closer to the top of the window, place the card below the link
-    if (affordance_position_top < current_window_height / 2) {
-      //the top of the card should be 25px below the bottom of the link
-      card.style.top = affordance_position.bottom + scrolled_height + 1 + "px";
+    let current_window_width = window.innerWidth;
+
+    // some log statements to check the values
+    console.debug("affordance_position_top", affordance_position_top);
+    console.debug("current_window_height", current_window_height);
+    console.debug("current_window_width", current_window_width);
+    console.debug("scrolled_height", scrolled_height);
+    console.debug("scrolled_width", scrolled_width);
+    console.debug("affordance_position", affordance_position);
+    console.debug("card_clientHeight", card.clientHeight);
+
+    // logic to place the card above or below the link
+    // the card should be placed above the link if the affordance is closer to the bottom of the window
+    if (affordance_position_top > current_window_height / 2) {
+      // when card is placed above the link, the top of the card should be the same height as the total height of the card -25px
+      card.style.top =
+        affordance_position.top +
+        scrolled_height -
+        card.clientHeight -
+        5 +
+        "px";
     } else {
-      //the top of the card should be 25px below the bottom of the link
-      //keep in mind that the page might be scrolled
+      // the top of the card should be 25px below the bottom of the link
       card.style.top = affordance_position.bottom + scrolled_height + 1 + "px";
     }
+
+    // logic here to decide if the card should be placed to the left or right of the link
+    // if the mouse curser is closer to the right side of the window, the card should be placed to the left of the link
+    if (event.x > current_window_width / 2) {
+      //make the left of the card the same as the left of the link
+      card.style.left = event.x + scrolled_width - card.clientWidth + "px";
+      return card;
+    }
+
     //make the left of the card the same as the left of the link
     card.style.left = event.x + scrolled_width - 20 + "px";
     return card;
@@ -298,6 +320,7 @@ export default class AffordanceEntity {
       card,
       affordance_link
     );
+    card = this._generate_card_placement(card, event);
 
     document.body.addEventListener("mousemove", (event) => {
       //check if mouse is on triangle

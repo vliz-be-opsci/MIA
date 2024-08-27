@@ -35,12 +35,12 @@ export function generatePersonCardTemplate(
   let orcid = data.orcid || "";
   let _link = affordance_link || "";
 
-  console.debug("_link: ", _link);
-
   let image_html = "";
 
   if (image != "") {
-    image_html = `<img src="${cleanURI(image)}" alt="Profile Image" class="h-30">`;
+    image_html = `<img src="${cleanURI(
+      image
+    )}" alt="Profile Image" class="h-30">`;
   }
 
   //tailwind
@@ -90,6 +90,58 @@ function cleanURI(uri: string): string {
   return uri.replace(/<|>/g, "");
 }
 
+export function generateDatasetCardTemplate(
+  data: { [key: string]: any },
+  html_element: HTMLElement,
+  affordance_link: string
+): HTMLElement {
+  console.log(data);
+  console.log(html_element);
+
+  let _link = affordance_link || "";
+
+  //for each undefined value, replace with a default value
+  let title = data.title || "No title available";
+
+  // make object that will go over each key in data and make
+  // <p class="text-sm text-gray-500 mr-5">${value}</p>
+  // except for title
+  let description = "";
+  for (const [key, value] of Object.entries(data)) {
+    if (key != "title") {
+      if (value != "") {
+        description += `<p class="text-sm text-gray-500 mr-5"><b>${key}:</b> ${stringlengthshortener(
+          value,
+          150,
+          "text-sm text-gray-500 mr-5"
+        )}</p>`;
+      }
+    }
+  }
+
+  let defaulthtml = `
+     <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;min-height:150px">
+        <div class="ml-4">
+            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
+              <img id="marineinfo_logo" class="h-4 w-4 mr-1" src="${scroll}">
+              ${stringlengthshortener(title, 25)}
+            </h2>
+            ${description}
+            <div class="mt-2 flex space-x-4">
+                <a href="${_link}" class="text-gray-500 hover:text-gray-700 mb-2" nochange>
+                     <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
+                </a>
+            </div>
+        </div>
+    </div>
+  `;
+
+  html_element.innerHTML = defaulthtml;
+  //add element to body
+  document.body.appendChild(html_element);
+  return html_element;
+}
+
 export function generateInfoCardTemplate(
   data: { [key: string]: any },
   html_element: HTMLElement,
@@ -109,8 +161,12 @@ export function generateInfoCardTemplate(
   let description = "";
   for (const [key, value] of Object.entries(data)) {
     if (key != "title") {
-      if (value != ""){
-        description += `<p class="text-sm text-gray-500 mr-5"><b>${key}:</b> ${stringlengthshortener(value,150,"text-sm text-gray-500 mr-5")}</p>`;
+      if (value != "") {
+        description += `<p class="text-sm text-gray-500 mr-5"><b>${key}:</b> ${stringlengthshortener(
+          value,
+          150,
+          "text-sm text-gray-500 mr-5"
+        )}</p>`;
       }
     }
   }
@@ -120,7 +176,7 @@ export function generateInfoCardTemplate(
         <div class="ml-4">
             <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
               <img id="marineinfo_logo" class="h-4 w-4 mr-1" src="${scroll}">
-              ${title}
+              ${stringlengthshortener(title, 25)}
             </h2>
             ${description}
             <div class="mt-2 flex space-x-4">
@@ -143,7 +199,6 @@ export function generateOrganizationCardTemplate(
   html_element: HTMLElement,
   affordance_link: string
 ): HTMLElement {
-
   let _link = affordance_link || "";
   let email_info = data.email || "";
   let contact = data.contact || "";
@@ -180,12 +235,17 @@ export function generateOrganizationCardTemplate(
   return html_element;
 }
 
-function stringlengthshortener(str: string, length: number, classes?: string): string {
+function stringlengthshortener(
+  str: string,
+  length: number,
+  classes?: string
+): string {
   if (str.length > length) {
-
     if (classes != undefined) {
       let returnstring = `
-      <div title="${str}" class="${classes}"> ${str.substring(0, length) + "..."} </div>
+      <div title="${str}" class="${classes}"> ${
+        str.substring(0, length) + "..."
+      } </div>
       `;
       return returnstring;
     }
@@ -217,7 +277,7 @@ export function generateBibliographicResourceCardTemplate(
   console.info("download url: ", download_url);
   let c_type_image = lock_closed;
   let download_button = "";
-  
+
   if (free_type == "true") {
     c_type_image = lock_open;
   }
@@ -237,10 +297,7 @@ export function generateBibliographicResourceCardTemplate(
         <div class="ml-4">
             <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
               <img id="marineinfo_logo" class="h-4 w-4 mr-1" src="${book}">
-              ${stringlengthshortener(
-                title,
-                50
-              )}
+              ${stringlengthshortener(title, 25)}
             </h2>
             <p class="items-center inline-flex text-sm text-gray-500 mr-5"><img class="h-4 w-4 mr-1" src="${c_type_image}">:${type}</p>
             <p class="text-sm text-gray-500 mr-5"><b>release date: </b>${publishDate}</p>
@@ -289,7 +346,6 @@ export function generateEventCardTemplate(
   let start_date = data.start_date || "";
   let end_date = data.end_date || "";
   let _link = affordance_link || "";
-
 
   let innerHTML = `
   <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;height:150px;max-height:150px;">

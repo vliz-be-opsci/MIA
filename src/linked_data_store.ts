@@ -116,8 +116,12 @@ export const collectInfoMappingKey = async (
 ): Promise<string | string[]> => {
   try {
     let query = `SELECT ?value WHERE {<${og_uri}> ${config.MAPPING[mapping_key]["query"]} ?value . }`;
-    let value = await comunicaQueryString(query, store, config.PREFIXES, config.MAPPING[mapping_key]["type"]);
-    console.debug("value from infomapcollect: ", value);
+    let value = await comunicaQueryString(
+      query,
+      store,
+      config.PREFIXES,
+      config.MAPPING[mapping_key]["type"]
+    );
     if (value == "") {
       console.log("no value found for query: " + mapping_key);
       // try and get value with trajectory path
@@ -125,7 +129,12 @@ export const collectInfoMappingKey = async (
         config.MAPPING[mapping_key]["query"],
         config
       );
-      let value = await traverseURI(trajectory_path, og_uri, store,config.MAPPING[mapping_key]["type"]);
+      let value = await traverseURI(
+        trajectory_path,
+        og_uri,
+        store,
+        config.MAPPING[mapping_key]["type"]
+      );
       return value;
     }
     return value;
@@ -136,7 +145,12 @@ export const collectInfoMappingKey = async (
       config.MAPPING[mapping_key]["query"],
       config
     );
-    let value = await traverseURI(trajectory_path, og_uri, store,config.MAPPING[mapping_key]["type"]);
+    let value = await traverseURI(
+      trajectory_path,
+      og_uri,
+      store,
+      config.MAPPING[mapping_key]["type"]
+    );
     return value;
   }
 };
@@ -180,9 +194,9 @@ export const comunicaQueryString = async (
       return "";
     }
 
-    if (type_result == "list"){
+    if (type_result == "list") {
       let values = [];
-      for (const binding of bindings){
+      for (const binding of bindings) {
         let term = binding.get("value") as N3.Term;
         values.push(term.value);
       }
