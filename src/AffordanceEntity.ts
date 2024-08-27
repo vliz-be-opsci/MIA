@@ -4,6 +4,7 @@ import DerefInfoCollector from "./DerefInfoCollector";
 import {
   generateInfoCardTemplate,
   generateEventCardTemplate,
+  generateDatasetCardTemplate,
   generateMapCardTemplate,
   generatePersonCardTemplate,
   generateBibliographicResourceCardTemplate,
@@ -198,12 +199,14 @@ export default class AffordanceEntity {
           }
           this.initial_updated = true;
 
+          /*
           // Add a rightclick event listener to the element
           // that will copy the link to the clipboard
           element.addEventListener("contextmenu", (event: any) => {
             event.preventDefault();
             navigator.clipboard.writeText(this.link);
           });
+          */
 
           clearInterval(intervalId); // Stop the interval
         }
@@ -218,6 +221,7 @@ export default class AffordanceEntity {
       person: generatePersonCardTemplate,
       bibresource: generateBibliographicResourceCardTemplate,
       organization: generateOrganizationCardTemplate,
+      dataset: generateDatasetCardTemplate,
       default: generateInfoCardTemplate,
     };
     let toreturn = mapping[name];
@@ -237,10 +241,8 @@ export default class AffordanceEntity {
     let affordance_position = this.element.getBoundingClientRect();
     let current_window_height = window.innerHeight;
     let affordance_position_top = affordance_position.top;
-    let scrolled_height =
-      window.pageYOffset || document.documentElement.scrollTop;
-    let scrolled_width =
-      window.pageXOffset || document.documentElement.scrollLeft;
+    let scrolled_height = document.documentElement.scrollTop;
+    let scrolled_width = document.documentElement.scrollLeft;
 
     let current_window_width = window.innerWidth;
 

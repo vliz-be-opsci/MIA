@@ -17,6 +17,7 @@ import phone from "./css/phone.svg";
 import email from "./css/email.svg";
 import book_atlas from "./css/book_atlas.svg";
 import bullhorn from "./css/bullhorn.svg";
+import archive_box from "./css/archive_box.svg";
 
 export function generatePersonCardTemplate(
   data: { [key: string]: any },
@@ -103,30 +104,13 @@ export function generateDatasetCardTemplate(
   //for each undefined value, replace with a default value
   let title = data.title || "No title available";
 
-  // make object that will go over each key in data and make
-  // <p class="text-sm text-gray-500 mr-5">${value}</p>
-  // except for title
-  let description = "";
-  for (const [key, value] of Object.entries(data)) {
-    if (key != "title") {
-      if (value != "") {
-        description += `<p class="text-sm text-gray-500 mr-5"><b>${key}:</b> ${stringlengthshortener(
-          value,
-          150,
-          "text-sm text-gray-500 mr-5"
-        )}</p>`;
-      }
-    }
-  }
-
   let defaulthtml = `
      <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;min-height:150px">
         <div class="ml-4">
             <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
-              <img id="marineinfo_logo" class="h-4 w-4 mr-1" src="${scroll}">
+              <img id="marineinfo_logo" class="h-4 w-4 mr-1" src="${archive_box}">
               ${stringlengthshortener(title, 25)}
             </h2>
-            ${description}
             <div class="mt-2 flex space-x-4">
                 <a href="${_link}" class="text-gray-500 hover:text-gray-700 mb-2" nochange>
                      <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
@@ -285,9 +269,9 @@ export function generateBibliographicResourceCardTemplate(
   if (free_type != "") {
     if (download_url != "") {
       download_button = `
-      <button class="text-gray-500 hover:text-gray-700">
-            <img id="download-button" title="${download_url}" class="h-6 w-6 icon_svg" src="${download_svg}" alt="Orcid">
-      </button>
+      <a href="${download_url}" class="text-gray-500 hover:text-gray-700" nochange>
+            <img id="download-button" class="h-6 w-6 icon_svg" src="${download_svg}" alt="Orcid">
+      </a>
       `;
     }
   }
@@ -306,7 +290,7 @@ export function generateBibliographicResourceCardTemplate(
                      <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
                 </a>
                 <button id="clipboard-button" title="copy citation" class="text-gray-500 hover:text-gray-700">
-                    <img class="h-6 w-6 icon_svg" src="${clipboard}" alt="copy citation">
+                    <img class="h-6 w-6 icon_svg" src="${clipboard}" title="copy citation">
                 </button>
                 ${download_button}
             </div>
