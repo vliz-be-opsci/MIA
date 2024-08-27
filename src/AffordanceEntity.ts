@@ -11,7 +11,6 @@ import {
   generateOrganizationCardTemplate,
 } from "./Templates";
 import "./css/mia.css";
-import "./css/styles.css";
 
 export default class AffordanceEntity {
   private element: any;
