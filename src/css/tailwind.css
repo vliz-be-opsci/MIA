@@ -1,25 +1,27 @@
-@tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 @tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@layer base {
-  .card {
-    @apply bg-white text-gray-800; /* Add base utility classes you need */
-  }
-}
 
 @layer components {
-  .card {
-    @apply p-4 rounded-lg shadow-md; /* Add component utility classes you need */
+  .card > div {
+    @apply rounded-lg shadow-md; /* Add component utility classes you need */
   }
 }
 
 @layer utilities {
-  .card {
-    @apply m-4; /* Add utility classes you need */
+  .card > div {
+    @apply mr-4; /* Add utility classes you need */
+  }
+}
+
+@layer base {
+  .card h1,
+  .card h2,
+  .card h3,
+  .card h4,
+  .card h5,
+  .card h6,
+  .card p {
+    line-height: 0.85; /* Set your desired line height */
   }
 }
