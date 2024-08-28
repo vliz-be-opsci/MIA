@@ -22,6 +22,15 @@
   .card h5,
   .card h6,
   .card p {
-    line-height: 0.85; /* Set your desired line height */
+    line-height: 1; /* Set your desired line height */
+    margin: 0;
+  }
+
+  .card h2 {
+    color: #0153aa;
+  }
+  .card h2 svg {
+    fill: #007bff; /* Set the desired fill color for SVGs within h2 */
+    @apply h-5 w-5 mr-1;
   }
 }

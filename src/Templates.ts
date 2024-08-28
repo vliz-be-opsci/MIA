@@ -18,6 +18,7 @@ import email from "./css/email.svg";
 import book_atlas from "./css/book_atlas.svg";
 import bullhorn from "./css/bullhorn.svg";
 import archive_box from "./css/archive_box.svg";
+import calendar from "./css/calendar.svg";
 
 export function generatePersonCardTemplate(
   data: { [key: string]: any },
@@ -59,7 +60,7 @@ export function generatePersonCardTemplate(
                 <a href="${_link}" class="text-gray-500 hover:text-gray-700" nochange>
                      <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
                 </a>
-                <a href="${orcid}" class="text-gray-500 hover:text-gray-700">
+                <a href="${orcid}" class="text-gray-500 hover:text-gray-700" nochange>
                     <img class="h-6 w-6 icon_svg" src="${orcidSVG}" alt="Orcid">
                 </a>
                 
@@ -338,12 +339,15 @@ export function generateEventCardTemplate(
            <img class="h-5 w-5 mr-1 icon_svg" src="${bullhorn}" alt="location">
            ${title}
          </h2>
+         <p class="text-sm text-gray-500 mr-5">${type}</p>
          <p class="inline-flex items-center text-sm text-gray-500 mr-5">
          <img class="h-4 w-4 mr-1 icon_svg" src="${globe}" alt="location">
          ${location}
          </p>
-         <p class="text-sm text-gray-500 mr-5"><b>date: </b>${start_date}-->${end_date}</p>
-         <p class="text-sm text-gray-500 mr-5"><b>type: </b>${type}</p>
+         <p class="inline-flex items-center text-sm text-gray-500 mr-5">
+          <img class="h-4 w-4 mr-1 icon_svg" src=" ${calendar}" alt="marineinfo">
+          ${start_date} - ${end_date}
+         </p>
          <div class="mt-2 flex space-x-4">
              <a href="${_link}" class="text-gray-500 hover:text-gray-700" nochange>
                   <img class="h-6 w-6 icon_svg mb-1" src="${marininfologo}" alt="marineinfo">
