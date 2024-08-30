@@ -1,9 +1,9 @@
-name: Build and Deploy verioned package to GitHub Pages
+name: Build and Deploy latest package to GitHub Pages
 
 on:
   push:
-    tags:
-      - 'v*'  # This triggers the workflow on tag pushes that start with 'v', e.g., v1.0.0
+    branches:
+      - main  # This triggers the workflow on pushes to the main branch
 
 jobs:
   build:
@@ -24,15 +24,10 @@ jobs:
     - name: Build project
       run: npm run build
 
-    - name: Extract tag name
-      id: extract_tag
-      run: echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./dist
-        destination_dir: ${{ steps.extract_tag.outputs.TAG_NAME }}
+        destination_dir: latest  # Deploy to the 'latest' directory on the gh-pages branch
         keep_files: true  # Keep existing files in the gh-pages branch
-    
