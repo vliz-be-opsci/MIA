@@ -28,6 +28,9 @@ jobs:
       run: |
         mkdir -p dist-${GITHUB_REF#refs/tags/}
         cp -r dist/* dist-${GITHUB_REF#refs/tags}/
+    
+    - name: copy test/deref_config.json to dist
+      run: cp test/deref_config.json dist-${GITHUB_REF#refs/tags}/
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
