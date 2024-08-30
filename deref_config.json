@@ -1,0 +1,377 @@
+[
+    {
+        "RDF_TYPE": "http://marineregions.org/ns/ontology#MRGeoObject",
+        "PREFIXES": [
+            {
+                "prefix": "mr",
+                "uri": "http://marineregions.org/ns/ontology#"
+            },
+            {
+                "prefix": "skos",
+                "uri": "http://www.w3.org/2004/02/skos/core#"
+            },
+            {
+                "prefix": "dcterms",
+                "uri": "http://purl.org/dc/terms/"
+            },
+            {
+                "prefix": "gsp",
+                "uri": "http://www.opengis.net/ont/geosparql#"
+            }
+        ],
+        "ASSERTION_PATHS": [
+            "mr:hasGeometry/gsp:asWKT",
+            "<http://www.w3.org/ns/dcat#centroid>/gsp:asWKT",
+            "skos:prefLabel"
+        ],
+        "TEMPLATE": "map",
+        "MAPPING": {
+            "mapwkt": {
+                "query": "mr:hasGeometry/gsp:asWKT",
+                "type": "single"
+            },
+            "centroid": {
+                "query": "<http://www.w3.org/ns/dcat#centroid>/gsp:asWKT",
+                "type": "single"
+            },
+            "name": {
+                "query": "skos:prefLabel",
+                "type": "single"
+            },
+            "type_place": {
+                "query": "rdf:type",
+                "type": "list"
+            }
+        }
+    },
+    {
+        "RDF_TYPE": "https://schema.org/Person",
+        "PREFIXES": [
+            {
+                "prefix": "schema",
+                "uri": "https://schema.org/"
+            },
+            {
+                "prefix": "org",
+                "uri": "http://www.w3.org/ns/org#"
+            },
+            {
+                "prefix": "skos",
+                "uri": "http://www.w3.org/2004/02/skos/core#"
+            }
+        ],
+        "ASSERTION_PATHS": [
+            "schema:givenName",
+            "schema:familyName",
+            "schema:image",
+            "schema:identifier",
+            "org:hasMembership/org:organization/schema:name",
+            "org:hasMembership/org:role/skos:prefLabel"
+        ],
+        "TEMPLATE": "person",
+        "MAPPING": {
+            "name": {
+                "query": "schema:givenName",
+                "type": "single"
+            },
+            "family": {
+                "query": "schema:familyName",
+                "type": "single"
+            },
+            "image": {
+                "query": "schema:image",
+                "type": "single"
+            },
+            "orcid": {
+                "query": "schema:identifier",
+                "type": "single"
+            },
+            "organization": {
+                "query": "org:hasMembership/org:organization ?a. \n ?a a org:Organization .\n ?a schema:name",
+                "type": "single"
+            },
+            "job_position": {
+                "query": "org:hasMembership/org:role/skos:prefLabel",
+                "type": "single"
+            }
+        }
+    },
+    {
+        "RDF_TYPE": "https://schema.org/Event",
+        "PREFIXES": [
+            {
+                "prefix": "mr",
+                "uri": "http://marineregions.org/ns/ontology#"
+            },
+            {
+                "prefix": "skos",
+                "uri": "http://www.w3.org/2004/02/skos/core#"
+            },
+            {
+                "prefix": "dcterms",
+                "uri": "http://purl.org/dc/terms/"
+            },
+            {
+                "prefix": "gsp",
+                "uri": "http://www.opengis.net/ont/geosparql#"
+            },
+            {
+                "prefix": "schema",
+                "uri": "https://schema.org/"
+            }
+        ],
+        "ASSERTION_PATHS": [
+            "schema:name",
+            "schema:location",
+            "dcterms:type",
+            "schema:description",
+            "schema:startDate",
+            "schema:endDate"
+        ],
+        "TEMPLATE": "event",
+        "MAPPING": {
+            "title": {
+                "query": "schema:name",
+                "type": "single"
+            },
+            "location": {
+                "query": "schema:location",
+                "type": "single"
+            },
+            "type": {
+                "query": "dcterms:type",
+                "type": "single"
+            },
+            "description": {
+                "query": "schema:description",
+                "type": "single"
+            },
+            "start_date": {
+                "query": "schema:startDate",
+                "type": "single"
+            },
+            "end_date": {
+                "query": "schema:endDate",
+                "type": "single"
+            }
+        }
+    },
+    {
+        "RDF_TYPE": "https://schema.org/Dataset",
+        "PREFIXES": [
+            {
+                "prefix": "mr",
+                "uri": "http://marineregions.org/ns/ontology#"
+            },
+            {
+                "prefix": "skos",
+                "uri": "http://www.w3.org/2004/02/skos/core#"
+            },
+            {
+                "prefix": "dcterms",
+                "uri": "http://purl.org/dc/terms/"
+            },
+            {
+                "prefix": "gsp",
+                "uri": "http://www.opengis.net/ont/geosparql#"
+            },
+            {
+                "prefix": "schema",
+                "uri": "https://schema.org/"
+            },
+            {
+                "prefix": "vcard",
+                "uri": "http://www.w3.org/2006/vcard/ns#"
+            },
+            {
+                "prefix": "dcat",
+                "uri": "http://www.w3.org/ns/dcat#"
+            },
+            {
+                "prefix": "dc",
+                "uri": "http://purl.org/dc/elements/1.1/"
+            }
+        ],
+        "ASSERTION_PATHS": [
+            "dcterms:title",
+            "dcterms:license",
+            "dcterms:abstract"
+        ],
+        "TEMPLATE": "dataset",
+        "MAPPING": {
+            "title": {
+                "query": "dcterms:title",
+                "type": "single"
+            },
+            "license": {
+                "query": "dcterms:license",
+                "type": "single"
+            },
+            "date": {
+                "query": "dcterms:issued",
+                "type": "single"
+            },
+            "contact": {
+                "query": "dcat:contactPoint/vcard:hasEmail",
+                "type": "single"
+            },
+            "urls": {
+                "query": "dcat:distribution/dcat:accessURL",
+                "type": "list"
+            },
+            "citation": {
+                "query": "dc:bibliographicCitation",
+                "type": "single"
+            }
+        }
+    },
+    {
+        "RDF_TYPE": "https://schema.org/Project",
+        "PREFIXES": [
+            {
+                "prefix": "mr",
+                "uri": "http://marineregions.org/ns/ontology#"
+            },
+            {
+                "prefix": "skos",
+                "uri": "http://www.w3.org/2004/02/skos/core#"
+            },
+            {
+                "prefix": "dcterms",
+                "uri": "http://purl.org/dc/terms/"
+            },
+            {
+                "prefix": "gsp",
+                "uri": "http://www.opengis.net/ont/geosparql#"
+            },
+            {
+                "prefix": "schema",
+                "uri": "https://schema.org/"
+            }
+        ],
+        "ASSERTION_PATHS": [
+            "schema:name",
+            "schema:description"
+        ],
+        "TEMPLATE": "default",
+        "MAPPING": {
+            "title": {
+                "query": "schema:name",
+                "type": "single"
+            },
+            "description": {
+                "query": "schema:description",
+                "type": "single"
+            }
+        }
+    },
+    {
+        "RDF_TYPE": "https://schema.org/Organization",
+        "PREFIXES": [
+            {
+                "prefix": "mr",
+                "uri": "http://marineregions.org/ns/ontology#"
+            },
+            {
+                "prefix": "skos",
+                "uri": "http://www.w3.org/2004/02/skos/core#"
+            },
+            {
+                "prefix": "dcterms",
+                "uri": "http://purl.org/dc/terms/"
+            },
+            {
+                "prefix": "gsp",
+                "uri": "http://www.opengis.net/ont/geosparql#"
+            },
+            {
+                "prefix": "schema",
+                "uri": "https://schema.org/"
+            },
+            {
+                "prefix": "vcard",
+                "uri": "http://www.w3.org/2006/vcard/ns#"
+            }
+        ],
+        "ASSERTION_PATHS": [
+            "schema:name",
+            "schema:description"
+        ],
+        "TEMPLATE": "organization",
+        "MAPPING": {
+            "name": {
+                "query": "schema:name",
+                "type": "single"
+            },
+            "contact": {
+                "query": "vcard:hasTelephone/vcard:hasValue",
+                "type": "single"
+            },
+            "adress": {
+                "query": "schema:address",
+                "type": "single"
+            },
+            "email": {
+                "query": "vcard:hasEmail",
+                "type": "single"
+            }
+        }
+    },
+    {
+        "RDF_TYPE": "http://purl.org/dc/terms/BibliographicResource",
+        "PREFIXES": [
+            {
+                "prefix": "skos",
+                "uri": "http://www.w3.org/2004/02/skos/core#"
+            },
+            {
+                "prefix": "dcterms",
+                "uri": "http://purl.org/dc/terms/"
+            },
+            {
+                "prefix": "schema",
+                "uri": "https://schema.org/"
+            }
+        ],
+        "ASSERTION_PATHS": [
+            "dcterms:title",
+            "schema:datePublished",
+            "dcterms:type",
+            "schema:isAccessibleForFree",
+            "schema:author/schema:givenName",
+            "dcterms:references/schema:accessURL",
+            "dcterms:bibliographicCitation"
+        ],
+        "TEMPLATE": "bibresource",
+        "MAPPING": {
+            "title": {
+                "query": "dcterms:title",
+                "type": "single"
+            },
+            "type": {
+                "query": "dcterms:type",
+                "type": "single"
+            },
+            "publishDate": {
+                "query": "schema:datePublished",
+                "type": "single"
+            },
+            "author": {
+                "query": "schema:author/schema:givenName",
+                "type": "list"
+            },
+            "free": {
+                "query": "schema:isAccessibleForFree",
+                "type": "single"
+            },
+            "download": {
+                "query": "dcterms:references/schema:accessURL",
+                "type": "single"
+            },
+            "citation": {
+                "query": "dcterms:bibliographicCitation",
+                "type": "single"
+            }
+        }
+    }
+]
