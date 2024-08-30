@@ -19,6 +19,7 @@ import book_atlas from "./css/book_atlas.svg";
 import bullhorn from "./css/bullhorn.svg";
 import archive_box from "./css/archive_box.svg";
 import calendar from "./css/calendar.svg";
+import link from "./css/link.svg";
 
 export function generatePersonCardTemplate(
   data: { [key: string]: any },
@@ -92,6 +93,24 @@ function cleanURI(uri: string): string {
   return uri.replace(/<|>/g, "");
 }
 
+export async function getFaviconURI(url: string): Promise<string> {
+  try {
+    const response = await fetch(url);
+    const text = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(text, "text/html");
+    const iconLink = doc.querySelector("link[rel~='icon']") as HTMLLinkElement;
+    if (iconLink) {
+      return iconLink.href;
+    } else {
+      throw new Error("Favicon not found");
+    }
+  } catch (error) {
+    console.error("Error fetching favicon:", error);
+    return "";
+  }
+}
+
 export function generateDatasetCardTemplate(
   data: { [key: string]: any },
   html_element: HTMLElement,
@@ -104,6 +123,38 @@ export function generateDatasetCardTemplate(
 
   //for each undefined value, replace with a default value
   let title = data.title || "No title available";
+  let contact = data.contact || "";
+
+  let urls = data.urls || [];
+  let date = data.date || "";
+  let license = data.license || "";
+  let citation_html = "";
+  let citation = data.citation || "";
+  let urls_html = "";
+  let date_html = "";
+
+  if (date != "") {
+      date = new Date(date).toLocaleDateString()
+        ? new Date(date).toLocaleDateString()
+        : date;
+
+      date_html = `<p class="inline-flex items-center text-sm text-gray-500 mr-5">
+          <img class="h-4 w-4 mr-1 icon_svg" src=" ${calendar}" alt="marineinfo">
+          ${date}
+        </p>`;
+  }
+
+  if (citation != "") {
+    citation_html = `<a href="#" class="text-gray-500 hover:text-gray-700" nochange id="clipboard">
+                     <img class="h-6 w-6 icon_svg" src="${clipboard}" alt="marineinfo">
+                </a>`;
+  }
+  
+  for (let url of urls) {
+    urls_html += `<a href="${url}" class="text-gray-500 hover:text-gray-700" nochange>
+                     <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
+                </a>`;
+  }
 
   let defaulthtml = `
      <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;min-height:150px">
@@ -112,14 +163,26 @@ export function generateDatasetCardTemplate(
               <img id="marineinfo_logo" class="h-5 w-5 mr-1" src="${archive_box}">
               ${stringlengthshortener(title, 25)}
             </h2>
+            <p class="text-sm text-gray-500 mr-5"><b>contact: </b>${contact}</p>
+            <p class="text-sm text-gray-500 mr-5"><b>license: </b>${license}</p>
+            ${date_html}
             <div class="mt-2 flex space-x-4">
                 <a href="${_link}" class="text-gray-500 hover:text-gray-700 mb-2" nochange>
                      <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
                 </a>
+                ${citation_html}
+                ${urls_html}
             </div>
         </div>
     </div>
   `;
+
+  const clipboardButton = document.getElementById("clipboard");
+  clipboardButton?.addEventListener("click", () => {
+    //copy the _link to the clipboard
+    navigator.clipboard.writeText(citation);
+    alert("Citiation copied to clipboard");
+  });
 
   html_element.innerHTML = defaulthtml;
   //add element to body

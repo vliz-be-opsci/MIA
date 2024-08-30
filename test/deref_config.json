@@ -197,7 +197,7 @@
             "dcterms:license",
             "dcterms:abstract"
         ],
-        "TEMPLATE": "default",
+        "TEMPLATE": "dataset",
         "MAPPING": {
             "title": {
                 "query": "dcterms:title",
