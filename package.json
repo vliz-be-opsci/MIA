@@ -3,8 +3,14 @@
   "version": "1.0.0",
   "description": "webwidget to extrapolate specific attributes from the DOM of an html page and insert extra data based on provided URI links",
   "main": "./dist/mia.bundle.js",
+  "files": [
+    "dist"
+  ],
   "directories": {
     "test": "test"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "dev": "webpack serve",
