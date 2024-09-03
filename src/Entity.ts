@@ -1,4 +1,6 @@
-
+/* this class will be needed in the future 
+for making sure that the correct card is shown every time
+*/
 
 export default class Entity {
     content: any;

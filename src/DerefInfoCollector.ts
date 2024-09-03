@@ -43,6 +43,8 @@ export default class DerefInfoCollector {
     emptystore = await getLinkedDataNQuads(url, emptystore);
     this.triplestore = this._combine_triplestores(this.triplestore, emptystore);
     const types = await this.get_type_uri(url);
+    console.info("url: ", url);
+    console.info("types: ", types);
     const config_type_info = get_config_for_rdf_type(types, this.derefconfig);
     console.log(config_type_info);
     if (config_type_info === null) {
@@ -110,6 +112,28 @@ export default class DerefInfoCollector {
         types.push(type);
       });
     }
+
+    if (types.length === 0) {
+      console.info("No rdf type found for: ", url);
+      // try query with just ?s
+      const query = `
+            SELECT ?type WHERE {
+                ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type .
+            }
+        `;
+
+      let result = await comunicaQuery(query, this.triplestore);
+      const bindings = await result.toArray();
+      bindings.forEach((binding: Bindings) => {
+        let type = (binding.get("type") as Term).value;
+        types.push(type);
+      });
+      // reverse the array
+      // this is because of the way comunica works
+      // first triples found are the last ones
+      types = types.reverse();
+    }
+
     return types; // Add a return statement here
   }
 

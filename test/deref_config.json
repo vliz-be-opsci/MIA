@@ -373,5 +373,70 @@
                 "type": "single"
             }
         }
+    },
+    {
+        "RDF_TYPE": "http://schema.org/Taxon",
+        "PREFIXES": [
+            {
+                "prefix": "skos",
+                "uri": "http://www.w3.org/2004/02/skos/core#"
+            },
+            {
+                "prefix": "dcterms",
+                "uri": "http://purl.org/dc/terms/"
+            },
+            {
+                "prefix": "schema",
+                "uri": "http://schema.org/"
+            },
+            {
+                "prefix": "dwc",
+                "uri": "http://rs.tdwg.org/dwc/terms/"
+            },
+            {
+                "prefix": "aphia",
+                "uri": "http://open-vocabularies.vliz.be/ns/aphia/"
+            },
+            {
+                "prefix": "evt",
+                "uri": "http://open-vocabularies.vliz.be/ns/events/"
+            }
+        ],
+        "ASSERTION_PATHS": [
+            "dwc:ScientificName",
+            "dwc:locationID",
+            "dwc:scientificNameAuthorship",
+            "dwc:taxonomicStatus",
+            "schema:sameAs",
+            "schema:url",
+            "evt:editEvent"
+        ],
+        "TEMPLATE": "default",
+        "MAPPING": {
+            "title": {
+                "query": "dwc:ScientificName",
+                "type": "single"
+            },
+            "locations": {
+                "query": "dwc:locationID",
+                "type": "list"
+            },
+            "scientific_name_authorship": {
+                "query": "dwc:scientificNameAuthorship",
+                "type": "single"
+            },
+            "taxon_status": {
+                "query": "dwc:taxonomicStatus",
+                "type": "single"
+            },
+            "same_as": {
+                "query": "schema:sameAs",
+                "type": "list"
+            },
+            "urls": {
+                "query": "schema:url",
+                "type": "list"
+            }
+        }
     }
 ]

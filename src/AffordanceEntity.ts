@@ -132,7 +132,8 @@ export default class AffordanceEntity {
     //add class confluence_box to elemnt if not already there
     if (
       this.link.includes("marineinfo") ||
-      this.link.includes("marineregions")
+      this.link.includes("marineregions") ||
+      this.link.includes("aphia.org") 
     ) {
       // check if the parent element is an <a> tag
       // if yes then check if there is a element tag nochange

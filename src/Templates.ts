@@ -209,7 +209,10 @@ export function generateInfoCardTemplate(
   let description = "";
   for (const [key, value] of Object.entries(data)) {
     if (key != "title") {
-      if (value != "") {
+      // if value is an array then show the ammount of items in the array
+      if (Array.isArray(value)) {
+        description += `<p class="text-sm text-gray-500 mr-5"><b>${key}:</b> ${value.length} items</p>`;
+      } else if (value != "") {
         description += `<p class="text-sm text-gray-500 mr-5"><b>${key}:</b> ${stringlengthshortener(
           value,
           150,
