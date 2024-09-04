@@ -33,4 +33,21 @@
     fill: #007bff; /* Set the desired fill color for SVGs within h2 */
     @apply h-5 w-5 mr-1;
   }
+
+  /* Custom styles for ordered lists within .card */
+  .card ol {
+    list-style-type: none; /* Remove default numbering */
+    padding-left: 0; /* Remove default padding */
+  }
+
+  .card ol li {
+    position: relative;
+    padding-left: 0.5em; /* Adjust padding as needed */
+  }
+
+  .card ol li::before {
+    content: ""; /* Custom numbering format */
+    position: absolute;
+    left: 0;
+  }
 }

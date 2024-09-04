@@ -134,11 +134,11 @@ export function generateDatasetCardTemplate(
   let date_html = "";
 
   if (date != "") {
-      date = new Date(date).toLocaleDateString()
-        ? new Date(date).toLocaleDateString()
-        : date;
+    date = new Date(date).toLocaleDateString()
+      ? new Date(date).toLocaleDateString()
+      : date;
 
-      date_html = `<p class="inline-flex items-center text-sm text-gray-500 mr-5">
+    date_html = `<p class="inline-flex items-center text-sm text-gray-500 mr-5">
           <img class="h-4 w-4 mr-1 icon_svg" src=" ${calendar}" alt="marineinfo">
           ${date}
         </p>`;
@@ -149,7 +149,7 @@ export function generateDatasetCardTemplate(
                      <img class="h-6 w-6 icon_svg" src="${clipboard}" alt="marineinfo">
                 </a>`;
   }
-  
+
   for (let url of urls) {
     urls_html += `<a href="${url}" class="text-gray-500 hover:text-gray-700" nochange>
                      <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
@@ -230,6 +230,34 @@ export function generateInfoCardTemplate(
               ${stringlengthshortener(title, 25)}
             </h2>
             ${description}
+
+            
+
+            <nav class="flex" aria-label="Breadcrumb">
+              <ol class="inline-flex items-left space-x-1 md:space-x-2 rtl:space-x-reverse">
+                <li class="inline-flex items-center">
+                  <span class="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">Flowbite</span>
+                </li>
+                <li>
+                  <div class="flex items-center">
+                    <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                    </svg>
+                   <span class="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">Flowbitet</span>
+                  </div>
+                </li>
+                <li aria-current="page">
+                  <div class="flex items-center">
+                    <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                    </svg>
+                    <span class="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">Flowbitest</span>
+                  </div>
+                </li>
+              </ol>
+            </nav>
+
+
             <div class="mt-2 flex space-x-4">
                 <a href="${_link}" class="text-gray-500 hover:text-gray-700 mb-2" nochange>
                      <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">

@@ -375,7 +375,7 @@
         }
     },
     {
-        "RDF_TYPE": "http://schema.org/Taxon",
+        "RDF_TYPE": "https://schema.org/Taxon",
         "PREFIXES": [
             {
                 "prefix": "skos",
@@ -387,11 +387,11 @@
             },
             {
                 "prefix": "schema",
-                "uri": "http://schema.org/"
+                "uri": "https://schema.org/"
             },
             {
                 "prefix": "dwc",
-                "uri": "http://rs.tdwg.org/dwc/terms/"
+                "uri": "https://rs.tdwg.org/dwc/terms/"
             },
             {
                 "prefix": "aphia",
