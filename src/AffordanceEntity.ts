@@ -71,7 +71,7 @@ export default class AffordanceEntity {
     let x = event.clientX;
     let y = event.clientY;
 
-    let card_bbox = document.querySelector(".card")?.getBoundingClientRect();
+    let card_bbox = document.querySelector(".marine_info_affordances")?.getBoundingClientRect();
     if (card_bbox !== undefined && card_bbox !== null) {
       if (
         x >= card_bbox.left &&
@@ -84,7 +84,7 @@ export default class AffordanceEntity {
     }
 
     if (
-      document.querySelector(".card") !== null &&
+      document.querySelector(".marine_info_affordances") !== null &&
       document.getElementById(link_id) !== null
     ) {
       return true;
@@ -304,7 +304,7 @@ export default class AffordanceEntity {
 
     //create card
     let card = document.createElement("div");
-    card.className = "card fade-in";
+    card.className = "marine_info_affordances fade-in";
     //based in the size of the window and the position of the affordance, the card will be placed in a different position
     //the card must always be placed in the same position as the affordance
     //get position of affordance and mouse
@@ -336,7 +336,7 @@ export default class AffordanceEntity {
         // and the mouse is not over the element that triggered the card
         // and the link is not the current page
         if (
-          document.querySelector(".card:hover") === null &&
+          document.querySelector(".marine_info_affordances:hover") === null &&
           this.link !== window.location.href
         ) {
           this._remove_card();
@@ -346,7 +346,7 @@ export default class AffordanceEntity {
 
     document.addEventListener("click", (event) => {
       //if the click is not in the card, remove the card
-      if (document.querySelector(".card:hover") === null) {
+      if (document.querySelector(".marine_info_affordances:hover") === null) {
         this._remove_card();
       }
     });
@@ -360,7 +360,7 @@ export default class AffordanceEntity {
   }
 
   private _remove_card() {
-    let card = document.querySelectorAll(".card");
+    let card = document.querySelectorAll(".marine_info_affordances");
     for (let i = 0; i < card.length; i++) {
       card[i].classList.add("fade-out");
       card[i].addEventListener("animationend", () => {
