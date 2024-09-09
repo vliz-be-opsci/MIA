@@ -1,16 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
         <title>Web Widget</title>
         <script src="https://open-science.vliz.be/MIA/latest/mia.bundle.js" id="mia_script"
                 deref-config="https://open-science.vliz.be/MIA/deref_config.json"></script>
         <meta name="viewport">
+        <script type="module" src="https://vocab.vliz.be/webcomponent/main.js"></script>
 </head>
 
 <body>
         <!-- The widget will be inserted here -->
         <div>
+                <h1>Search</h1>
+                <vocab-search-bar
+                  search-endpoint="https://vocab.vliz.be/"
+                  languages-string="nl"
+                  >
+                </vocab-search-bar>
                 <p>This is a test page to see if stuff works as it should work</p>
                 <p><a href="https://marineinfo.org/id/person/38476">Linked data man</a></p>
                 <p><a href="https://marineinfo.org/id/person/37869">Very handsome person is behind this curtain</a></p>
@@ -41,6 +48,7 @@
         </div>
         <p><a href="https://marineinfo.org/id/project/5240">project</a></p>
         <p><a href="https://marineinfo.org/id/dataset/6430">dataset</a></p>
+        <p><a href="https://aphia.org/id/taxname/127160">Other url same fish</a></p>
         <p><a href="https://marineinfo.org/id/publication/300143">publication</a></p>
         <p><a href="https://marineinfo.org/id/publication/355430">publication with authors</a></p>
         <p><a href="https://marineinfo.org/id/publication/225534">some multimedia shit</a></p>
@@ -108,10 +116,4 @@
         <p><a href="https://marineregions.org/mrgid/3293">Belgian EEZ bL</a></p>
         <p><a href="https://orcid.org/0000-0002-9648-6484">Felicity Jones fan</a></p>
 </body>
-<!-- <script src="../src/utils/rdflib.min.js" ></script>
-<script src="https://unpkg.com/n3/browser/n3.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jsonld/8.3.1/jsonld.min.js" integrity="sha512-2OPP4fxUM023yo4P052o0ZPY+BqxeiMlSvEX7LJL0GS/IOqTNY3oaFcVtXpGPUqa0g898GRnkmAnzh7Tvuz/sw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://open-science.vliz.be/MIA/index.js" type="module" id="mia_script"></script> -->
-<!-- dev src should be ../index.js => live version is currently located at https://open-science.vliz.be/MIA/index.js -->
-
 </html>
