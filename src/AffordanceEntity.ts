@@ -139,6 +139,12 @@ export default class AffordanceEntity {
       // if yes then check if there is a element tag nochange
       // eg: <a nochange>text</a>
       // if not add the class confluence_box
+
+      //check if element is part of the profiles corner div
+      if (element.closest("#profiles_corner") !== null) {
+        return;
+      }
+
       if (element.getAttribute("nochange") === null) {
         element.classList.add("confluence_box");
         element.addEventListener("contextmenu", (event: any) => {
@@ -247,13 +253,13 @@ export default class AffordanceEntity {
     let current_window_width = window.innerWidth;
 
     // some log statements to check the values
-    console.debug("affordance_position_top", affordance_position_top);
-    console.debug("current_window_height", current_window_height);
-    console.debug("current_window_width", current_window_width);
-    console.debug("scrolled_height", scrolled_height);
-    console.debug("scrolled_width", scrolled_width);
-    console.debug("affordance_position", affordance_position);
-    console.debug("card_clientHeight", card.clientHeight);
+    //console.debug("affordance_position_top", affordance_position_top);
+    //console.debug("current_window_height", current_window_height);
+    //console.debug("current_window_width", current_window_width);
+    //console.debug("scrolled_height", scrolled_height);
+    //console.debug("scrolled_width", scrolled_width);
+    //console.debug("affordance_position", affordance_position);
+    //console.debug("card_clientHeight", card.clientHeight);
 
     // logic to place the card above or below the link
     // the card should be placed above the link if the affordance is closer to the bottom of the window

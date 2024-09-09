@@ -125,6 +125,7 @@ class DocumentWatcher {
     checkNode(node: Element) {
         const links = node.querySelectorAll('a');
         links.forEach((link) => {
+            // if the link is in the profiles corner then don't add it
             if (link.href !== '') {
                 console.log('link added: ' + link.href);
                 this.affordanceManager.addAffordance(link, this.affordanceManager.derefInfoCollector);
