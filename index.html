@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
         <title>Web Widget</title>
@@ -7,11 +7,18 @@
                 deref-config="https://open-science.vliz.be/MIA/deref_config.json"></script>
         <!--<script src="./dist/mia.bundle.js" id="mia_script" deref-config="./test/deref_config.json"></script>-->
         <meta name="viewport">
+        <script type="module" src="https://vocab.vliz.be/webcomponent/main.js"></script>
 </head>
 
 <body>
         <!-- The widget will be inserted here -->
         <div>
+                <h1>Search</h1>
+                <vocab-search-bar
+                  search-endpoint="https://vocab.vliz.be/"
+                  languages-string="nl"
+                  >
+                </vocab-search-bar>
                 <p>This is a test page to see if stuff works as it should work</p>
                 <p><a href="https://marineinfo.org/id/person/38476">Linked data man</a></p>
                 <p><a href="https://marineinfo.org/id/person/37869">Very handsome person is behind this curtain</a></p>
