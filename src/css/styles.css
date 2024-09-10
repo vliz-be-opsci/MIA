@@ -44,6 +44,10 @@
   position: static;
 }
 
+.fixed {
+  position: fixed;
+}
+
 .absolute {
   position: absolute;
 }
@@ -169,6 +173,10 @@
   border-radius: 0.5rem;
 }
 
+.border {
+  border-width: 1px;
+}
+
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
@@ -269,6 +277,12 @@
   /* Remove default numbering */
   padding-left: 0;
   /* Remove default padding */
+}
+
+/*marine-info-affordances should be always in front of all other elements*/
+
+.marine_info_affordances {
+  z-index: 9999;
 }
 
 .marine_info_affordances ol li {

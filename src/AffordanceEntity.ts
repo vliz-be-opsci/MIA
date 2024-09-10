@@ -71,7 +71,9 @@ export default class AffordanceEntity {
     let x = event.clientX;
     let y = event.clientY;
 
-    let card_bbox = document.querySelector(".marine_info_affordances")?.getBoundingClientRect();
+    let card_bbox = document
+      .querySelector(".marine_info_affordances")
+      ?.getBoundingClientRect();
     if (card_bbox !== undefined && card_bbox !== null) {
       if (
         x >= card_bbox.left &&
@@ -133,15 +135,23 @@ export default class AffordanceEntity {
     if (
       this.link.includes("marineinfo.org/id") ||
       this.link.includes("marineregions") ||
-      this.link.includes("aphia.org") 
+      this.link.includes("aphia.org")
     ) {
-      // check if the parent element is an <a> tag
-      // if yes then check if there is a element tag nochange
-      // eg: <a nochange>text</a>
-      // if not add the class confluence_box
+      // check if any parent element has the nochange attribute set
+      // nochange can be set on any parent element to prevent the element from being changed
+      // eg: <div nochange><a>text</a></div>
+      // eg: <a nochange="">text</a>
+      if (element.closest("[nochange]") !== null) {
+        return;
+      }
 
-      //check if element is part of the profiles corner div
-      if (element.closest("#profiles_corner") !== null) {
+      // One edge case here is the vocabserver wedwidget since this does not create a child node but a sibling node
+      // This prevents the nochange attribute from being set on the parent node not to have any effect
+      // for this a seperate check is needed
+      // the element must be checked if any of the parent elements have a tag that contain vaadin
+      // eg: <vaadin-*></vaadin-*> like <a><vaadin-button></vaadin-button></a>
+      // TODO: decide if this should be nochange or nocupdate to still allow the element to be updated
+      if (element.closest("[id^=vaadin]") !== null) {
         return;
       }
 

@@ -40,6 +40,11 @@
     padding-left: 0; /* Remove default padding */
   }
 
+  /*marine-info-affordances should be always in front of all other elements*/
+  .marine_info_affordances {
+    z-index: 9999;
+  }
+
   .marine_info_affordances ol li {
     position: relative;
     padding-left: 0.5em; /* Adjust padding as needed */
