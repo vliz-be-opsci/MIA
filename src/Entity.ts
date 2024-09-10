@@ -59,7 +59,7 @@ export class SelfEntity {
             prefix altr: <http://www.w3.org/ns/dx/conneg/altr#>
 
             SELECT DISTINCT ?o WHERE {
-            <https://marineinfo.org/id/person/38476> altr:hasRepresentation/dct:format ?o
+            <${this.uri}> altr:hasRepresentation/dct:format ?o
             }
             `;
 
