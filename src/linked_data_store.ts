@@ -306,11 +306,6 @@ async function getData(uri: string, formats: string[]) {
     try {
       //make uri https if http and log this
       //this is to prevent mixed content errors
-      
-      if (uri.startsWith("http:")) {
-        uri = uri.replace("http://", "https://");
-      }
-      
       const response = await fetch(uri, { headers: { Accept: format } });
       const contentType = response.headers.get("Content-Type");
 
@@ -319,7 +314,24 @@ async function getData(uri: string, formats: string[]) {
       }
     } catch (error) {
       console.log(error);
-      throw error;
+      try {
+        //make uri https if http and log this
+        //this is to prevent mixed content errors
+
+        if (uri.startsWith("http:")) {
+          uri = uri.replace("http://", "https://");
+        }
+
+        const response = await fetch(uri, { headers: { Accept: format } });
+        const contentType = response.headers.get("Content-Type");
+
+        if (response.ok && contentType?.includes(format)) {
+          return { format, response };
+        }
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
     }
   }
   throw new Error("No acceptable format found");
