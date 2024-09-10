@@ -29,7 +29,14 @@ export class SelfEntity {
     console.log("SelfEntity initialised");
     //if uri == true then window.location is this.uri
     if (url == "true" || url == null || url == undefined || url == "") {
-      this.uri = window.location.href;
+      // check if the meta tag with property="og:url" exists
+      let meta = document.querySelector('meta[property="og:url"]');
+      if (meta) {
+        this.uri = meta.getAttribute("content") as string;
+      } else {
+        console.log("meta tag with property='og:url' not found");
+        this.uri = window.location.href;
+      }
     } else {
       this.uri = url;
     }
