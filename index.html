@@ -14,6 +14,7 @@
 
                 window.onload = function () {
                         const container = document.querySelector("#container");
+                        const termtable = document.querySelector("#selected_term_table");
 
                         container.addEventListener("search-results-changed", (event) => {
                                 console.debug(JSON.stringify(event.detail))
