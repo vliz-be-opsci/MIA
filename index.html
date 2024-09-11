@@ -21,8 +21,69 @@
                         });
 
                         container.addEventListener("selection-changed", (event) => {
-                                console.debug(`A search result was clicked:`);
-                                console.debug(JSON.stringify(event.detail))
+
+                                //check the event.details if the array is bigger then 0
+                                // if yes then make a table with the selected terms
+                                // if no then remove the table
+                                if (event.detail.length > 0) {
+                                        termtable.innerHTML = "";
+                                        const table = document.createElement("table");
+                                        table.classList.add("table");
+                                        table.classList.add("table-striped");
+                                        table.classList.add("table-bordered");
+                                        table.classList.add("table-hover");
+                                        table.classList.add("table-sm");
+                                        table.classList.add("table-responsive");
+                                        table.classList.add("table-responsive-sm");
+                                        table.classList.add("table-responsive-md");
+                                        table.classList.add("table-responsive-lg");
+                                        table.classList.add("table-responsive-xl");
+                                        table.classList.add("table-responsive-xxl");
+                                        table.classList.add("table-dark");
+
+                                        // Create the header
+                                        // col names are name, uri, vocabulary
+                                        const thead = document.createElement("thead");
+                                        const tr = document.createElement("tr");
+                                        const th2 = document.createElement("th");
+                                        th2.scope = "col";
+                                        th2.innerText = "URI";
+                                        const th3 = document.createElement("th");
+                                        th3.scope = "col";
+                                        th3.innerText = "Vocabulary";
+                                        tr.appendChild(th2);
+                                        tr.appendChild(th3);
+                                        thead.appendChild(tr);
+                                        table.appendChild(thead);
+
+                                        //body of the table is made by looping over the event.detail
+                                        // event detail looks like :
+                                        /*
+                                        [{"prefLabel":{"nl":["Schelde"]},"sourceDataset":"https://my-application.com/dataset/6686AE6164C5DC84AC7D0258","datasetEntityUri":"http://marineregions.org/mrgid/2542","vocabulary":"https://my-application.com/vocabularies/6686AE6064C5DC84AC7D0257","tagLabels":null,"uuid":"f3c2ee70-6f75-11ef-b508-d5369d5fea7c","uri":"http://marineregions.org/mrgid/2542","id":"f3c2ee70-6f75-11ef-b508-d5369d5fea7c","highlight":{"prefLabel.nl":["<em>Schelde</em>"]},"trimmedPrefLabel":"Schelde"},{"prefLabel":{"nl":["Schelle"]},"sourceDataset":"https://my-application.com/dataset/6686AE6164C5DC84AC7D0258","datasetEntityUri":"http://marineregions.org/mrgid/2604","vocabulary":"https://my-application.com/vocabularies/6686AE6064C5DC84AC7D0257","tagLabels":null,"uuid":"09104520-6f76-11ef-b508-d5369d5fea7c","uri":"http://marineregions.org/mrgid/2604","id":"09104520-6f76-11ef-b508-d5369d5fea7c","highlight":{"prefLabel.nl":["<em>Schelle</em>"]},"trimmedPrefLabel":"Schelle"},{"prefLabel":{"en":["Rhine-Meuse-Scheldt Delta"]},"sourceDataset":"https://my-application.com/dataset/6686AE6164C5DC84AC7D0258","datasetEntityUri":"http://marineregions.org/mrgid/19668","vocabulary":"https://my-application.com/vocabularies/6686AE6064C5DC84AC7D0257","tagLabels":null,"uuid":"f3f9b5e0-6f75-11ef-b508-d5369d5fea7c","uri":"http://marineregions.org/mrgid/19668","id":"f3f9b5e0-6f75-11ef-b508-d5369d5fea7c","highlight":{"prefLabel.en":["Rhine-Meuse-<em>Scheldt</em> Delta"]},"trimmedPrefLabel":"Rhine-Meuse-Sch..."}]
+                                        */
+
+                                        const tbody = document.createElement("tbody");
+                                        event.detail.forEach((element) => {
+                                                const tr = document.createElement("tr");
+                                                const td2 = document.createElement("td");
+                                                //should ba a <a> tag
+                                                const a = document.createElement("a");
+                                                a.href = element.uri;
+                                                a.innerText = element.uri;
+                                                td2.appendChild(a);
+                                                const td3 = document.createElement("td");
+                                                td3.innerText = element.vocabulary;
+                                                tr.appendChild(td2);
+                                                tr.appendChild(td3);
+                                                tbody.appendChild(tr);
+                                        });
+
+                                        table.appendChild(tbody);
+                                        termtable.appendChild(table);
+                                } else {
+                                        termtable.innerHTML = "";
+                                }
+                                console.debug(JSON.stringify(event.detail));
                         });
                 };
         </script>
@@ -35,6 +96,8 @@
         <div id="container">
                 <vocab-search-bar id="search" search-endpoint="https://vocab.vliz.be/" nochange>
                 </vocab-search-bar>
+        </div>
+        <div id="selected_term_table">
         </div>
         <div nochange>
                 <p>This is a test page to see if stuff works as it should work</p>
