@@ -40,6 +40,7 @@ export class SelfEntity {
     } else {
       this.uri = url;
     }
+
     this.store = new Store();
     console.info(this.uri);
     this.getAltProfiles();
@@ -51,7 +52,7 @@ export class SelfEntity {
     let types: string[] = [];
     getLinkedDataNQuads(this.uri + "-alt.ttl", this.store).then(
       async (store) => {
-        //console.debug(store);
+        console.debug(store);
 
         // perform sparql query to get all tehe possible content types
         const query = `
@@ -92,7 +93,8 @@ export class SelfEntity {
         </div>
         `;
     // append to the body
-    document.body.innerHTML += innerHTML;
+    document.body.insertAdjacentHTML("beforeend", innerHTML);
+
     // the position of the profiles corner should be top right
     // determine the width of the profiles corner and set the right position to 0
     // get the width of the profiles corner

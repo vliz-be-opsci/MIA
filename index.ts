@@ -4,8 +4,8 @@ import fetchderefconfig from "./src/DerefAndMappingConfig";
 import { SelfEntity } from "./src/Entity";
 import "./src/css/styles.css";
 
-// on window load init the Affordance Manager
-window.onload = function () {
+// on document ready init the Affordance Manager
+document.addEventListener("DOMContentLoaded", function () {
   //extract the path of the deref config file if it exists by looking at the script tag of the mia.js file in the html and looking for the deref-config attribute
   const script_tag = document.getElementById("mia_script");
   if (script_tag === null) {
@@ -24,4 +24,4 @@ window.onload = function () {
     console.log(derefconfig);
     new AffordanceManager(derefconfig);
   });
-};
+});
