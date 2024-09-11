@@ -15,7 +15,7 @@
         <script>
 
                 window.onload = function () {
-                        const container = document.querySelector("#containerserver");
+                        const container = document.querySelector("#container");
 
                         container.addEventListener("search-results-changed", (event) => {
                                 console.debug(JSON.stringify(event.detail))
@@ -34,7 +34,7 @@
         <!-- The widget will be inserted here -->
         <div>
                 <h1>Search</h1>
-                <div id="containerserver">
+                <div id="container">
                 <vocab-search-bar
                   id="search"
                   search-endpoint="https://vocab.vliz.be/"
