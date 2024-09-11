@@ -39,7 +39,7 @@ export default class DerefInfoCollector {
   async collect_info(url: string) {
     let info_keys: any = {};
     let emptystore: Store = createEmptyStore();
-    console.debug("collecting info for: ", url);
+    //console.debug("collecting info for: ", url);
     emptystore = await getLinkedDataNQuads(url, emptystore);
     this.triplestore = this._combine_triplestores(this.triplestore, emptystore);
     const types = await this.get_type_uri(url);

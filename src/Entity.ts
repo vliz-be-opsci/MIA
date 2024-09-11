@@ -51,7 +51,7 @@ export class SelfEntity {
     let types: string[] = [];
     getLinkedDataNQuads(this.uri + "-alt.ttl", this.store).then(
       async (store) => {
-        console.debug(store);
+        //console.debug(store);
 
         // perform sparql query to get all tehe possible content types
         const query = `
@@ -69,7 +69,7 @@ export class SelfEntity {
           let type = (binding.get("o") as Term).value;
           types.push(type);
         });
-        console.debug(types);
+        //console.debug(types);
         this.makeProfilesHTML(types);
       }
     );
