@@ -3,23 +3,43 @@
 
 <head>
         <title>Web Widget</title>
-        <script src="https://open-science.vliz.be/MIA/latest/mia.bundle.js" id="mia_script"
+        <script type="module" src="https://open-science.vliz.be/MIA/latest/mia.bundle.js" id="mia_script"
                 deref-config="https://open-science.vliz.be/MIA/deref_config.json"
-                self-reference="https://marineinfo.org/id/person/38476"
                 ></script>
         <meta name="viewport">
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <meta property="og:url" content="https://marineinfo.org/id/person/38476">
         <script type="module" src="https://vocab.vliz.be/webcomponent/main.js"></script>
+        <script>
+
+                window.onload = function () {
+                        const container = document.querySelector("#containerserver");
+
+                        container.addEventListener("search-results-changed", (event) => {
+                                console.debug(JSON.stringify(event.detail))
+                                console.debug(`The search results have changed`);
+                        });
+
+                        container.addEventListener("selection-changed", (event) => {
+                                console.debug(`A search result was clicked:`);
+                                console.debug(JSON.stringify(event.detail))
+                        });
+                };
+        </script>
 </head>
 
 <body>
         <!-- The widget will be inserted here -->
         <div>
                 <h1>Search</h1>
+                <div id="containerserver">
                 <vocab-search-bar
                   search-endpoint="https://vocab.vliz.be/"
                   languages-string="nl"
                   >
                 </vocab-search-bar>
+                </div>
                 <p>This is a test page to see if stuff works as it should work</p>
                 <p><a href="https://marineinfo.org/id/person/38476">Linked data man</a></p>
                 <p><a href="https://marineinfo.org/id/person/37869">Very handsome person is behind this curtain</a></p>
