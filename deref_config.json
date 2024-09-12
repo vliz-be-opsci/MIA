@@ -373,5 +373,59 @@
                 "type": "single"
             }
         }
+    },
+    {
+        "RDF_TYPE": "https://aphia.org/ns/taxon-name/TaxonName",
+        "PREFIXES": [
+            {
+                "prefix": "skos",
+                "uri": "http://www.w3.org/2004/02/skos/core#"
+            },
+            {
+                "prefix": "dcterms",
+                "uri": "http://purl.org/dc/terms/"
+            },
+            {
+                "prefix": "schema",
+                "uri": "https://schema.org/"
+            },
+            {
+                "prefix": "dwc",
+                "uri": "https://rs.tdwg.org/dwc/terms/"
+            },
+            {
+                "prefix": "aphia",
+                "uri": "http://open-vocabularies.vliz.be/ns/aphia/"
+            },
+            {
+                "prefix": "evt",
+                "uri": "http://open-vocabularies.vliz.be/ns/events/"
+            },
+            {
+                "prefix": "taxon-name",
+                "uri": "https://aphia.org/ns/taxon-name/"
+            }
+        ],
+        "ASSERTION_PATHS": [
+            "dwc:scientificName",
+            "taxon-name:hasStatus",
+            "taxon-name:fullScientificName",
+            "foaf:depiction"
+        ],
+        "TEMPLATE": "aphia_worms",
+        "MAPPING": {
+            "title": {
+                "query": "taxon-name:fullScientificName",
+                "type": "single"
+            },
+            "taxon_status": {
+                "query": "taxon-name:hasStatus",
+                "type": "single"
+            },
+            "image": {
+                "query": "foaf:depiction",
+                "type": "single"
+            }
+        }
     }
 ]
