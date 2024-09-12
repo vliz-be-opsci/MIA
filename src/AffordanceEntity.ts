@@ -9,6 +9,7 @@ import {
   generatePersonCardTemplate,
   generateBibliographicResourceCardTemplate,
   generateOrganizationCardTemplate,
+  generateAphiaCardTemplate,
 } from "./Templates";
 import "./css/mia.css";
 
@@ -238,6 +239,7 @@ export default class AffordanceEntity {
       bibresource: generateBibliographicResourceCardTemplate,
       organization: generateOrganizationCardTemplate,
       dataset: generateDatasetCardTemplate,
+      aphia_worms: generateAphiaCardTemplate,
       default: generateInfoCardTemplate,
     };
     let toreturn = mapping[name];

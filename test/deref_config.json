@@ -375,7 +375,7 @@
         }
     },
     {
-        "RDF_TYPE": "https://schema.org/Taxon",
+        "RDF_TYPE": "https://aphia.org/ns/taxon-name/TaxonName",
         "PREFIXES": [
             {
                 "prefix": "skos",
@@ -400,42 +400,31 @@
             {
                 "prefix": "evt",
                 "uri": "http://open-vocabularies.vliz.be/ns/events/"
+            },
+            {
+                "prefix": "taxon-name",
+                "uri": "https://aphia.org/ns/taxon-name/"
             }
         ],
         "ASSERTION_PATHS": [
-            "dwc:ScientificName",
-            "dwc:locationID",
-            "dwc:scientificNameAuthorship",
-            "dwc:taxonomicStatus",
-            "schema:sameAs",
-            "schema:url",
-            "evt:editEvent"
+            "dwc:scientificName",
+            "taxon-name:hasStatus",
+            "taxon-name:fullScientificName",
+            "foaf:depiction"
         ],
-        "TEMPLATE": "default",
+        "TEMPLATE": "aphia_worms",
         "MAPPING": {
             "title": {
-                "query": "dwc:ScientificName",
-                "type": "single"
-            },
-            "locations": {
-                "query": "dwc:locationID",
-                "type": "list"
-            },
-            "scientific_name_authorship": {
-                "query": "dwc:scientificNameAuthorship",
+                "query": "taxon-name:fullScientificName",
                 "type": "single"
             },
             "taxon_status": {
-                "query": "dwc:taxonomicStatus",
+                "query": "taxon-name:hasStatus",
                 "type": "single"
             },
-            "same_as": {
-                "query": "schema:sameAs",
-                "type": "list"
-            },
-            "urls": {
-                "query": "schema:url",
-                "type": "list"
+            "image": {
+                "query": "foaf:depiction",
+                "type": "single"
             }
         }
     }
