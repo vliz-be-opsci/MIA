@@ -387,11 +387,6 @@ export default class AffordanceEntity {
 
   produce_HTML_loader() {
     console.log("producing HTML loader");
-    /*
-        <div class="spinner-border" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-        */
     //check if the link already has a loader
     // by checking for the confluence_box_loading class
     let loader = document.querySelector(".confluence_box_loading");
