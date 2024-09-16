@@ -126,7 +126,8 @@
             "dcterms:type",
             "schema:description",
             "schema:startDate",
-            "schema:endDate"
+            "schema:endDate",
+            "schema:workFeatured"
         ],
         "TEMPLATE": "event",
         "MAPPING": {
@@ -153,6 +154,10 @@
             "end_date": {
                 "query": "schema:endDate",
                 "type": "single"
+            },
+            "otherLinks": {
+                "query": "schema:workFeatured/schema:url",
+                "type": "list"
             }
         }
     },
