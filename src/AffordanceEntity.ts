@@ -250,6 +250,58 @@ export default class AffordanceEntity {
     return mapping[name];
   }
 
+  private async _replace_urls_with_favicons_card(content: any, card: HTMLDivElement) {
+    // this function will check a given HTML content for URLs and replace them with favicons
+    // convention rule here is that the URL that should be replaced should be an img tag with alt text "external link"
+    // the URL to get is the href of the parent a tag
+  
+    // get all the img tags in the card
+    let img_tags = card.querySelectorAll("img");
+    // loop through all the img tags
+    for (let i = 0; i < img_tags.length; i++) {
+      // check if the alt text is "external link"
+      if (img_tags[i].alt === "external link") {
+        // get the href of the parent a tag
+        let url = img_tags[i].parentElement?.getAttribute("href");
+        // check if the url is not empty
+        if (url !== null) {
+          // get the favicon of the url
+          if (url !== undefined) {
+            let favicon: string = await this._get_favicon(url);
+            // set the src of the img tag to the favicon
+            img_tags[i].src = favicon;
+          }
+        }
+      }
+    }
+  }
+
+  private async _get_favicon(url: string) {
+    // this function will get the favicon of a given URL
+    // the favicon is gotten by appending /favicon.ico to the URL
+    // if the favicon is not found, a default favicon is used
+    // the default favicon is a globe icon
+    // the function returns the favicon URL
+
+    // get the favicon of the URL
+    let favicon = await fetch(url + "/favicon.ico")
+      .then((response) => {
+        // check if the favicon is found
+        if (response.status === 200) {
+          // return the favicon URL
+          return url + "/favicon.ico";
+        }
+        // return the default favicon URL
+        return "https://www.google.com/s2/favicons?domain=" + url;
+      })
+      .catch((error) => {
+        // return the default favicon URL
+        return "https://www.google.com/s2/favicons?domain=" + url;
+      });
+
+    return favicon;
+  }
+
   private _generate_card_placement(
     card: HTMLDivElement,
     event: MouseEvent
@@ -375,6 +427,10 @@ export default class AffordanceEntity {
       var isInTriangle =
         e.clientX > rect.right - 20 && e.clientY < rect.top + 20; // Adjust the 30px based on the triangle size
     });
+
+    //check all the links in the card and replace them with favicons
+    this._replace_urls_with_favicons_card(this.collected_info, card);
+
   }
 
   private _remove_card() {
