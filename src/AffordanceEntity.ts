@@ -136,7 +136,7 @@ export default class AffordanceEntity {
     //add class confluence_box to elemnt if not already there
     if (
       this.link.includes("marineinfo.org/id") ||
-      this.link.includes("marineregions") ||
+      this.link.includes("marineregions.org") ||
       this.link.includes("aphia.org")
     ) {
       // check if any parent element has the nochange attribute set
