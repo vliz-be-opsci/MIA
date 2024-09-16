@@ -1,6 +1,7 @@
 //contains the code for the entity of the affordance
 import Entity from "./Entity";
 import DerefInfoCollector from "./DerefInfoCollector";
+import link from "./css/link.svg";
 import {
   generateInfoCardTemplate,
   generateEventCardTemplate,
@@ -269,7 +270,11 @@ export default class AffordanceEntity {
           if (url !== undefined) {
             let favicon: string = await this._get_favicon(url);
             // set the src of the img tag to the favicon
-            img_tags[i].src = favicon;
+            // if favicon does not contain the string favicon then don't replace the image
+            console.debug("favicon", favicon);
+            if (favicon.includes("favicon")) {
+              img_tags[i].src = favicon;
+            }
           }
         }
       }
@@ -289,7 +294,8 @@ export default class AffordanceEntity {
         // check if the favicon is found
         if (response.status === 200) {
           // return the favicon URL
-          return url + "/favicon.ico";
+          // link says 200 but sometimes this is a redirect so assume not found
+          return link;
         }
         // return the default favicon URL
         return "https://www.google.com/s2/favicons?domain=" + url;
@@ -297,6 +303,7 @@ export default class AffordanceEntity {
       .catch((error) => {
         // return the default favicon URL
         return "https://www.google.com/s2/favicons?domain=" + url;
+        
       });
 
     return favicon;
