@@ -170,7 +170,7 @@ export function generateDatasetCardTemplate(
                 <a href="${_link}" class="text-gray-500 hover:text-gray-700 mb-2" nochange>
                      <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
                 </a>
-                ${citation_html}
+                <!--${citation_html}-->
                 ${urls_html}
             </div>
         </div>
@@ -197,6 +197,8 @@ export function generateInfoCardTemplate(
 ): HTMLElement {
   console.log(data);
   console.log(html_element);
+
+  // This is the default card generated
 
   let _link = affordance_link || "";
 
@@ -425,6 +427,19 @@ export function generateEventCardTemplate(
   let start_date = data.start_date || "";
   let end_date = data.end_date || "";
   let _link = affordance_link || "";
+  let otherLinks = data.otherLinks || [];
+
+  // other links section
+
+  let otherLinks_html = "";
+
+  for (let link of otherLinks) {
+    otherLinks_html += `
+    <a href="${link}" class="text-gray-500 hover:text-gray-700" nochange>
+         <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
+    </a>
+    `;
+  }
 
   let innerHTML = `
   <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;min-height:150px;">
@@ -446,6 +461,7 @@ export function generateEventCardTemplate(
              <a href="${_link}" class="text-gray-500 hover:text-gray-700" nochange>
                   <img class="h-6 w-6 icon_svg mb-1" src="${marininfologo}" alt="marineinfo">
              </a>
+              ${otherLinks_html}
          </div>
      </div>
  </div>
