@@ -241,11 +241,6 @@
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
-.marine_info_affordances > div {
-  margin-right: 1rem;
-  /* Add utility classes you need */
-}
-
 .marine_info_affordances h1,
   .marine_info_affordances h2,
   .marine_info_affordances h3,
@@ -405,6 +400,14 @@
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
 }
+
+/*
+@layer utilities {
+  .marine_info_affordances > div {
+    @apply mr-4; // Add utility classes you need 
+  }
+}
+*/
 
 .hover\:text-gray-700:hover {
   --tw-text-opacity: 1;
