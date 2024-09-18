@@ -144,11 +144,11 @@ export default class AffordanceEntity {
       this.link.includes("marineregions.org") ||
       this.link.includes("aphia.org")
     ) {
-      // check if any parent element has the nochange attribute set
+      // check if any parent element has the mia-extra-properties attribute set to nochange
       // nochange can be set on any parent element to prevent the element from being changed
-      // eg: <div nochange><a>text</a></div>
-      // eg: <a nochange="">text</a>
-      if (element.closest("[nochange]") !== null) {
+      // eg: <div mia-extra-properties="nochange"><a>text</a></div>
+      // eg: <a mia-extra-properties="nochange">text</a>
+      if (element.closest("[mia-extra-properties=nochange]") !== null) {
         return;
       }
 
@@ -162,7 +162,7 @@ export default class AffordanceEntity {
         return;
       }
 
-      if (element.getAttribute("nochange") === null) {
+      if (element.getAttribute("mia-extra-properties") === null) {
         element.classList.add("confluence_box");
         element.addEventListener("contextmenu", (event: any) => {
           event.preventDefault();
@@ -173,12 +173,10 @@ export default class AffordanceEntity {
     }
 
     if (!this.initial_updated) {
-      if (element.getAttribute("noupdate") !== null) {
-        this.initial_updated = true;
-        return;
-      }
-
-      if (element.getAttribute("nochange") !== null) {
+      if (
+        element.closest("[mia-extra-properties=noupdate]") !== null ||
+        element.getAttribute("mia-extra-properties") === "nochange"
+      ) {
         this.initial_updated = true;
         return;
       }

@@ -58,10 +58,10 @@ export function generatePersonCardTemplate(
             <p class="text-sm text-gray-500 mr-5">${job_position}</p>
             <p class="text-sm text-gray-500 mr-5">${organization}</p>
             <div class="mt-2 flex space-x-4">
-                <a href="${_link}" class="text-gray-500 hover:text-gray-700" nochange>
+                <a href="${_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
                      <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
                 </a>
-                <a href="${orcid}" class="text-gray-500 hover:text-gray-700" nochange>
+                <a href="${orcid}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
                     <img class="h-6 w-6 icon_svg" src="${orcidSVG}" alt="Orcid">
                 </a>
                 
@@ -145,13 +145,13 @@ export function generateDatasetCardTemplate(
   }
 
   if (citation != "") {
-    citation_html = `<a href="#" class="text-gray-500 hover:text-gray-700" nochange id="clipboard">
+    citation_html = `<a href="#" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange" id="clipboard">
                      <img class="h-6 w-6 icon_svg" src="${clipboard}" alt="marineinfo">
                 </a>`;
   }
 
   for (let url of urls) {
-    urls_html += `<a href="${url}" class="text-gray-500 hover:text-gray-700" nochange>
+    urls_html += `<a href="${url}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
                      <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
                 </a>`;
   }
@@ -167,7 +167,7 @@ export function generateDatasetCardTemplate(
             <p class="text-sm text-gray-500 mr-5"><b>license: </b>${license}</p>
             ${date_html}
             <div class="mt-2 flex space-x-4">
-                <a href="${_link}" class="text-gray-500 hover:text-gray-700 mb-2" nochange>
+                <a href="${_link}" class="text-gray-500 hover:text-gray-700 mb-2" mia-extra-properties="nochange">
                      <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
                 </a>
                 <!--${citation_html}-->
@@ -261,7 +261,7 @@ export function generateInfoCardTemplate(
 
 
             <div class="mt-2 flex space-x-4">
-                <a href="${_link}" class="text-gray-500 hover:text-gray-700 mb-2" nochange>
+                <a href="${_link}" class="text-gray-500 hover:text-gray-700 mb-2" mia-extra-properties="nochange">
                      <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
                 </a>
             </div>
@@ -296,7 +296,7 @@ export function generateOrganizationCardTemplate(
             <p class="text-sm text-gray-500 mr-5">${contact}</p>
             <p class="text-sm text-gray-500 mr-5">${adress}</p>
             <div class="mt-2 flex space-x-4">
-                <a href="${_link}" class="text-gray-500 hover:text-gray-700" nochange>
+                <a href="${_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
                      <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
                 </a>
                 <a href="mailto:${email_info}" class="text-gray-500 hover:text-gray-700">
@@ -366,7 +366,7 @@ export function generateBibliographicResourceCardTemplate(
   if (free_type != "") {
     if (download_url != "") {
       download_button = `
-      <a href="${download_url}" class="text-gray-500 hover:text-gray-700" nochange>
+      <a href="${download_url}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
             <img id="download-button" class="h-6 w-6 icon_svg" src="${download_svg}" alt="Orcid">
       </a>
       `;
@@ -383,10 +383,10 @@ export function generateBibliographicResourceCardTemplate(
             <p class="items-center inline-flex text-sm text-gray-500 mr-5"><img class="h-4 w-4 mr-1" src="${c_type_image}">:${type}</p>
             <p class="text-sm text-gray-500 mr-5"><b>release date: </b>${publishDate}</p>
             <div class="mt-2 flex space-x-4">
-                <a href="${_link}" class="text-gray-500 hover:text-gray-700" nochange>
+                <a href="${_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
                      <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
                 </a>
-                <a href="#" class="text-gray-500 hover:text-gray-700" nochange id="clipboard">
+                <a href="#" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange" id="clipboard">
                      <img class="h-6 w-6 icon_svg" src="${clipboard}" alt="marineinfo">
                 </a>
                 ${download_button}
@@ -435,7 +435,7 @@ export function generateEventCardTemplate(
 
   for (let link of otherLinks) {
     otherLinks_html += `
-    <a href="${link}" class="text-gray-500 hover:text-gray-700" nochange>
+    <a href="${link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
          <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
     </a>
     `;
@@ -458,7 +458,7 @@ export function generateEventCardTemplate(
           ${start_date} - ${end_date}
          </p>
          <div class="mt-2 flex space-x-4">
-             <a href="${_link}" class="text-gray-500 hover:text-gray-700" nochange>
+             <a href="${_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
                   <img class="h-6 w-6 icon_svg mb-1" src="${marininfologo}" alt="marineinfo">
              </a>
               ${otherLinks_html}
@@ -503,7 +503,7 @@ export function generateAphiaCardTemplate(
             </h2>
             <p class="text-sm text-gray-500 mr-5">${status}</p>
             <div class="mt-2 flex space-x-4">
-                <a href="${_link}" class="text-gray-500 hover:text-gray-700" nochange>
+                <a href="${_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
                      <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
                 </a>
             </div>
@@ -567,7 +567,7 @@ export function generateMapCardTemplate(
           <div class="mt-2 flex space-x-4">
             <img class="h-5 w-5 mr-2" src="${book_atlas}" alt="book_atlas">
             <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
-            ${stringlengthshortener(name,25)}
+            ${stringlengthshortener(name, 25)}
             </h2>
           </div>
         </div>
@@ -606,10 +606,14 @@ export function generateMapCardTemplate(
   } catch (error) {
     console.error("Error parsing WKT for polygon:", error);
   }
-  
+
   // Same for the centroid
   try {
-    if (centroid !== null && centroid !== "" && (mapwkt === null || mapwkt === "")) {
+    if (
+      centroid !== null &&
+      centroid !== "" &&
+      (mapwkt === null || mapwkt === "")
+    ) {
       const center = wkt.Centroid(centroid);
       console.debug(center);
       if (center && center.lat !== undefined && center.lng !== undefined) {
@@ -628,12 +632,17 @@ export function generateMapCardTemplate(
         throw new Error("Invalid centroid coordinates");
       }
     }
-    } catch (error) {
+  } catch (error) {
     console.error("Error parsing WKT for centroid:", error);
-    }
+  }
 
   //if mapwkt and centroid are both null, there is no location to show
-  if (mapwkt === null && centroid === null && mapwkt === "" && centroid === "") { 
+  if (
+    mapwkt === null &&
+    centroid === null &&
+    mapwkt === "" &&
+    centroid === ""
+  ) {
     const center = new L.LatLng(0, 0);
     map.setView(center, 0); // Zoom out to the whole map
   }
@@ -649,7 +658,7 @@ export function generateMapCardTemplate(
         "leaflet-bar leaflet-control leaflet-control-custom"
       );
       container.innerHTML = `
-      <a href="${_link}" target="_blank" nochange class="flex items-center justify-center h-full w-full p-1">
+      <a href="${_link}" target="_blank" mia-extra-properties="nochange" class="flex items-center justify-center h-full w-full p-1">
         <img id="marineinfo_logo" src="${marininfologo}" alt="marineregions">
       </a>
       `;
@@ -658,7 +667,7 @@ export function generateMapCardTemplate(
       return container;
     },
   });
-  
+
   //add custom control to the map
   const customControl = L.Control.extend({
     options: {
@@ -743,13 +752,16 @@ class WKT {
     return new L.LatLng(parseFloat(centroid[1]), parseFloat(centroid[0]));
   }
 
-  public makeSquare(center: { lat: number; lng: number }, size: number = 0.01): L.LatLngExpression[] {
+  public makeSquare(
+    center: { lat: number; lng: number },
+    size: number = 0.01
+  ): L.LatLngExpression[] {
     return [
       [center.lat - size, center.lng - size],
       [center.lat - size, center.lng + size],
       [center.lat + size, center.lng + size],
       [center.lat + size, center.lng - size],
-      [center.lat - size, center.lng - size] // Close the polygon
+      [center.lat - size, center.lng - size], // Close the polygon
     ];
   }
 
@@ -757,12 +769,12 @@ class WKT {
   public ToPolygon(wkt: string, polygonOptions: L.PolylineOptions): L.Polygon {
     let latLongs = [];
     wkt = this.RemoveURI(wkt);
-    
+
     console.debug(wkt);
     // remove first whitespace before any other character
     wkt = wkt.replace(/^\s+/, "");
     console.debug(wkt);
-  
+
     if (wkt.startsWith("POLYGON")) {
       // Single Polygon
       let polygon = wkt
@@ -770,7 +782,7 @@ class WKT {
         .trim()
         .slice(1, wkt.length) // Remove first (
         .slice(0, wkt.length - 1); // Remove last )
-  
+
       latLongs.push(this.CreatePolygonArray(polygon));
     } else if (wkt.startsWith("MULTIPOLYGON")) {
       // Multi Polygon
@@ -780,7 +792,7 @@ class WKT {
         .slice(1, wkt.length) // Remove first (
         .slice(0, wkt.length - 1) // Remove last )
         .split("),(");
-  
+
       polygons.forEach((polygon) => {
         latLongs.push(this.CreatePolygonArray(polygon));
       });
@@ -791,24 +803,24 @@ class WKT {
         .trim()
         .slice(1, wkt.length) // Remove first (
         .slice(0, wkt.length - 1); // Remove last )
-  
-      let points = lineString.split(",").map(point => {
+
+      let points = lineString.split(",").map((point) => {
         let coords = point.trim().split(" ");
         return new L.LatLng(parseFloat(coords[1]), parseFloat(coords[0]));
       });
-  
+
       // Create a small buffer around the line string to form a polygon
       let bufferSize = 0.01; // Adjust the buffer size as needed
-      let bufferedPoints:any = [];
-  
-      points.forEach(point => {
+      let bufferedPoints: any = [];
+
+      points.forEach((point) => {
         bufferedPoints.push([point.lat + bufferSize, point.lng + bufferSize]);
       });
-  
-      points.reverse().forEach(point => {
+
+      points.reverse().forEach((point) => {
         bufferedPoints.push([point.lat - bufferSize, point.lng - bufferSize]);
       });
-  
+
       latLongs.push(bufferedPoints);
     } else if (wkt.startsWith("POINT")) {
       // Point
@@ -819,13 +831,13 @@ class WKT {
         .slice(0, wkt.length - 1) // Remove last )
         .split(" ")
         .filter(this.RemoveEmptyStrings);
-  
+
       let center = new L.LatLng(parseFloat(point[1]), parseFloat(point[0]));
       latLongs.push(this.makeSquare(center));
     } else {
       throw new Error("Unsupported WKT type");
     }
-  
+
     return L.polygon(latLongs, polygonOptions);
   }
 

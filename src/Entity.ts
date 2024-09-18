@@ -79,7 +79,7 @@ export class SelfEntity {
   private makeProfilesHTML(profiles: string[]) {
     // make the html for the profiles
     let innerHTML = `
-        <div id="profiles_corner" nochange>
+        <div id="profiles_corner" mia-extra-properties="nochange">
         <h2> All Profiles</h2>
         <ul>
         ${profiles
