@@ -103,21 +103,26 @@ export default class AffordanceEntity {
   }
 
   async collectInfo() {
-    //function to collect info
-    console.log("collecting info for " + this.link);
-    //this one is also needed since there are 2 ways to trigger this
-    // via the hover effect or via the scheduler
-    if (
-      this.derefinfocollector.cashedInfo[this.link] === undefined ||
-      Object.keys(this.derefinfocollector.cashedInfo[this.link]).length === 0
-    ) {
-      await this.derefinfocollector.collectInfo(this.link);
-      this.collected_info.content =
-        this.derefinfocollector.cashedInfo[this.link];
-      return;
-    }
-    if (Object.keys(this.collected_info.content).length !== 0) {
-      console.log("info already collected");
+    try {
+      //function to collect info
+      console.log("collecting info for " + this.link);
+      //this one is also needed since there are 2 ways to trigger this
+      // via the hover effect or via the scheduler
+      if (
+        this.derefinfocollector.cashedInfo[this.link] === undefined ||
+        Object.keys(this.derefinfocollector.cashedInfo[this.link]).length === 0
+      ) {
+        await this.derefinfocollector.collectInfo(this.link);
+        this.collected_info.content =
+          this.derefinfocollector.cashedInfo[this.link];
+        return;
+      }
+      if (Object.keys(this.collected_info.content).length !== 0) {
+        console.log("info already collected");
+        return;
+      }
+    } catch (error) {
+      console.error("Error collecting info:", error);
       return;
     }
   }
@@ -251,11 +256,14 @@ export default class AffordanceEntity {
     return mapping[name];
   }
 
-  private async _replace_urls_with_favicons_card(content: any, card: HTMLDivElement) {
+  private async _replace_urls_with_favicons_card(
+    content: any,
+    card: HTMLDivElement
+  ) {
     // this function will check a given HTML content for URLs and replace them with favicons
     // convention rule here is that the URL that should be replaced should be an img tag with alt text "external link"
     // the URL to get is the href of the parent a tag
-  
+
     // get all the img tags in the card
     let img_tags = card.querySelectorAll("img");
     // loop through all the img tags
@@ -303,7 +311,6 @@ export default class AffordanceEntity {
       .catch((error) => {
         // return the default favicon URL
         return "https://www.google.com/s2/favicons?domain=" + url;
-        
       });
 
     return favicon;
@@ -437,7 +444,6 @@ export default class AffordanceEntity {
 
     //check all the links in the card and replace them with favicons
     this._replace_urls_with_favicons_card(this.collected_info, card);
-
   }
 
   private _remove_card() {
