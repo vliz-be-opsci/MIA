@@ -20,6 +20,7 @@ import bullhorn from "./css/bullhorn.svg";
 import archive_box from "./css/archive_box.svg";
 import calendar from "./css/calendar.svg";
 import link from "./css/link.svg";
+import { wktToGeoJSON } from "@terraformer/wkt";
 
 export function generatePersonCardTemplate(
   data: { [key: string]: any },
@@ -91,24 +92,6 @@ export function generatePersonCardTemplate(
 
 function cleanURI(uri: string): string {
   return uri.replace(/<|>/g, "");
-}
-
-export async function getFaviconURI(url: string): Promise<string> {
-  try {
-    const response = await fetch(url);
-    const text = await response.text();
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(text, "text/html");
-    const iconLink = doc.querySelector("link[rel~='icon']") as HTMLLinkElement;
-    if (iconLink) {
-      return iconLink.href;
-    } else {
-      throw new Error("Favicon not found");
-    }
-  } catch (error) {
-    console.error("Error fetching favicon:", error);
-    return "";
-  }
 }
 
 export function generateDatasetCardTemplate(
@@ -550,17 +533,6 @@ export function generateMapCardTemplate(
   };
   document.head.appendChild(leafletJs);
 
-  //placeholder for placetype but placetype is not used in the template
-  /*
-  let type_place_html = "";
-  if (type_place.length > 0) {
-    type_place_html = `
-    <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
-    ${stringlengthshortener(type_place[type_place.length - 1], 25)}
-    </h2>`;
-  }
-    */
-
   let InnerHTML = `
     <div class="items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;min-height:150px;">
         <div class="ml-4">
@@ -589,62 +561,37 @@ export function generateMapCardTemplate(
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(map);
 
-  // Parse the WKT and add it to the map
-  const wkt = new WKT();
-  try {
-    if (mapwkt !== null && mapwkt !== "") {
-      const polygon = wkt.ToPolygon(mapwkt, { color: "red" });
-      polygon.addTo(map);
-      // Check if the bounds are valid before setting the map view
-      const bounds = polygon.getBounds();
-      if (bounds.isValid()) {
-        map.fitBounds(bounds);
-      } else {
-        throw new Error("Invalid bounds for polygon");
-      }
-    }
-  } catch (error) {
-    console.error("Error parsing WKT for polygon:", error);
-  }
+  // Define a custom icon
+  const customIcon = L.icon({
+    iconUrl: './css/map_marker.svg', // Path to your custom icon image
+    iconSize: [32, 32], // Size of the icon
+    iconAnchor: [16, 32], // Point of the icon which will correspond to marker's location
+    popupAnchor: [0, -32] // Point from which the popup should open relative to the iconAnchor
+  });
 
-  // Same for the centroid
-  try {
-    if (
-      centroid !== null &&
-      centroid !== "" &&
-      (mapwkt === null || mapwkt === "")
-    ) {
-      const center = wkt.Centroid(centroid);
-      console.debug(center);
-      if (center && center.lat !== undefined && center.lng !== undefined) {
-        // Create a small square around the centroid using the makeSquare function
-        const squareCoords = wkt.makeSquare(center);
-        const squarePolygon = L.polygon(squareCoords, { color: "blue" });
-        squarePolygon.addTo(map);
-        // Check if the bounds are valid before setting the map view
-        const squareBounds = squarePolygon.getBounds();
-        if (squareBounds.isValid()) {
-          map.fitBounds(squareBounds);
-        } else {
-          throw new Error("Invalid bounds for square polygon");
-        }
-      } else {
-        throw new Error("Invalid centroid coordinates");
-      }
-    }
-  } catch (error) {
-    console.error("Error parsing WKT for centroid:", error);
-  }
 
-  //if mapwkt and centroid are both null, there is no location to show
-  if (
-    mapwkt === null &&
-    centroid === null &&
-    mapwkt === "" &&
-    centroid === ""
-  ) {
-    const center = new L.LatLng(0, 0);
-    map.setView(center, 0); // Zoom out to the whole map
+  // perform wkt to geojson conversion
+  try {
+    console.debug("Map WKT:", extractWKTStringFromString(mapwkt));
+    const geojson = wktToGeoJSON(extractWKTStringFromString(mapwkt));
+    console.debug(geojson);
+    // Add the GeoJSON to the map
+    L.geoJSON(geojson).addTo(map);
+
+    // fit the map to the bounds of the GeoJSON
+    map.fitBounds(L.geoJSON(geojson).getBounds());
+
+  } catch (error) {
+    console.error("Error converting WKT to GeoJSON:", error);
+    console.debug("Map centroid:", extractWKTStringFromString(centroid));
+    const geoJSON = wktToGeoJSON(extractWKTStringFromString(centroid));
+    console.debug(geoJSON);
+    L.geoJSON(geoJSON).addTo(map);
+    map.fitBounds(L.geoJSON(geoJSON).getBounds());
+    // Add a custom marker to the center of the GeoJSON bounds
+    const center = map.getBounds().getCenter();
+    L.marker(center, { icon: customIcon }).addTo(map);
+    
   }
 
   //add custom control to the bottom left of the map
@@ -689,37 +636,26 @@ export function generateMapCardTemplate(
       let zoomedOut = false;
 
       container.onclick = function () {
+        // init geojson as a GEOJSON object
+        let geojson = null;
+        if (mapwkt == null || mapwkt == "") {
+          geojson = wktToGeoJSON(extractWKTStringFromString(centroid));
+        }
+        if (mapwkt != null) {
+          geojson = wktToGeoJSON(extractWKTStringFromString(mapwkt));
+        }
+
         if (!zoomedOut) {
-          if (mapwkt !== null && mapwkt !== "") {
-            const polygon = wkt.ToPolygon(mapwkt, { color: "red" });
-            const center = polygon.getBounds().getCenter();
-            map.setView(center, 0); // Zoom out to the whole map
-          } else if (centroid !== null && centroid !== "") {
-            const center = wkt.Centroid(centroid);
-            const squareCoords = wkt.makeSquare(center);
-            const squarePolygon = L.polygon(squareCoords, { color: "blue" });
-            const squareBounds = squarePolygon.getBounds();
-            const squarecenter = squareBounds.getCenter();
-            if (squareBounds.isValid()) {
-              map.setView(squarecenter, 0);
-            }
-          }
+          // set zoom to 0 for full world view
+          map.setView([0, 0], 0);
           container.style.backgroundImage = `url('${zoomlocation}')`;
         }
         if (zoomedOut) {
-          if (mapwkt !== null && mapwkt !== "") {
-            console.debug(mapwkt);
-            const polygon = wkt.ToPolygon(mapwkt, { color: "red" });
-            map.fitBounds(polygon.getBounds());
-          } else {
-            console.debug(centroid);
-            const center = wkt.Centroid(centroid);
-            const squareCoords = wkt.makeSquare(center);
-            const squarePolygon = L.polygon(squareCoords, { color: "blue" });
-            const squareBounds = squarePolygon.getBounds();
-            if (squareBounds.isValid()) {
-              map.fitBounds(squarePolygon.getBounds());
-            }
+          // get the bounds of the geojson and fit the map to the bounds
+          try {
+            map.fitBounds(L.geoJSON(geojson).getBounds());
+          } catch (error) {
+            console.error("Error fitting map to bounds:", error);
           }
           container.style.backgroundImage = `url('${globe}')`;
         }
@@ -738,168 +674,10 @@ export function generateMapCardTemplate(
 
   return html_element;
 }
-class WKT {
-  public Centroid(wkt: string): L.LatLng {
-    wkt = this.RemoveURI(wkt);
-    let centroid = wkt
-      .replace("POINT", "")
-      .trim()
-      .slice(1, wkt.length) //Remove first (
-      .slice(0, wkt.length - 1) //Remove last )
-      .split(" ")
-      .filter(this.RemoveEmptyStrings);
 
-    return new L.LatLng(parseFloat(centroid[1]), parseFloat(centroid[0]));
-  }
-
-  public makeSquare(
-    center: { lat: number; lng: number },
-    size: number = 0.01
-  ): L.LatLngExpression[] {
-    return [
-      [center.lat - size, center.lng - size],
-      [center.lat - size, center.lng + size],
-      [center.lat + size, center.lng + size],
-      [center.lat + size, center.lng - size],
-      [center.lat - size, center.lng - size], // Close the polygon
-    ];
-  }
-
-  // polyline options are smoothfactor and noclip
-  public ToPolygon(wkt: string, polygonOptions: L.PolylineOptions): L.Polygon {
-    let latLongs = [];
-    wkt = this.RemoveURI(wkt);
-
-    console.debug(wkt);
-    // remove first whitespace before any other character
-    wkt = wkt.replace(/^\s+/, "");
-    console.debug(wkt);
-
-    if (wkt.startsWith("POLYGON")) {
-      // Single Polygon
-      let polygon = wkt
-        .replace("POLYGON", "")
-        .trim()
-        .slice(1, wkt.length) // Remove first (
-        .slice(0, wkt.length - 1); // Remove last )
-
-      latLongs.push(this.CreatePolygonArray(polygon));
-    } else if (wkt.startsWith("MULTIPOLYGON")) {
-      // Multi Polygon
-      let polygons = wkt
-        .replace("MULTIPOLYGON", "")
-        .trim()
-        .slice(1, wkt.length) // Remove first (
-        .slice(0, wkt.length - 1) // Remove last )
-        .split("),(");
-
-      polygons.forEach((polygon) => {
-        latLongs.push(this.CreatePolygonArray(polygon));
-      });
-    } else if (wkt.startsWith("LINESTRING")) {
-      // Line String
-      let lineString = wkt
-        .replace("LINESTRING", "")
-        .trim()
-        .slice(1, wkt.length) // Remove first (
-        .slice(0, wkt.length - 1); // Remove last )
-
-      let points = lineString.split(",").map((point) => {
-        let coords = point.trim().split(" ");
-        return new L.LatLng(parseFloat(coords[1]), parseFloat(coords[0]));
-      });
-
-      // Create a small buffer around the line string to form a polygon
-      let bufferSize = 0.01; // Adjust the buffer size as needed
-      let bufferedPoints: any = [];
-
-      points.forEach((point) => {
-        bufferedPoints.push([point.lat + bufferSize, point.lng + bufferSize]);
-      });
-
-      points.reverse().forEach((point) => {
-        bufferedPoints.push([point.lat - bufferSize, point.lng - bufferSize]);
-      });
-
-      latLongs.push(bufferedPoints);
-    } else if (wkt.startsWith("POINT")) {
-      // Point
-      let point = wkt
-        .replace("POINT", "")
-        .trim()
-        .slice(1, wkt.length) // Remove first (
-        .slice(0, wkt.length - 1) // Remove last )
-        .split(" ")
-        .filter(this.RemoveEmptyStrings);
-
-      let center = new L.LatLng(parseFloat(point[1]), parseFloat(point[0]));
-      latLongs.push(this.makeSquare(center));
-    } else {
-      throw new Error("Unsupported WKT type");
-    }
-
-    return L.polygon(latLongs, polygonOptions);
-  }
-
-  private RemoveURI(wkt: string): string {
-    //is string contains <{{URI}}> remove it
-    // eg: <http://www.opengis.net/def/crs/OGC/1.3/CRS84>
-    return wkt.replace(/<[^>]*>/g, "");
-  }
-
-  private CreatePolygonArray(polygon: string): L.LatLng[][] {
-    let polygonComponents = polygon.split("),").filter(this.RemoveEmptyStrings);
-    let polyArray: L.LatLng[][] = [];
-
-    for (let polygonComponent of polygonComponents) {
-      polyArray.push(this.CreatePolygonCordArray(polygonComponent));
-    }
-    return polyArray;
-  }
-
-  private CreatePolygonCordArray(polygonComponent: string): L.LatLng[] {
-    let cordArray: L.LatLng[] = [];
-    let cords = polygonComponent
-      .trim()
-      .replace(/\(|\)/g, "") //Removes ( & ) from the string g makes it apply to all instances not just the first
-      .split(",")
-      .filter(this.RemoveEmptyStrings);
-
-    for (let cord of cords) {
-      let latLong = cord.split(" ").filter(this.RemoveEmptyStrings);
-      let lat = parseFloat(latLong[1]);
-      let lng = parseFloat(latLong[0]);
-
-      // Check if both lat and lng are valid numbers
-      if (!isNaN(lat) && !isNaN(lng)) {
-        cordArray.push(new L.LatLng(lat, lng));
-      } else {
-        // Handle invalid lat/lng values here
-        console.error(`Invalid LatLng values found: ${lat}, ${lng}`);
-      }
-    }
-
-    //Slice to remove the last cord which in WKT is the same as the first one
-    return cordArray.slice(0, cordArray.length - 1);
-  }
-
-  private RemoveEmptyStrings(value: string): boolean {
-    return value !== "";
-  }
-
-  public FromPolygon(polygon: any): string {
-    //The array that comes from getLatLngs is multidimensional to support multipolygons
-    //The UI does not allow multipolygons to be drawn so we access the first array within it with [0]
-    let latLongs = polygon.getLatLngs()[0];
-
-    let latLongsArray: string[] = [];
-    for (let latLong of latLongs) {
-      latLongsArray.push(latLong.lng + " " + latLong.lat);
-    }
-
-    //Adds first line to close polygon
-    latLongsArray.push(latLongs[0].lng + " " + latLongs[0].lat);
-
-    return "POLYGON((" + latLongsArray.join(",") + "))";
-  }
+function extractWKTStringFromString(str: string): string {
+  // example input <http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT (-55.216667 46.95)
+  // example output POINT (-55.216667 46.95)
+  const wkt = str.split(" ").slice(1).join(" ");
+  return wkt;
 }
