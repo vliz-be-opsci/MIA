@@ -21,19 +21,22 @@ export default class CollectingScheduler {
   async queueNextInSchedule() {
     if (this.schedule.length === 0) {
       console.log("no affordances left in schedule");
-      return; //this stops the scheduler
+      return; // this stops the scheduler
     }
     // else
     try {
       setTimeout(async () => {
-        //if length of schedule is 0 return
+        // if length of schedule is 0 return
         const ae = this.schedule.shift();
-        await ae.collectInfo();
-
+        try {
+          await ae.collectInfo();
+        } catch (error) {
+          console.log("Error collecting info from affordance: ", error);
+        }
         this.queueNextInSchedule();
       }, DELAYMS); // check if smart delay is possible
     } catch (error) {
-      console.log(error);
+      console.log("Unexpected error: ", error);
       this.queueNextInSchedule();
     }
   }
