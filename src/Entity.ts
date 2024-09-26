@@ -5,6 +5,7 @@ for making sure that the correct card is shown every time
 import { Store, Term, Quad } from "n3";
 import { getLinkedDataNQuads, comunicaQuery } from "./linked_data_store";
 import { Bindings } from "@rdfjs/types";
+import download from "./css/download.svg";
 export default class Entity {
   content: any;
   constructor() {
@@ -80,8 +81,13 @@ export class SelfEntity {
     // make the html for the profiles
     let innerHTML = `
         <div id="profiles_corner" mia-extra-properties="nochange">
-        <h2> All Profiles</h2>
-        <ul>
+        <div class="inline-flex items-center text-lg font-semibold text-gray-800 mr-1">
+          <h6> Download as </h6> 
+          <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-bold px-1 border border-blue-500 hover:border-transparent rounded ml-2" id="download">
+            <img class="h-5 w-5" src="${download}">
+          </button>
+        </div>
+        <ul id="list_profiles">
         ${profiles
           .map((profile) => {
             let getAffix = getAffixByProfile(profile);
@@ -92,8 +98,24 @@ export class SelfEntity {
         </ul>
         </div>
         `;
+
     // append to the body
     document.body.insertAdjacentHTML("beforeend", innerHTML);
+
+    // default state of list profiles is hidden when the page loads
+    // if download button is clicked then show the list profiles
+    let download_button = document.getElementById("download");
+    let list_profiles = document.getElementById("list_profiles");
+    if (download_button && list_profiles) {
+      list_profiles.style.display = "none";
+      download_button.addEventListener("click", function () {
+        if (list_profiles.style.display == "none") {
+          list_profiles.style.display = "block";
+        } else {
+          list_profiles.style.display = "none";
+        }
+      });
+    }
 
     // the position of the profiles corner should be top right
     // determine the width of the profiles corner and set the right position to 0
@@ -102,7 +124,7 @@ export class SelfEntity {
     if (profiles_corner) {
       profiles_corner.style.right = "0";
       profiles_corner.style.top = "0";
-      profiles_corner.style.position = "fixed";
+      profiles_corner.style.position = "absolute";
       profiles_corner.style.backgroundColor = "white";
       profiles_corner.style.padding = "10px";
       profiles_corner.style.border = "1px solid black";
