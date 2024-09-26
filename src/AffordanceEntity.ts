@@ -122,6 +122,14 @@ export default class AffordanceEntity {
   removeLoader() {
     // remove the confleunce_box_loading class from the element
     this.element.classList.remove("confluence_box_loading");
+    // check if the closest parent element has the mia-extra-properties attribute set to noupdate
+    // if it does then don't add the confluence_box class
+    if (
+      this.element.closest("[mia-extra-properties=noupdate]") !== null ||
+      this.element.closest("[mia-extra-properties=nodecorator]") !== null
+    ) {
+      return;
+    }
     this.element.classList.add("confluence_box");
   }
 
@@ -187,10 +195,12 @@ export default class AffordanceEntity {
 
       if (element.getAttribute("mia-extra-properties") === null) {
         element.classList.add("confluence_box");
+        /*
         element.addEventListener("contextmenu", (event: any) => {
           event.preventDefault();
           navigator.clipboard.writeText(this.link);
         });
+        */
       }
       this.onHover();
     }
@@ -484,6 +494,15 @@ export default class AffordanceEntity {
     }
     //create loader by adding confluence_box_loading class to this.element
     this.element.classList.remove("confluence_box");
+
+    //if closest parent element is nodecorator then don't add the confluence_box_loading class
+    if (
+      this.element.closest("[mia-extra-properties=nodecorator]") !== null ||
+      this.element.getAttribute("mia-extra-properties") === "nodecorator"
+    ) {
+      return;
+    }
+
     this.element.classList.add("confluence_box_loading");
   }
 }
