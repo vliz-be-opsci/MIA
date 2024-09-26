@@ -236,22 +236,12 @@ export default class AffordanceEntity {
 
             //update inner html
             element.innerHTML = to_display_content.join(" ");
-          } else if (content.name !== undefined) {
+          } else if (content.name !== undefined && content.name !== "") {
             element.innerHTML = content.name;
-          } else if (content.title !== undefined) {
+          } else if (content.title !== undefined && content.title !== "") {
             element.innerHTML = content.title;
           }
           this.initial_updated = true;
-
-          /*
-          // Add a rightclick event listener to the element
-          // that will copy the link to the clipboard
-          element.addEventListener("contextmenu", (event: any) => {
-            event.preventDefault();
-            navigator.clipboard.writeText(this.link);
-          });
-          */
-
           clearInterval(intervalId); // Stop the interval
         }
       }, 1000);
