@@ -16,11 +16,13 @@ import {
 import "./css/mia.css";
 
 export default class AffordanceEntity {
+  private static activeEntity: AffordanceEntity | null = null;
   private element: any;
   private link: string;
   private collected_info: Entity;
   private derefinfocollector: DerefInfoCollector;
   private initial_updated: boolean = false;
+  private isCancelled: boolean = false;
 
   constructor(affordance: any, derefinfocollector: DerefInfoCollector) {
     console.log(typeof affordance);
@@ -33,7 +35,19 @@ export default class AffordanceEntity {
   }
 
   async onHover() {
-    this.element.addEventListener("mouseover", (event: MouseEvent) => {
+    this.element.addEventListener("mouseover", async (event: MouseEvent) => {
+      // Cancel the previous active entity's hover effect
+      if (
+        AffordanceEntity.activeEntity &&
+        AffordanceEntity.activeEntity !== this
+      ) {
+        AffordanceEntity.activeEntity.cancelHoverEffect();
+      }
+
+      // Set this entity as the active one
+      AffordanceEntity.activeEntity = this;
+      this.isCancelled = false;
+
       if (this.incardview(event)) {
         console.log("card already in view");
         return;
@@ -49,22 +63,30 @@ export default class AffordanceEntity {
       ) {
         console.log("no info collected yet");
 
-        this.collectInfo()
-          .then(() => {
-            this.collected_info.content =
-              this.derefinfocollector.cashedInfo[this.link];
-            this.produce_HTML_view(event);
-          })
-          .catch((error) => {
-            console.log(error);
-            this.removeLoader();
-          });
+        try {
+          await this.collectInfo();
+          if (this.isCancelled) return;
+          this.collected_info.content =
+            this.derefinfocollector.cashedInfo[this.link];
+          this.produce_HTML_view(event);
+        } catch (error) {
+          if (this.isCancelled) return;
+          console.log(error);
+          this.removeLoader();
+        }
         return;
       }
       this.produce_HTML_view(event);
-
-      return;
     });
+  }
+
+  cancelHoverEffect() {
+    // Implement the logic to cancel the hover effect
+    this.isCancelled = true;
+    // Implement the logic to cancel the hover effect
+    this._remove_card();
+    this.removeLoader();
+    console.log("Hover effect cancelled for", this.link);
   }
 
   incardview(event: MouseEvent): boolean {
