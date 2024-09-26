@@ -163,7 +163,7 @@ export default class AffordanceEntity {
     //if the element href contains marineinfo or marineregions in it
     //add class confluence_box to elemnt if not already there
     if (
-      this.link.includes("marineinfo.org/id") ||
+      this.link.includes("marineinfo.org") ||
       this.link.includes("marineregions.org") ||
       this.link.includes("aphia.org")
     ) {
