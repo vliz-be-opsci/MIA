@@ -20,8 +20,17 @@
   }
 }
 
+.marine_info_affordances {
+  pointer-events: none; /* Disable interactions during animation */
+}
+
 .marine_info_affordances.fade-in {
   animation: fadeDropIn 0.5s ease forwards;
+  pointer-events: none !important;
+}
+
+.marine_info_affordances.fade-in-done {
+  pointer-events: auto; /* Enable interactions after animation */
 }
 
 .marine_info_affordances.fade-out {
