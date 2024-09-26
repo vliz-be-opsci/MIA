@@ -560,7 +560,6 @@ export function generateMapCardTemplate(
   affordance_link: string
 ): HTMLElement {
   let _link = affordance_link || "";
-
   console.log(data);
   const name = data.name || "";
   const mapwkt = data.mapwkt || null; // Default to 0 if not provided
