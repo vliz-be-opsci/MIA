@@ -425,6 +425,12 @@ export default class AffordanceEntity {
       let rect = card.getBoundingClientRect();
     });
 
+    //add event listener to remove face-in for fade-in-done animation when animation is done
+    card.addEventListener("animationend", () => {
+      card.classList.remove("fade-in");
+      card.classList.add("fade-in-done");
+    });
+
     card.addEventListener("mouseleave", () => {
       //wait 1 second before removing the card
       setTimeout(() => {
