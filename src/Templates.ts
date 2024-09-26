@@ -20,6 +20,7 @@ import bullhorn from "./css/bullhorn.svg";
 import archive_box from "./css/archive_box.svg";
 import calendar from "./css/calendar.svg";
 import link from "./css/link.svg";
+import map_marker from "./css/map_marker.svg";
 import { wktToGeoJSON } from "@terraformer/wkt";
 
 export function generatePersonCardTemplate(
@@ -561,15 +562,6 @@ export function generateMapCardTemplate(
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(map);
 
-  // Define a custom icon
-  const customIcon = L.icon({
-    iconUrl: './css/map_marker.svg', // Path to your custom icon image
-    iconSize: [32, 32], // Size of the icon
-    iconAnchor: [16, 32], // Point of the icon which will correspond to marker's location
-    popupAnchor: [0, -32] // Point from which the popup should open relative to the iconAnchor
-  });
-
-
   // perform wkt to geojson conversion
   try {
     console.debug("Map WKT:", extractWKTStringFromString(mapwkt));
@@ -580,7 +572,6 @@ export function generateMapCardTemplate(
 
     // fit the map to the bounds of the GeoJSON
     map.fitBounds(L.geoJSON(geojson).getBounds());
-
   } catch (error) {
     console.error("Error converting WKT to GeoJSON:", error);
     console.debug("Map centroid:", extractWKTStringFromString(centroid));
@@ -590,8 +581,13 @@ export function generateMapCardTemplate(
     map.fitBounds(L.geoJSON(geoJSON).getBounds());
     // Add a custom marker to the center of the GeoJSON bounds
     const center = map.getBounds().getCenter();
-    L.marker(center, { icon: customIcon }).addTo(map);
-    
+    const markerHtml = `<img src="${map_marker}" style="width: 32px; height: 32px;">`;
+    const customDivIcon = L.divIcon({
+      html: markerHtml,
+      iconSize: [32, 32],
+      className: "dummy",
+    });
+    L.marker(center, { icon: customDivIcon }).addTo(map);
   }
 
   //add custom control to the bottom left of the map
