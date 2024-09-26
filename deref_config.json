@@ -256,9 +256,13 @@
         ],
         "ASSERTION_PATHS": [
             "schema:name",
-            "schema:description"
+            "schema:description",
+            "schema:foundingDate",
+            "schema:dissolutionDate",
+            "schema:keywords/schema:name",
+            "schema:hasPart/schema:mainEntityOfPage"
         ],
-        "TEMPLATE": "default",
+        "TEMPLATE": "project",
         "MAPPING": {
             "title": {
                 "query": "schema:name",
@@ -267,6 +271,22 @@
             "description": {
                 "query": "schema:description",
                 "type": "single"
+            },
+            "start_date": {
+                "query": "schema:foundingDate",
+                "type": "single"
+            },
+            "end_date": {
+                "query": "schema:dissolutionDate",
+                "type": "single"
+            },
+            "keywords": {
+                "query": "schema:keywords/schema:name",
+                "type": "list"
+            },
+            "otherLinks": {
+                "query": "schema:hasPart/schema:mainEntityOfPage",
+                "type": "list"
             }
         }
     },
@@ -430,6 +450,42 @@
             "image": {
                 "query": "foaf:depiction",
                 "type": "single"
+            }
+        }
+    },
+    {
+        "RDF_TYPE": "http://www.w3.org/ns/dcat#Catalog",
+        "PREFIXES": [
+            {
+                "prefix": "skos",
+                "uri": "http://www.w3.org/2004/02/skos/core#"
+            },
+            {
+                "prefix": "dcterms",
+                "uri": "http://purl.org/dc/terms/"
+            },
+            {
+                "prefix": "schema",
+                "uri": "https://schema.org/"
+            },
+            {
+                "prefix": "dcat",
+                "uri": "http://www.w3.org/ns/dcat#"
+            }
+        ],
+        "ASSERTION_PATHS": [
+            "dcterms:title",
+            "dcat:resource"
+        ],
+        "TEMPLATE": "default",
+        "MAPPING": {
+            "title": {
+                "query": "dcterms:title",
+                "type": "single"
+            },
+            "resources": {
+                "query": "dcat:resource",
+                "type": "list"
             }
         }
     }
