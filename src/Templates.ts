@@ -43,9 +43,7 @@ export function generatePersonCardTemplate(
   let image_html = "";
 
   if (image != "") {
-    image_html = `<img src="${cleanURI(
-      image
-    )}" alt="Profile Image" class="h-30">`;
+    image_html = `<img src="${cleanURI(image)}" alt="Card Image" class="h-30">`;
   }
 
   //tailwind
@@ -73,6 +71,15 @@ export function generatePersonCardTemplate(
   `;
 
   html_element.innerHTML = person_html;
+
+  //adapt the width of the card to the content after the image has loaded
+  const image_card = html_element.querySelector("img[alt='Card Image']");
+  if (image_card) {
+    image_card.addEventListener("load", () => {
+      adaptcardwidthtocontent(html_element);
+    });
+  }
+
   //add element to body
   document.body.appendChild(html_element);
 
@@ -541,7 +548,7 @@ export function generateAphiaCardTemplate(
   if (image != "") {
     image_html = `<img src="${cleanURI(
       image
-    )}" alt="Profile Image" class="h-30">`;
+    )}" alt="Card Image" style="min-height:150px" class="">`;
   }
 
   //tailwind
@@ -563,9 +570,45 @@ export function generateAphiaCardTemplate(
     </div>
   `;
   html_element.innerHTML = innerHTML;
+  //adapt the width of the card to the content after the image has loaded
+  const image_card = html_element.querySelector("img[alt='Card Image']");
+  if (image_card) {
+    image_card.addEventListener("load", () => {
+      adaptcardwidthtocontent(html_element);
+    });
+  }
   //add element to body
   document.body.appendChild(html_element);
   return html_element;
+}
+
+function adaptcardwidthtocontent(html_element: HTMLElement) {
+  //get the first child of the element
+  let first_child = html_element.firstElementChild;
+  console.debug("first child", first_child);
+
+  //get the width of the element with alt label Card Image
+  let image = html_element.querySelector("img[alt='Card Image']");
+
+  //if image is not 150px then set the height to 150px and the width to auto
+  if (image?.clientHeight != 150) {
+    (image as HTMLElement).style.height = "150px";
+    (image as HTMLElement).style.width = "auto";
+  }
+
+  console.debug("image", image);
+  // get the width of the image
+  let width = image?.clientWidth;
+  console.debug("width of the image", width);
+
+  //get the width of the first child
+  let width_element = first_child?.clientWidth;
+
+  // add half of the image width to the width of the element
+  // the default width of the element is 312.85px
+  (first_child as HTMLElement).style.width =
+    (width_element ?? 312.85) + (width ?? 0) / 2.5 + "px";
+  console.debug("width of the element", html_element.style.width);
 }
 
 export function generateMapCardTemplate(
