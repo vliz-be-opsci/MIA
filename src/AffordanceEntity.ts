@@ -183,6 +183,12 @@ export default class AffordanceEntity {
         return;
       }
 
+      if (element.closest("[mia-extra-properties=nodecorator]") !== null) {
+        this.onHover();
+        return;
+      }
+
+
       // One edge case here is the vocabserver wedwidget since this does not create a child node but a sibling node
       // This prevents the nochange attribute from being set on the parent node not to have any effect
       // for this a seperate check is needed
