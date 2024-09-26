@@ -11,6 +11,7 @@ import {
   generateBibliographicResourceCardTemplate,
   generateOrganizationCardTemplate,
   generateAphiaCardTemplate,
+  generateProjectCardTemplate,
 } from "./Templates";
 import "./css/mia.css";
 
@@ -244,6 +245,7 @@ export default class AffordanceEntity {
       organization: generateOrganizationCardTemplate,
       dataset: generateDatasetCardTemplate,
       aphia_worms: generateAphiaCardTemplate,
+      project: generateProjectCardTemplate,
       default: generateInfoCardTemplate,
     };
     let toreturn = mapping[name];

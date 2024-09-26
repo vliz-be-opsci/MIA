@@ -174,6 +174,74 @@ export function generateDatasetCardTemplate(
   return html_element;
 }
 
+export function generateProjectCardTemplate(
+  data: { [key: string]: any },
+  html_element: HTMLElement,
+  affordance_link: string
+): HTMLElement {
+  let _link = affordance_link || "";
+  let title = data.title || "";
+  let start_date = data.start_date || "";
+  let end_date = data.end_date || "";
+  let keywords = data.keywords || [];
+  let urls = data.otherLinks || [];
+
+  //url section
+  let urls_html = "";
+  for (let url of urls) {
+    urls_html += `<a href="${url}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
+                     <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
+                </a>`;
+  }
+
+  //keywords section
+  let keywords_html = "";
+  //for the first 2 keywords add a button , for the others add a ...+x others with x being the ammount of keywords -2
+  // the title for that button should be the list of all the other keywords
+  // <span class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">Default</span>
+  const length_keywords = keywords.length;
+  let title_keywords = keywords.slice(2).join(", ");
+  for (let keyword of keywords) {
+    if (keywords.indexOf(keyword) < 2) {
+      keywords_html += `<span title="${keyword}" class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">${stringlengthshortener(
+        keyword,
+        10
+      )}</span>`;
+    }
+  }
+  if (length_keywords > 2) {
+    keywords_html += `<span class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300" title="${title_keywords}">+ ${
+      length_keywords - 2
+    } others</span>`;
+  }
+
+  let innerHTML = `
+     <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;min-height:150px;">
+        <div class="ml-4">
+            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
+              <img id="marineinfo_logo" class="h-5 w-5 mr-1" src="${book_atlas}">
+              ${stringlengthshortener(title, 25)}
+            </h2>
+            <div class="mt-2 flex space-x-1 mb-2 mt-2 mr-2">
+                ${keywords_html}
+            </div>
+            <p class="text-sm text-gray-500 mr-5"><b>start date: </b>${start_date}</p>
+            <p class="text-sm text-gray-500 mr-5"><b>end date: </b>${end_date}</p>
+            <div class="mt-2 flex space-x-4">
+                <a href="${_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
+                     <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
+                </a>
+                ${urls_html}
+            </div>
+        </div>
+    </div>
+  `;
+  html_element.innerHTML = innerHTML;
+  //add element to body
+  document.body.appendChild(html_element);
+  return html_element;
+}
+
 export function generateInfoCardTemplate(
   data: { [key: string]: any },
   html_element: HTMLElement,
@@ -222,14 +290,14 @@ export function generateInfoCardTemplate(
             <nav class="flex" aria-label="Breadcrumb">
               <ol class="inline-flex items-left space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center">
-                  <span class="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">Flowbite</span>
+                  <span class="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">Example</span>
                 </li>
                 <li>
                   <div class="flex items-center">
                     <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                       <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
                     </svg>
-                   <span class="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">Flowbitet</span>
+                   <span class="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">Breadcrumb</span>
                   </div>
                 </li>
                 <li aria-current="page">
@@ -237,7 +305,7 @@ export function generateInfoCardTemplate(
                     <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                       <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
                     </svg>
-                    <span class="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">Flowbitest</span>
+                    <span class="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">Element</span>
                   </div>
                 </li>
               </ol>
