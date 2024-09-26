@@ -98,10 +98,6 @@ export function generatePersonCardTemplate(
   return html_element;
 }
 
-function cleanURI(uri: string): string {
-  return uri.replace(/<|>/g, "");
-}
-
 export function generateDatasetCardTemplate(
   data: { [key: string]: any },
   html_element: HTMLElement,
@@ -375,29 +371,6 @@ export function generateOrganizationCardTemplate(
   return html_element;
 }
 
-function stringlengthshortener(
-  str: string,
-  length: number,
-  classes?: string
-): string {
-  if (str.length > length) {
-    if (classes != undefined) {
-      let returnstring = `
-      <div title="${str}" class="${classes}"> ${
-        str.substring(0, length) + "..."
-      } </div>
-      `;
-      return returnstring;
-    }
-
-    let returnstring = `
-    <div title="${str}"> ${str.substring(0, length) + "..."} </div>
-    `;
-    return returnstring;
-  }
-  return str;
-}
-
 export function generateBibliographicResourceCardTemplate(
   data: { [key: string]: any },
   html_element: HTMLElement,
@@ -439,7 +412,7 @@ export function generateBibliographicResourceCardTemplate(
               <img id="marineinfo_logo" class="h-5 w-5 mr-1" src="${book}">
               ${stringlengthshortener(title, 25)}
             </h2>
-            <p class="items-center inline-flex text-sm text-gray-500 mr-5"><img class="h-4 w-4 mr-1" src="${c_type_image}">:${type}</p>
+            <p class="items-center inline-flex text-sm text-gray-500 mr-5"><img class="h-4 w-4 mr-1" src="${c_type_image}"> ${type}</p>
             <p class="text-sm text-gray-500 mr-5"><b>release date: </b>${publishDate}</p>
             <div class="mt-2 flex space-x-4">
                 <a href="${_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
@@ -580,35 +553,6 @@ export function generateAphiaCardTemplate(
   //add element to body
   document.body.appendChild(html_element);
   return html_element;
-}
-
-function adaptcardwidthtocontent(html_element: HTMLElement) {
-  //get the first child of the element
-  let first_child = html_element.firstElementChild;
-  console.debug("first child", first_child);
-
-  //get the width of the element with alt label Card Image
-  let image = html_element.querySelector("img[alt='Card Image']");
-
-  //if image is not 150px then set the height to 150px and the width to auto
-  if (image?.clientHeight != 150) {
-    (image as HTMLElement).style.height = "150px";
-    (image as HTMLElement).style.width = "auto";
-  }
-
-  console.debug("image", image);
-  // get the width of the image
-  let width = image?.clientWidth;
-  console.debug("width of the image", width);
-
-  //get the width of the first child
-  let width_element = first_child?.clientWidth;
-
-  // add half of the image width to the width of the element
-  // the default width of the element is 312.85px
-  (first_child as HTMLElement).style.width =
-    (width_element ?? 312.85) + (width ?? 0) / 2.5 + "px";
-  console.debug("width of the element", html_element.style.width);
 }
 
 export function generateMapCardTemplate(
@@ -793,4 +737,60 @@ function extractWKTStringFromString(str: string): string {
   // example output POINT (-55.216667 46.95)
   const wkt = str.split(" ").slice(1).join(" ");
   return wkt;
+}
+
+function cleanURI(uri: string): string {
+  return uri.replace(/<|>/g, "");
+}
+
+function adaptcardwidthtocontent(html_element: HTMLElement) {
+  //get the first child of the element
+  let first_child = html_element.firstElementChild;
+  console.debug("first child", first_child);
+
+  //get the width of the element with alt label Card Image
+  let image = html_element.querySelector("img[alt='Card Image']");
+
+  //if image is not 150px then set the height to 150px and the width to auto
+  if (image?.clientHeight != 150) {
+    (image as HTMLElement).style.height = "150px";
+    (image as HTMLElement).style.width = "auto";
+  }
+
+  console.debug("image", image);
+  // get the width of the image
+  let width = image?.clientWidth;
+  console.debug("width of the image", width);
+
+  //get the width of the first child
+  let width_element = first_child?.clientWidth;
+
+  // add half of the image width to the width of the element
+  // the default width of the element is 312.85px
+  (first_child as HTMLElement).style.width =
+    (width_element ?? 312.85) + (width ?? 0) / 2.5 + "px";
+  console.debug("width of the element", html_element.style.width);
+}
+
+function stringlengthshortener(
+  str: string,
+  length: number,
+  classes?: string
+): string {
+  if (str.length > length) {
+    if (classes != undefined) {
+      let returnstring = `
+      <div title="${str}" class="${classes}"> ${
+        str.substring(0, length) + "..."
+      } </div>
+      `;
+      return returnstring;
+    }
+
+    let returnstring = `
+    <div title="${str}"> ${str.substring(0, length) + "..."} </div>
+    `;
+    return returnstring;
+  }
+  return str;
 }
