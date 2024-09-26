@@ -562,11 +562,17 @@ export function generateMapCardTemplate(
   let _link = affordance_link || "";
 
   console.log(data);
-  const name = data.name || "Map Location";
+  const name = data.name || "";
   const mapwkt = data.mapwkt || null; // Default to 0 if not provided
   const centroid = data.centroid || null; // Default to 0 if not provided
   const type_place = data.type_place || "";
   const uniqueId = "map-" + Math.random().toString(36).substr(2, 9); // Generate a unique ID for the map
+
+  //if map location is "" and centroid is null and mapwkt is null then return
+  if (mapwkt == null && centroid == null && name == "") {
+    console.error("No map location provided");
+    return html_element;
+  }
 
   // injection of needed scripts into the html file
   //this should really be avoided...
