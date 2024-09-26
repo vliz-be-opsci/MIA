@@ -577,17 +577,23 @@ export function generateMapCardTemplate(
     console.debug("Map centroid:", extractWKTStringFromString(centroid));
     const geoJSON = wktToGeoJSON(extractWKTStringFromString(centroid));
     console.debug(geoJSON);
-    L.geoJSON(geoJSON).addTo(map);
+    // Check if the geoJSON is a point (centroid)
+    if (geoJSON.type === "Point") {
+      const markerHtml = `<img src="${map_marker}" style="width: 32px; height: 32px;">`;
+      const customDivIcon = L.divIcon({
+        html: markerHtml,
+        iconSize: [32, 32],
+        className: "dummy",
+      });
+      if (geoJSON.coordinates.length === 2) {
+        L.marker([geoJSON.coordinates[1], geoJSON.coordinates[0]], {
+          icon: customDivIcon,
+        }).addTo(map);
+      } else {
+        console.error("Invalid coordinates for marker:", geoJSON.coordinates);
+      }
+    }
     map.fitBounds(L.geoJSON(geoJSON).getBounds());
-    // Add a custom marker to the center of the GeoJSON bounds
-    const center = map.getBounds().getCenter();
-    const markerHtml = `<img src="${map_marker}" style="width: 32px; height: 32px;">`;
-    const customDivIcon = L.divIcon({
-      html: markerHtml,
-      iconSize: [32, 32],
-      className: "dummy",
-    });
-    L.marker(center, { icon: customDivIcon }).addTo(map);
   }
 
   //add custom control to the bottom left of the map
@@ -602,7 +608,7 @@ export function generateMapCardTemplate(
       );
       container.innerHTML = `
       <a href="${_link}" target="_blank" mia-extra-properties="nochange" class="flex items-center justify-center h-full w-full p-1">
-        <img id="marineinfo_logo" src="${marininfologo}" alt="marineregions">
+        <img id="marineinfo_logo" src="${marininfologo}" alt="marineregions" class="map_marineinfo_logo" >
       </a>
       `;
       container.style.backgroundColor = "white";
