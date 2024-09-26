@@ -531,9 +531,8 @@ export function generateAphiaCardTemplate(
         <div class="ml-4">
             <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
               <img id="marineinfo_logo" class="h-5 w-5 mr-1" src="${link}">
-              ${stringlengthshortener(title, 25)}
+              ${stringlengthshortener(title, 20)}
             </h2>
-            <p class="text-sm text-gray-500 mr-5">${status}</p>
             <div class="mt-2 flex space-x-4">
                 <a href="${_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
                      <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
