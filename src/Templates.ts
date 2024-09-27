@@ -623,9 +623,9 @@ export function generateMapCardTemplate(
 
   // perform wkt to geojson conversion
   try {
-    console.debug("Map WKT:", extractWKTStringFromString(mapwkt));
+    //console.debug("Map WKT:", extractWKTStringFromString(mapwkt));
     const geojson = wktToGeoJSON(extractWKTStringFromString(mapwkt));
-    console.debug(geojson);
+    //console.debug(geojson);
     // Add the GeoJSON to the map
     L.geoJSON(geojson).addTo(map);
 
@@ -633,9 +633,9 @@ export function generateMapCardTemplate(
     map.fitBounds(L.geoJSON(geojson).getBounds());
   } catch (error) {
     console.error("Error converting WKT to GeoJSON:", error);
-    console.debug("Map centroid:", extractWKTStringFromString(centroid));
+    //console.debug("Map centroid:", extractWKTStringFromString(centroid));
     const geoJSON = wktToGeoJSON(extractWKTStringFromString(centroid));
-    console.debug(geoJSON);
+    //console.debug(geoJSON);
     // Check if the geoJSON is a point (centroid)
     if (geoJSON.type === "Point") {
       const markerHtml = `<img src="${map_marker}" style="width: 32px; height: 32px;">`;
@@ -764,7 +764,7 @@ function adaptcardwidthtocontent(html_element: HTMLElement) {
   console.debug("image", image);
   // get the width of the image
   let width = image?.clientWidth;
-  console.debug("width of the image", width);
+  //console.debug("width of the image", width);
 
   //get the width of the first child
   let width_element = first_child?.clientWidth;
@@ -773,7 +773,7 @@ function adaptcardwidthtocontent(html_element: HTMLElement) {
   // the default width of the element is 312.85px
   (first_child as HTMLElement).style.width =
     (width_element ?? 312.85) + (width ?? 0) / 2.5 + "px";
-  console.debug("width of the element", html_element.style.width);
+  //console.debug("width of the element", html_element.style.width);
 }
 
 function stringlengthshortener(

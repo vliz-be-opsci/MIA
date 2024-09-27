@@ -20,10 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // for each found add the corresponding property to the body
   // for instance if nochange is found then add the mia-extra-properties="nochange" to the body
   if (extra_properties !== null) {
-    let properties = extra_properties.split(" ");
-    properties.forEach((property) => {
-      document.body.setAttribute("mia-extra-properties", property);
-    });
+    document.body.setAttribute("mia-extra-properties", extra_properties);
   }
 
   if (self_reference !== null) {

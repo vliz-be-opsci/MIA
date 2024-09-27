@@ -168,6 +168,40 @@ export default class AffordanceEntity {
     let element = this.element;
     console.info("element: ", element);
 
+    //get the extra mia properties from the element
+    let miaExtraPropertiesArray = ArrayMiaExtraPropertiesHTMLElement(element);
+
+    console.debug("miaExtraPropertiesArray: ", miaExtraPropertiesArray);
+
+    // Check the miaExtraPropertiesArray for relevant properties
+    let noChange = false;
+    let noDecorator = false;
+    let noupdate = false;
+    let change = false;
+    let decorate = false;
+    let update = false;
+
+    miaExtraPropertiesArray.forEach(property => {
+        if (property === "nochange") {
+            noChange = true;
+        }
+        if (property === "nodecorator") {
+            noDecorator = true;
+        }
+        if (property === "noupdate") {
+            noupdate = true;
+        }
+        if (property === "change") {
+            change = true;
+        }
+        if (property === "decorate") {
+            decorate = true;
+        }
+        if (property === "update") {
+            update = true;
+        }
+    });
+
     //if the element href contains marineinfo or marineregions in it
     //add class confluence_box to elemnt if not already there
     if (
@@ -179,11 +213,11 @@ export default class AffordanceEntity {
       // nochange can be set on any parent element to prevent the element from being changed
       // eg: <div mia-extra-properties="nochange"><a>text</a></div>
       // eg: <a mia-extra-properties="nochange">text</a>
-      if (element.closest("[mia-extra-properties=nochange]") !== null) {
+      if (noChange && !change) {
         return;
       }
 
-      if (element.closest("[mia-extra-properties=nodecorator]") !== null) {
+      if (noDecorator && !decorate) {
         this.onHover();
         return;
       }
@@ -199,7 +233,7 @@ export default class AffordanceEntity {
         return;
       }
 
-      if (element.getAttribute("mia-extra-properties") === null) {
+      if (decorate || !noDecorator && !noChange) {
         element.classList.add("confluence_box");
         /*
         element.addEventListener("contextmenu", (event: any) => {
@@ -213,8 +247,7 @@ export default class AffordanceEntity {
 
     if (!this.initial_updated) {
       if (
-        element.closest("[mia-extra-properties=noupdate]") !== null ||
-        element.getAttribute("mia-extra-properties") === "nochange"
+        noChange && !change || noupdate && !update
       ) {
         this.initial_updated = true;
         return;
@@ -307,7 +340,7 @@ export default class AffordanceEntity {
             let favicon: string = await this._get_favicon(url);
             // set the src of the img tag to the favicon
             // if favicon does not contain the string favicon then don't replace the image
-            console.debug("favicon", favicon);
+            //console.debug("favicon", favicon);
             if (favicon.includes("favicon")) {
               img_tags[i].src = favicon;
             }
@@ -511,4 +544,32 @@ export default class AffordanceEntity {
 
     this.element.classList.add("confluence_box_loading");
   }
+}
+
+function ArrayMiaExtraPropertiesHTMLElement(
+  element: HTMLElement,
+)
+{
+  // get the mia-extra-properties attribute from the element
+  let arrayMiaExtraProperties = element.getAttribute("mia-extra-properties");
+  
+  // get the mia-extra-properties attribute from the body element
+  let bodyMiaExtraProperties = document.body.getAttribute("mia-extra-properties");
+
+  // if they are not empty then push the unique values to the array and return it
+  let miaExtraPropertiesArray = [];
+  if (arrayMiaExtraProperties !== null) {
+    miaExtraPropertiesArray.push(arrayMiaExtraProperties);
+  }
+  if (bodyMiaExtraProperties !== null) {
+    // split the values by space
+    // remove other whitespace if needed
+    let bodyMiaExtraPropertiesArray = bodyMiaExtraProperties.split(" ");
+    bodyMiaExtraPropertiesArray.forEach(property => {
+      if (!miaExtraPropertiesArray.includes(property)) {
+        miaExtraPropertiesArray.push(property);
+      }
+    });
+  }
+  return miaExtraPropertiesArray;
 }
