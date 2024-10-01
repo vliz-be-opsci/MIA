@@ -54,7 +54,7 @@ export default class AffordanceManager {
   derefInfoCollector: DerefInfoCollector;
   private documentWatcher: DocumentWatcher;
   constructor(derefconfig: DerefConfig) {
-    console.log("Affordance Manager initialised");
+    // console.log("Affordance Manager initialised");
     this.affordances = [];
     this.collectingScheduler = new CollectingScheduler();
     this.derefInfoCollector = new DerefInfoCollector(derefconfig);
@@ -66,11 +66,11 @@ export default class AffordanceManager {
     const links = document.querySelectorAll("a");
     links.forEach((link) => {
       if (link.href !== "") {
-        console.log("link added: " + link.href);
+        // console.log("link added: " + link.href);
         this.addAffordance(link, derefinfocollector);
       }
     });
-    console.log("Ammount of affordances: " + this.affordances.length);
+    // console.log("Ammount of affordances: " + this.affordances.length);
   }
 
   addAffordance(affordance: any, derefinfocollector: DerefInfoCollector) {
@@ -85,7 +85,7 @@ export default class AffordanceManager {
     const index = this.affordances.indexOf(affordance);
     if (index > -1) {
       this.affordances.splice(index, 1);
-      console.log("Affordance removed: " + affordance);
+      // console.log("Affordance removed: " + affordance);
     }
   }
 }
@@ -121,7 +121,7 @@ class DocumentWatcher {
     links.forEach((link) => {
       // if the link is in the profiles corner then don't add it
       if (link.href !== "") {
-        console.log("link added: " + link.href);
+        // console.log("link added: " + link.href);
         this.affordanceManager.addAffordance(
           link,
           this.affordanceManager.derefInfoCollector

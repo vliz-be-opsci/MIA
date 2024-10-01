@@ -103,8 +103,8 @@ export function generateDatasetCardTemplate(
   html_element: HTMLElement,
   affordance_link: string
 ): HTMLElement {
-  console.log(data);
-  console.log(html_element);
+  // console.log(data);
+  // console.log(html_element);
 
   let _link = affordance_link || "";
 
@@ -250,8 +250,8 @@ export function generateInfoCardTemplate(
   html_element: HTMLElement,
   affordance_link: string
 ): HTMLElement {
-  console.log(data);
-  console.log(html_element);
+  // console.log(data);
+  // // console.log(html_element);
 
   // This is the default card generated
 
@@ -378,7 +378,7 @@ export function generateBibliographicResourceCardTemplate(
 ): HTMLElement {
   let _link = affordance_link || "";
 
-  console.log(data);
+  // console.log(data);
   //for each undefined value, replace with a default value
   let title = data.title || "";
   let type = data.type || "";
@@ -387,7 +387,7 @@ export function generateBibliographicResourceCardTemplate(
   let download_url = data.download || "";
   let citation = data.citation || "";
 
-  console.info("download url: ", download_url);
+  // console.info("download url: ", download_url);
   let c_type_image = lock_closed;
   let download_button = "";
 
@@ -451,7 +451,7 @@ export function generateEventCardTemplate(
   html_element: HTMLElement,
   affordance_link: string
 ): HTMLElement {
-  console.log(data);
+  // console.log(data);
   //for each undefined value, replace with a default value
   let title = data.title || "";
   let location = data.location || "";
@@ -509,7 +509,7 @@ export function generateAphiaCardTemplate(
   html_element: HTMLElement,
   affordance_link: string
 ): HTMLElement {
-  console.log(data);
+  // console.log(data);
   //for each undefined value, replace with a default value
   let title = data.title || "";
   let status = data.taxon_status || "";
@@ -560,16 +560,15 @@ export function generateMapCardTemplate(
   affordance_link: string
 ): HTMLElement {
   let _link = affordance_link || "";
-  console.log(data);
+  // console.log(data);
   const name = data.name || "";
   const mapwkt = data.mapwkt || null; // Default to 0 if not provided
   const centroid = data.centroid || null; // Default to 0 if not provided
-  const type_place = data.type_place || "";
   const uniqueId = "map-" + Math.random().toString(36).substr(2, 9); // Generate a unique ID for the map
 
   //if map location is "" and centroid is null and mapwkt is null then return
   if (mapwkt == null && centroid == null && name == "") {
-    console.error("No map location provided");
+    // console.error("No map location provided");
     return html_element;
   }
 
@@ -632,7 +631,7 @@ export function generateMapCardTemplate(
     // fit the map to the bounds of the GeoJSON
     map.fitBounds(L.geoJSON(geojson).getBounds());
   } catch (error) {
-    console.error("Error converting WKT to GeoJSON:", error);
+    // console.error("Error converting WKT to GeoJSON:", error);
     //console.debug("Map centroid:", extractWKTStringFromString(centroid));
     const geoJSON = wktToGeoJSON(extractWKTStringFromString(centroid));
     //console.debug(geoJSON);
@@ -649,7 +648,7 @@ export function generateMapCardTemplate(
           icon: customDivIcon,
         }).addTo(map);
       } else {
-        console.error("Invalid coordinates for marker:", geoJSON.coordinates);
+        // console.error("Invalid coordinates for marker:", geoJSON.coordinates);
       }
     }
     map.fitBounds(L.geoJSON(geoJSON).getBounds());
@@ -716,7 +715,7 @@ export function generateMapCardTemplate(
           try {
             map.fitBounds(L.geoJSON(geojson).getBounds());
           } catch (error) {
-            console.error("Error fitting map to bounds:", error);
+            // console.error("Error fitting map to bounds:", error);
           }
           container.style.backgroundImage = `url('${globe}')`;
         }
@@ -750,7 +749,7 @@ function cleanURI(uri: string): string {
 function adaptcardwidthtocontent(html_element: HTMLElement) {
   //get the first child of the element
   let first_child = html_element.firstElementChild;
-  console.debug("first child", first_child);
+  // console.debug("first child", first_child);
 
   //get the width of the element with alt label Card Image
   let image = html_element.querySelector("img[alt='Card Image']");
@@ -761,7 +760,7 @@ function adaptcardwidthtocontent(html_element: HTMLElement) {
     (image as HTMLElement).style.width = "auto";
   }
 
-  console.debug("image", image);
+  // console.debug("image", image);
   // get the width of the image
   let width = image?.clientWidth;
   //console.debug("width of the image", width);

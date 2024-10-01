@@ -15,6 +15,14 @@ import {
 } from "./Templates";
 import "./css/mia.css";
 
+// make maiproperties an interface
+interface MIAProperties {
+  card: boolean;
+  decorator: boolean;
+  update: boolean;
+  ellipsis: boolean;
+}
+
 export default class AffordanceEntity {
   private static activeEntity: AffordanceEntity | null = null;
   private element: any;
@@ -23,14 +31,21 @@ export default class AffordanceEntity {
   private derefinfocollector: DerefInfoCollector;
   private initial_updated: boolean = false;
   private isCancelled: boolean = false;
+  private miaproperites: MIAProperties = {
+    card: true,
+    decorator: true,
+    update: true,
+    ellipsis: false,
+  };
 
   constructor(affordance: any, derefinfocollector: DerefInfoCollector) {
-    console.log(typeof affordance);
-    console.log("Affordance Entity initialised");
+    // console.log(typeof affordance);
+    // console.log("Affordance Entity initialised");
     this.element = affordance;
     this.link = affordance.href;
     this.collected_info = new Entity();
     this.derefinfocollector = derefinfocollector;
+    this.miaproperites = GetMIAOptionsHTMLElement(this.element);
     this._update_dom_uri();
   }
 
@@ -49,19 +64,19 @@ export default class AffordanceEntity {
       this.isCancelled = false;
 
       if (this.incardview(event)) {
-        console.log("card already in view");
+        // console.log("card already in view");
         return;
       }
       //remove all other cards
       this._remove_card();
-      console.log(this.collected_info);
-      console.log(this.collected_info.content);
+      // console.log(this.collected_info);
+      // console.log(this.collected_info.content);
       this.produce_HTML_loader();
       if (
         this.collected_info.content === undefined ||
         Object.keys(this.collected_info.content).length === 0
       ) {
-        console.log("no info collected yet");
+        // console.log("no info collected yet");
 
         try {
           await this.collectInfo();
@@ -86,7 +101,7 @@ export default class AffordanceEntity {
     // Implement the logic to cancel the hover effect
     this._remove_card();
     this.removeLoader();
-    console.log("Hover effect cancelled for", this.link);
+    // console.log("Hover effect cancelled for", this.link);
   }
 
   incardview(event: MouseEvent): boolean {
@@ -125,8 +140,8 @@ export default class AffordanceEntity {
     // check if the closest parent element has the mia-extra-properties attribute set to noupdate
     // if it does then don't add the confluence_box class
     if (
-      this.element.closest("[mia-extra-properties=noupdate]") !== null ||
-      this.element.closest("[mia-extra-properties=nodecorator]") !== null
+      this.miaproperites.update === false ||
+      this.miaproperites.decorator === false
     ) {
       return;
     }
@@ -149,7 +164,7 @@ export default class AffordanceEntity {
         return;
       }
       if (Object.keys(this.collected_info.content).length !== 0) {
-        console.log("info already collected");
+        // console.log("info already collected");
         return;
       }
     } catch (error) {
@@ -166,41 +181,8 @@ export default class AffordanceEntity {
   private _update_dom_uri() {
     // self element
     let element = this.element;
-    console.info("element: ", element);
-
-    //get the extra mia properties from the element
-    let miaExtraPropertiesArray = ArrayMiaExtraPropertiesHTMLElement(element);
-
-    console.debug("miaExtraPropertiesArray: ", miaExtraPropertiesArray);
-
-    // Check the miaExtraPropertiesArray for relevant properties
-    let noChange = false;
-    let noDecorator = false;
-    let noupdate = false;
-    let change = false;
-    let decorate = false;
-    let update = false;
-
-    miaExtraPropertiesArray.forEach(property => {
-        if (property === "nochange") {
-            noChange = true;
-        }
-        if (property === "nodecorator") {
-            noDecorator = true;
-        }
-        if (property === "noupdate") {
-            noupdate = true;
-        }
-        if (property === "change") {
-            change = true;
-        }
-        if (property === "decorate") {
-            decorate = true;
-        }
-        if (property === "update") {
-            update = true;
-        }
-    });
+    // console.info("element: ", element);
+    // console.debug("miaExtraPropertiesArray: ", this.miaproperites);
 
     //if the element href contains marineinfo or marineregions in it
     //add class confluence_box to elemnt if not already there
@@ -213,87 +195,105 @@ export default class AffordanceEntity {
       // nochange can be set on any parent element to prevent the element from being changed
       // eg: <div mia-extra-properties="nochange"><a>text</a></div>
       // eg: <a mia-extra-properties="nochange">text</a>
-      if (noChange && !change) {
-        return;
-      }
-
-      if (noDecorator && !decorate) {
-        this.onHover();
-        return;
-      }
-
+      // mia-properties are : card, decorator, update, ellipsis as boolean values
 
       // One edge case here is the vocabserver wedwidget since this does not create a child node but a sibling node
       // This prevents the nochange attribute from being set on the parent node not to have any effect
       // for this a seperate check is needed
       // the element must be checked if any of the parent elements have a tag that contain vaadin
       // eg: <vaadin-*></vaadin-*> like <a><vaadin-button></vaadin-button></a>
-      // TODO: decide if this should be nochange or nocupdate to still allow the element to be updated
+      // TODO: decide if this should be nochange or noupdate to still allow the element to be updated
       if (element.closest("[id^=vaadin]") !== null) {
         return;
       }
 
-      if (decorate || !noDecorator && !noChange) {
+      if (this.miaproperites.decorator) {
         element.classList.add("confluence_box");
-        /*
-        element.addEventListener("contextmenu", (event: any) => {
-          event.preventDefault();
-          navigator.clipboard.writeText(this.link);
-        });
-        */
       }
-      this.onHover();
-    }
 
-    if (!this.initial_updated) {
-      if (
-        noChange && !change || noupdate && !update
-      ) {
-        this.initial_updated = true;
+      if (!this.miaproperites.card) {
         return;
       }
-      // check every 1 second if there is any cashed info
-      const intervalId = setInterval(() => {
-        // if the cashed info is not empty, update the dom
-        if (
-          this.derefinfocollector.cashedInfo[this.link] !== undefined &&
-          Object.keys(this.derefinfocollector.cashedInfo[this.link]).length !==
-            0
-        ) {
-          console.log("updating dom");
-          let collected_info = this.derefinfocollector.cashedInfo[this.link];
-          //change the inner html of the element
-          //this should be either the title or name key of the collected info
-          let content = collected_info[Object.keys(collected_info)[0]];
-          console.info("content: ", collected_info);
-          //first check if there are special keys for the type
-          if (this.type_to_keys[Object.keys(collected_info)[0]] !== undefined) {
-            //get all the keys and map them on the content
-            let to_display_content = [];
-            for (let key in this.type_to_keys[Object.keys(collected_info)[0]]) {
-              try {
-                to_display_content.push(
-                  content[
-                    this.type_to_keys[Object.keys(collected_info)[0]][key]
-                  ]
-                );
-              } catch (error) {
-                console.log("key not found");
-                continue;
-              }
-            }
+      this.onHover();
 
-            //update inner html
-            element.innerHTML = to_display_content.join(" ");
-          } else if (content.name !== undefined && content.name !== "") {
-            element.innerHTML = content.name;
-          } else if (content.title !== undefined && content.title !== "") {
-            element.innerHTML = content.title;
-          }
+      if (!this.initial_updated) {
+        if (!this.miaproperites.update) {
           this.initial_updated = true;
-          clearInterval(intervalId); // Stop the interval
+          return;
         }
-      }, 1000);
+        // check every 1 second if there is any cashed info
+        const intervalId = setInterval(() => {
+          // if the cashed info is not empty, update the dom
+          if (
+            this.derefinfocollector.cashedInfo[this.link] !== undefined &&
+            Object.keys(this.derefinfocollector.cashedInfo[this.link])
+              .length !== 0
+          ) {
+            // console.log("updating dom");
+            let collected_info = this.derefinfocollector.cashedInfo[this.link];
+            //change the inner html of the element
+            //this should be either the title or name key of the collected info
+            let content = collected_info[Object.keys(collected_info)[0]];
+            console.info("content for updating uri: ", collected_info);
+            //first check if there are special keys for the type
+            if (
+              this.type_to_keys[Object.keys(collected_info)[0]] !== undefined
+            ) {
+              //get all the keys and map them on the content
+              let to_display_content = [];
+              for (let key in this.type_to_keys[
+                Object.keys(collected_info)[0]
+              ]) {
+                try {
+                  to_display_content.push(
+                    content[
+                      this.type_to_keys[Object.keys(collected_info)[0]][key]
+                    ]
+                  );
+                } catch (error) {
+                  // console.log("key not found");
+                  continue;
+                }
+              }
+
+              //update inner html
+              this._update_inner_html(to_display_content.join(" "), element);
+            } else if (content.name !== undefined && content.name !== "") {
+              this._update_inner_html(content.name, element);
+            } else if (content.title !== undefined && content.title !== "") {
+              this._update_inner_html(content.title, element);
+            }
+            this.initial_updated = true;
+            clearInterval(intervalId); // Stop the interval
+          }
+        }, 1000);
+      }
+    }
+  }
+
+  private _update_inner_html(content: any, element: HTMLElement) {
+    //get the length of the inner html
+    let inner_html_length = element.innerHTML.length;
+    console.debug("innerHTML: ", element.innerHTML);
+    console.debug("inner_html_length:", inner_html_length);
+    console.debug("content: ", content);
+    console.debug("content length: ", content.length);
+
+    //if ellipse is true then check if the new content is longer than the inner html
+    //if it is then add ellipse to the inner html
+    if (this.miaproperites.ellipsis) {
+      if (inner_html_length < content.length) {
+        // the content length is the length of the inner html
+        let content_substring = content.substring(0, inner_html_length - 1);
+        // console.debug("content_substring: ", content_substring);
+        element.innerHTML = content_substring + "...";
+        // set the title of the element to the full content
+        element.title = content;
+      } else {
+        element.innerHTML = content;
+      }
+    } else {
+      element.innerHTML = content;
     }
   }
 
@@ -311,7 +311,7 @@ export default class AffordanceEntity {
     };
     let toreturn = mapping[name];
     if (toreturn === undefined) {
-      console.log("template not found");
+      // console.log("template not found");
       return generateInfoCardTemplate;
     }
     return mapping[name];
@@ -429,7 +429,7 @@ export default class AffordanceEntity {
   }
 
   produce_HTML_view(event: MouseEvent) {
-    console.log("producing HTML view");
+    // console.log("producing HTML view");
     this.removeLoader();
     console.log(this.collected_info);
 
@@ -439,13 +439,13 @@ export default class AffordanceEntity {
     let card_id = this.link.replace(/\//g, "-");
     //check if modal already exists
     if (document.getElementById(card_id) !== null) {
-      console.log("card already exists");
+      // console.log("card already exists");
       return;
     }
 
     //get card type for right template
     let template_name = Object.keys(this.collected_info.content)[0];
-    console.log(template_name);
+    // console.log(template_name);
 
     //create card
     let card = document.createElement("div");
@@ -524,7 +524,7 @@ export default class AffordanceEntity {
   }
 
   produce_HTML_loader() {
-    console.log("producing HTML loader");
+    // console.log("producing HTML loader");
     //check if the link already has a loader
     // by checking for the confluence_box_loading class
     let loader = document.querySelector(".confluence_box_loading");
@@ -535,10 +535,7 @@ export default class AffordanceEntity {
     this.element.classList.remove("confluence_box");
 
     //if closest parent element is nodecorator then don't add the confluence_box_loading class
-    if (
-      this.element.closest("[mia-extra-properties=nodecorator]") !== null ||
-      this.element.getAttribute("mia-extra-properties") === "nodecorator"
-    ) {
+    if (this.miaproperites.decorator === false) {
       return;
     }
 
@@ -546,17 +543,25 @@ export default class AffordanceEntity {
   }
 }
 
-function ArrayMiaExtraPropertiesHTMLElement(
-  element: HTMLElement,
-)
-{
+function GetMIAOptionsHTMLElement(element: HTMLElement) {
+  //set default options for the element
+  let options = {
+    card: true,
+    decorator: true,
+    update: true,
+    ellipsis: true,
+  };
+
   // get the mia-extra-properties attribute from the element
   let arrayMiaExtraProperties = element.getAttribute("mia-extra-properties");
-  
+
   // get the mia-extra-properties attribute from the body element
-  let bodyMiaExtraProperties = document.body.getAttribute("mia-extra-properties");
+  let bodyMiaExtraProperties = document.body.getAttribute(
+    "mia-extra-properties"
+  );
 
   // if they are not empty then push the unique values to the array and return it
+  let bodyproperties: string[] = [];
   let miaExtraPropertiesArray = [];
   if (arrayMiaExtraProperties !== null) {
     miaExtraPropertiesArray.push(arrayMiaExtraProperties);
@@ -565,11 +570,67 @@ function ArrayMiaExtraPropertiesHTMLElement(
     // split the values by space
     // remove other whitespace if needed
     let bodyMiaExtraPropertiesArray = bodyMiaExtraProperties.split(" ");
-    bodyMiaExtraPropertiesArray.forEach(property => {
-      if (!miaExtraPropertiesArray.includes(property)) {
-        miaExtraPropertiesArray.push(property);
+    bodyMiaExtraPropertiesArray.forEach((property) => {
+      if (!bodyproperties.includes(property)) {
+        bodyproperties.push(property);
       }
     });
   }
-  return miaExtraPropertiesArray;
+
+  // map the values to the options
+  // first set the options depending on the body properties
+  // then overwrite the options by looking at the element properties
+  // body elements are : nochange, nodecorator, noupdate, ellipsis
+
+  for (let i = 0; i < bodyproperties.length; i++) {
+    if (bodyproperties[i] === "nochange") {
+      options.card = false;
+      options.update = false;
+      options.decorator = false;
+    }
+    if (bodyproperties[i] === "nodecorator") {
+      options.decorator = false;
+    }
+    if (bodyproperties[i] === "noupdate") {
+      options.update = false;
+    }
+    if (bodyproperties[i] === "ellipsis") {
+      options.ellipsis = true;
+    }
+  }
+
+  // then overwrite the options by looking at the element properties
+  // options are: nochange, nodecorator, noupdate, ellipsis, noellipsis, update, decorate, change
+  for (let i = 0; i < miaExtraPropertiesArray.length; i++) {
+    if (miaExtraPropertiesArray[i] === "nochange") {
+      options.card = false;
+      options.update = false;
+      options.decorator = false;
+    }
+    if (miaExtraPropertiesArray[i] === "nodecorator") {
+      options.decorator = false;
+    }
+    if (miaExtraPropertiesArray[i] === "noupdate") {
+      options.update = false;
+    }
+    if (miaExtraPropertiesArray[i] === "ellipsis") {
+      options.ellipsis = true;
+    }
+    if (miaExtraPropertiesArray[i] === "noellipsis") {
+      options.ellipsis = false;
+    }
+    if (miaExtraPropertiesArray[i] === "update") {
+      options.update = true;
+    }
+    if (miaExtraPropertiesArray[i] === "decorator") {
+      options.decorator = true;
+    }
+    if (miaExtraPropertiesArray[i] === "change") {
+      options.card = true;
+      options.update = true;
+      options.decorator = true;
+    }
+  }
+
+  return options;
 }

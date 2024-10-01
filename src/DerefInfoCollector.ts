@@ -23,7 +23,7 @@ export default class DerefInfoCollector {
 
   async collectInfo(url: string) {
     if (this.cashedInfo[url] !== undefined) {
-      console.log("info already collected");
+      // console.log("info already collected");
       return this.cashedInfo[url];
     }
     // colect info
@@ -43,10 +43,10 @@ export default class DerefInfoCollector {
     emptystore = await getLinkedDataNQuads(url, emptystore);
     this.triplestore = this._combine_triplestores(this.triplestore, emptystore);
     const types = await this.get_type_uri(url);
-    console.info("url: ", url);
-    console.info("types: ", types);
+    // console.info("url: ", url);
+    // console.info("types: ", types);
     const config_type_info = get_config_for_rdf_type(types, this.derefconfig);
-    console.log(config_type_info);
+    // console.log(config_type_info);
     if (config_type_info === null) {
       return;
     }
@@ -65,10 +65,10 @@ export default class DerefInfoCollector {
     for (const key in mapping) {
       // new function here specifically to collect info
       /*
-      console.log(mapping);
-      console.log("key: ", key);
-      console.log(config_type_info.MAPPING[mapping[key]]);
-      console.log(ppaths);
+      // console.log(mapping);
+      // console.log("key: ", key);
+      // console.log(config_type_info.MAPPING[mapping[key]]);
+      // console.log(ppaths);
       */
       const value_path = await collectInfoMappingKey(
         mapping[key],
@@ -76,7 +76,7 @@ export default class DerefInfoCollector {
         emptystore,
         config_type_info
       );
-      console.info("value_path: ", value_path);
+      // console.info("value_path: ", value_path);
       info_keys[mapping[key]] = value_path;
     }
 
@@ -87,6 +87,7 @@ export default class DerefInfoCollector {
     //add empty store to the triplestore
     this.triplestore = this._combine_triplestores(this.triplestore, emptystore);
     this.cashedInfo[url] = to_cache;
+    console.info("cashed info: ", this.cashedInfo);
   }
 
   async get_type_uri(url: any): Promise<string[]> {
@@ -114,7 +115,7 @@ export default class DerefInfoCollector {
     }
 
     if (types.length === 0) {
-      console.info("No rdf type found for: ", url);
+      // console.info("No rdf type found for: ", url);
       // try query with just ?s
       const query = `
             SELECT ?type WHERE {

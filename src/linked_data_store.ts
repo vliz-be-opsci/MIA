@@ -24,7 +24,7 @@ export const traverseURI = async (
   let N3store: N3.Store = store;
   let typeR = type_result;
   let urls = [og_uri];
-  console.log("trajectory path: ", trajectory_path);
+  // console.log("trajectory path: ", trajectory_path);
   if (og_uri.startsWith("https:")) {
     urls.push(og_uri.replace("https://", "http://"));
   } else if (og_uri.startsWith("http:")) {
@@ -48,7 +48,7 @@ export const traverseURI = async (
 
         const bindings = await results.toArray();
         if (bindings.length === 0) {
-          console.log("no value found for query: " + query);
+          // console.log("no value found for query: " + query);
           //continue to next in forloop
           continue;
         }
@@ -56,7 +56,7 @@ export const traverseURI = async (
         const binding: Bindings = bindings[0];
 
         if (!binding) {
-          console.log("no value found for query: " + query);
+          // console.log("no value found for query: " + query);
           //continue to next in forloop
           continue;
         }
@@ -123,7 +123,7 @@ export const collectInfoMappingKey = async (
       config.MAPPING[mapping_key]["type"]
     );
     if (value == "") {
-      console.log("no value found for query: " + mapping_key);
+      // console.log("no value found for query: " + mapping_key);
       // try and get value with trajectory path
       const trajectory_path = _ppath_parts_for_ppath(
         config.MAPPING[mapping_key]["query"],
@@ -139,7 +139,7 @@ export const collectInfoMappingKey = async (
     }
     return value;
   } catch (error) {
-    console.log("error in query", error);
+    // console.log("error in query", error);
     // try and get value with trajectory path
     const trajectory_path = _ppath_parts_for_ppath(
       config.MAPPING[mapping_key]["query"],
@@ -180,7 +180,7 @@ export const comunicaQueryString = async (
 ): Promise<string | string[]> => {
   let N3store: N3.Store = store;
   let query_prefixed = _prefixed_query(query, prefixes);
-  console.info("query prefixed: ", query_prefixed);
+  // console.info("query prefixed: ", query_prefixed);
   //try accept here to make sure that the query is valid
   try {
     const results = await engine.queryBindings(query_prefixed, {
@@ -189,7 +189,7 @@ export const comunicaQueryString = async (
 
     const bindings = await results.toArray();
     if (bindings.length === 0) {
-      console.log("no value found for query: " + query);
+      // console.log("no value found for query: " + query);
       //continue to next in forloop
       return "";
     }
@@ -206,7 +206,7 @@ export const comunicaQueryString = async (
     const binding: Bindings = bindings[0];
 
     if (!binding) {
-      console.log("no value found for query: " + query);
+      // console.log("no value found for query: " + query);
       //continue to next in forloop
       return "";
     }

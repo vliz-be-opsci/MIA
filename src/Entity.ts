@@ -9,16 +9,16 @@ import download from "./css/download.svg";
 export default class Entity {
   content: any;
   constructor() {
-    console.log("Entity initialised");
+    // console.log("Entity initialised");
     this.content = {};
   }
 
   getType() {
-    console.log("getting rdf type of entity");
+    // console.log("getting rdf type of entity");
   }
 
   updateContent(content: any) {
-    console.log("updating content of entity");
+    // console.log("updating content of entity");
     this.content = content;
   }
 }
@@ -27,7 +27,7 @@ export class SelfEntity {
   uri: string;
   store: Store;
   constructor(url: string | null) {
-    console.log("SelfEntity initialised");
+    // console.log("SelfEntity initialised");
     //if uri == true then window.location is this.uri
     if (url == "true" || url == null || url == undefined || url == "") {
       // check if the meta tag with property="og:url" exists
@@ -35,7 +35,7 @@ export class SelfEntity {
       if (meta) {
         this.uri = meta.getAttribute("content") as string;
       } else {
-        console.log("meta tag with property='og:url' not found");
+        // console.log("meta tag with property='og:url' not found");
         this.uri = window.location.href;
       }
     } else {
@@ -43,7 +43,7 @@ export class SelfEntity {
     }
 
     this.store = new Store();
-    console.info(this.uri);
+    // console.info(this.uri);
     this.getAltProfiles();
   }
 
@@ -53,7 +53,7 @@ export class SelfEntity {
     let types: string[] = [];
     getLinkedDataNQuads(this.uri + "-alt.ttl", this.store).then(
       async (store) => {
-        console.debug(store);
+        // console.debug(store);
 
         // perform sparql query to get all tehe possible content types
         const query = `
@@ -135,7 +135,7 @@ export class SelfEntity {
 // Function to set content negotiation
 function getAffixByProfile(profile: string) {
   // get the affix by profile
-  console.log("getting affix by profile");
+  // console.log("getting affix by profile");
 
   let affixdict: any = {
     "text/html": ".html",

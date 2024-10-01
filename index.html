@@ -4,7 +4,7 @@
 <head>
         <title>Web Widget</title>
         <script src="./dist/mia.bundle.js" id="mia_script" deref-config="./test/deref_config.json" self-reference
-                extra-properties="nodecorator" defer>
+                extra-properties="" defer>
                 </script>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta charset="UTF-8" />
@@ -142,8 +142,11 @@
                 <h3 id="marineregions">Marineregions</h3>
                 <p>These are the links to the marineregions website</p>
                 <ul>
-                        <li><a href="https://marineregions.org/mrgid/61473" mia-extra-properties="decorate">No loading geom point</a></li>
-                        <li><a href="https://marineregions.org/mrgid/4868" mia-extra-properties="update">Also grey</a></li>
+                        <li><a href="https://marineregions.org/mrgid/61473" mia-extra-properties="update">No
+                                        loading
+                                        geom point</a></li>
+                        <li><a href="https://marineregions.org/mrgid/4868" mia-extra-properties="update">Also grey</a>
+                        </li>
                         <li><a href="https://marineregions.org/mrgid/7632">Also grey</a></li>
                 </ul>
 
@@ -152,8 +155,10 @@
                 <ul>
                         <li><a href="https://marineinfo.org/id/person/38476">Linked data man </a></li>
                         <li><a href="https://marineinfo.org/id/person/48">Jan Mees</a></li>
-                        <li><a href="https://marineinfo.org/id/person/19211">L.T</a></li>
-                        <li><a href="https://marineinfo.org/id/person/41728" mia-extra-properties="update">Rando</a></li>
+                        <li><a href="https://marineinfo.org/id/person/19211" mia-extra-properties="noellipsis">L.T</a>
+                        </li>
+                        <li><a href="https://marineinfo.org/id/person/41728">Rando</a>
+                        </li>
                         <li><a href="https://marineinfo.org/id/person/30976">person with weird format picture</a></li>
                 </ul>
 
@@ -193,7 +198,7 @@
                 <p>These are the links to the marineinfo-organizations website</p>
                 <ul>
                         <li><a href="https://marineinfo.org/id/institute/12919">institute</a></li>
-                        <li><a href="https://marineinfo.org/id/institute/36" mia-extra-properties="update">vliz</a></li>
+                        <li><a href="https://marineinfo.org/id/institute/36">vliz</a></li>
                 </ul>
 
                 <h3 id="marineinfo-collections">Marineinfo-collections</h3>
@@ -243,7 +248,7 @@
                         figures and contributors in the marine research community. For example, you can explore the
                         profile of the <a href="https://marineinfo.org/id/person/38476">Linked Data Man</a>, a notable
                         figure in the field, or meet people like <a
-                                href="https://marineinfo.org/id/person/41728" mia-extra-properties="decorate">Rando</a> and <a
+                                href="https://marineinfo.org/id/person/41728">Rando</a> and <a
                                 href="https://marineinfo.org/id/person/23412">Other Rando</a>, who have contributed to
                         marine science in various ways.</p>
                 <p>Additionally, Marineinfo provides access to <a href="https://marineinfo.org/id/dataset/8135">datasets
@@ -282,12 +287,6 @@
                 <h3 id="no change / no update example">No change / No update example</h3>
                 <p> this wil demonstrate that even when a MIA url is given. It can be chosen not to be updated by the
                         MIA's</p>
-                <div mia-extra-properties="nochange">
-                        <p> links in this div will not be affected by the MIA's</p>
-                        <p><a href="https://marineinfo.org/id/person/38476">Linked Data Man </a></p>
-                        <p><a href="https://marineinfo.org/id/person/37869">Very handsome person is behind this
-                                        curtain</a></p>
-                </div>
                 <div>
                         <p> links where noupdate is defined will not be updated by the MIA's</p>
                         <p><a href="https://marineinfo.org/id/person/38476" mia-extra-properties="noupdate">Linked man
