@@ -147,6 +147,6 @@
   filter: grayscale(50%);
 }
 
-.map_marineinfo_logo {
-  inherits: none;
+img.map_marineinfo_logo {
+  vertical-align: top;
 }

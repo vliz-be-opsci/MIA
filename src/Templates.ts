@@ -137,10 +137,19 @@ export function generateDatasetCardTemplate(
                 </a>`;
   }
 
-  for (let url of urls) {
-    urls_html += `<a href="${url}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
-                     <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
-                </a>`;
+  console.log(urls);
+  console.log(urls.length);
+  console.log(typeof urls);
+  if (typeof urls === "string") {
+    urls_html = `<a href="${urls}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
+                   <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
+                 </a>`;
+  } else {
+    for (let url of urls) {
+      urls_html += `<a href="${url}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
+                      <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
+                    </a>`;
+    }
   }
 
   let defaulthtml = `
@@ -191,10 +200,16 @@ export function generateProjectCardTemplate(
 
   //url section
   let urls_html = "";
-  for (let url of urls) {
-    urls_html += `<a href="${url}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
-                     <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
-                </a>`;
+  if (typeof urls === "string") {
+    urls_html = `<a href="${urls}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
+                   <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
+                 </a>`;
+  } else {
+    for (let url of urls) {
+      urls_html += `<a href="${url}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
+                      <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
+                    </a>`;
+    }
   }
 
   //keywords section
