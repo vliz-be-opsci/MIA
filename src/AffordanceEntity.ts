@@ -353,30 +353,26 @@ export default class AffordanceEntity {
   }
 
   private async _get_favicon(url: string) {
-    // this function will get the favicon of a given URL
-    // the favicon is gotten by appending /favicon.ico to the URL
-    // if the favicon is not found, a default favicon is used
-    // the default favicon is a globe icon
-    // the function returns the favicon URL
-
-    // get the favicon of the URL
-    let favicon = await fetch(url + "/favicon.ico")
-      .then((response) => {
-        // check if the favicon is found
+    // This function will get the favicon of a given URL by trying multiple endpoints
+    // It first tries to get a higher resolution favicon and then falls back to /favicon.ico
+    // If no favicon is found, a default favicon is used
+    // The function returns the favicon URL
+    // If no favicon is found, return the default favicon URL
+    const sizes = [512, 256, 128];
+    for (const size of sizes) {
+      try {
+        const response = await fetch(
+          `https://www.google.com/s2/favicons?sz=${size}&domain=${url}`
+        );
         if (response.status === 200) {
-          // return the favicon URL
-          // link says 200 but sometimes this is a redirect so assume not found
-          return link;
+          return `https://www.google.com/s2/favicons?sz=${size}&domain=${url}`;
         }
-        // return the default favicon URL
-        return "https://www.google.com/s2/favicons?domain=" + url;
-      })
-      .catch((error) => {
-        // return the default favicon URL
-        return "https://www.google.com/s2/favicons?domain=" + url;
-      });
-
-    return favicon;
+      } catch (error) {
+        // Continue to the next size
+      }
+    }
+    // If no favicon is found, return the default favicon URL
+    return "https://www.google.com/s2/favicons?sz=128&domain=" + url;
   }
 
   private _generate_card_placement(
