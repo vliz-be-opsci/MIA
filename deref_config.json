@@ -21,21 +21,21 @@
         ],
         "ASSERTION_PATHS": [
             "mr:hasGeometry/gsp:asWKT",
-            "<http://www.w3.org/ns/dcat#centroid>/gsp:asWKT",
+            "<http://www.w3.org/ns/dcat#centroid>",
             "skos:prefLabel"
         ],
         "TEMPLATE": "map",
         "MAPPING": {
+            "name": {
+                "query": "skos:prefLabel",
+                "type": "single"
+            },
             "mapwkt": {
                 "query": "mr:hasGeometry/gsp:asWKT",
                 "type": "single"
             },
             "centroid": {
-                "query": "<http://www.w3.org/ns/dcat#centroid>/gsp:asWKT",
-                "type": "single"
-            },
-            "name": {
-                "query": "skos:prefLabel",
+                "query": "<http://www.w3.org/ns/dcat#centroid>",
                 "type": "single"
             },
             "type_place": {
@@ -200,7 +200,8 @@
         "ASSERTION_PATHS": [
             "dcterms:title",
             "dcterms:license",
-            "dcterms:abstract"
+            "dcterms:abstract",
+            "dcat:distribution/dcat:accessURL"
         ],
         "TEMPLATE": "dataset",
         "MAPPING": {
@@ -475,9 +476,11 @@
         ],
         "ASSERTION_PATHS": [
             "dcterms:title",
-            "dcat:resource"
+            "dcat:resource",
+            "dcat:dataset",
+            "schema:keywords/schema:name"
         ],
-        "TEMPLATE": "default",
+        "TEMPLATE": "collection",
         "MAPPING": {
             "title": {
                 "query": "dcterms:title",
@@ -485,6 +488,18 @@
             },
             "resources": {
                 "query": "dcat:resource",
+                "type": "list"
+            },
+            "dataset": {
+                "query": "dcat:dataset",
+                "type": "list"
+            },
+            "keywords": {
+                "query": "schema:keywords",
+                "type": "list"
+            },
+            "urls": {
+                "query": "schema:url",
                 "type": "list"
             }
         }
