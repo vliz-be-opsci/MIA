@@ -13,6 +13,7 @@ import book from "./css/book.svg";
 import scroll from "./css/scroll.svg";
 import organization from "./css/organization.svg";
 import photo_film from "./css/photo_film.svg";
+import layer_group from "./css/layer-group.svg";
 import phone from "./css/phone.svg";
 import email from "./css/email.svg";
 import book_atlas from "./css/book_atlas.svg";
@@ -117,7 +118,6 @@ export function generateDatasetCardTemplate(
   let license = data.license || "";
   let citation_html = "";
   let citation = data.citation || "";
-  let urls_html = "";
   let date_html = "";
 
   if (date != "") {
@@ -140,15 +140,23 @@ export function generateDatasetCardTemplate(
   console.log(urls);
   console.log(urls.length);
   console.log(typeof urls);
+  let urls_html = "";
   if (typeof urls === "string") {
     urls_html = `<a href="${urls}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
                    <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
                  </a>`;
   } else {
-    for (let url of urls) {
-      urls_html += `<a href="${url}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
-                      <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
-                    </a>`;
+    for (let i = 0; i < Math.min(urls.length, 5); i++) {
+      urls_html += `<a href="${urls[i]}" class="text-gray-500 hover:text-gray-700 relative" mia-extra-properties="nochange">
+          <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
+        </a>`;
+    }
+    if (urls.length > 5) {
+      urls_html += `<div class=" relative">
+      <div class="h-6 w-6 rounded-full bg-blue-100 text-blue-800 text-xs dark:bg-blue-900 dark:text-blue-300 font-medium flex items-center justify-center">
+      +${urls.length - 5}
+      </div>
+      </div>`;
     }
   }
 
@@ -205,10 +213,17 @@ export function generateProjectCardTemplate(
                    <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
                  </a>`;
   } else {
-    for (let url of urls) {
-      urls_html += `<a href="${url}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
-                      <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
-                    </a>`;
+    for (let i = 0; i < Math.min(urls.length, 5); i++) {
+      urls_html += `<a href="${urls[i]}" class="text-gray-500 hover:text-gray-700 relative" mia-extra-properties="nochange">
+          <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
+        </a>`;
+    }
+    if (urls.length > 5) {
+      urls_html += `<div class=" relative">
+      <div class="h-6 w-6 rounded-full bg-blue-100 text-blue-800 text-xs dark:bg-blue-900 dark:text-blue-300 font-medium flex items-center justify-center">
+      +${urls.length - 5}
+      </div>
+      </div>`;
     }
   }
 
@@ -243,8 +258,7 @@ export function generateProjectCardTemplate(
             <div class="mt-2 flex space-x-1 mb-2 mt-2 mr-2">
                 ${keywords_html}
             </div>
-            <p class="text-sm text-gray-500 mr-5"><b>start date: </b>${start_date}</p>
-            <p class="text-sm text-gray-500 mr-5"><b>end date: </b>${end_date}</p>
+            <p class="text-sm text-gray-500 mr-5"><b>span: </b>${start_date} - ${end_date}</p>
             <div class="mt-2 flex space-x-4">
                 <a href="${_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
                      <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
@@ -386,6 +400,124 @@ export function generateOrganizationCardTemplate(
   return html_element;
 }
 
+export function generateCollectionCardTemplate(
+  data: { [key: string]: any },
+  html_element: HTMLElement,
+  affordance_link: string
+): HTMLElement {
+  // console.log(data);
+  //for each undefined value, replace with a default value
+  let title = data.title || "";
+  let resources = data.resources || [];
+  let datasets = data.dataset || [];
+  let keywords = data.keywords || [];
+  let _link = affordance_link || "";
+  let urls = data.urls || [];
+
+  //url section
+  let urls_html = "";
+  if (typeof urls === "string") {
+    urls_html = `<a href="${urls}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
+                   <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
+                 </a>`;
+  } else {
+    /*
+    for (let i = 0; i < Math.min(urls.length, 5); i++) {
+      // if the url does not starts with https:marineinfo.org then show the link
+      console.info(urls[i]);
+      urls_html += `<a href="${urls[i]}" class="text-gray-500 hover:text-gray-700 relative" mia-extra-properties="nochange">
+          <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
+        </a>`;
+    }
+    if (urls.length > 5) {
+    
+      urls_html += `<div class=" relative">
+      <div class="h-6 w-6 rounded-full bg-blue-100 text-blue-800 text-xs dark:bg-blue-900 dark:text-blue-300 font-medium flex items-center justify-center">
+      +${urls.length }
+      </div>
+      </div>`;
+    }
+    */
+    // if length is more then 0
+    if (urls.length > 0) {
+      urls_html += `
+    <div>
+      <span class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">${urls.length} urls</span> 
+    </div>
+    `;
+    }
+  }
+
+  //datasets section
+  // check if datasets is not an empty array
+  let properties_html = "";
+  if (datasets.length !== 0) {
+    properties_html += `
+    <div>
+      <span class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">${datasets.length} datasets</span> 
+    </div>
+    `;
+  }
+  if (keywords.length !== 0) {
+    properties_html += `
+    <div>
+      <span class="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">${keywords.length} keywords</span> 
+    </div>
+    `;
+  }
+
+  // resources section here , resources are devided by type so marineinfo/id/*/a
+  // make diffrent badges for each type being the unique * in the url
+  // count all the resources and make a badge for each type
+  let resources_html = "";
+  let resources_count: { [key: string]: number } = {};
+  for (let resource of resources) {
+    let type = resource.split("/")[4];
+    if (resources_count[type]) {
+      resources_count[type] += 1;
+    } else {
+      resources_count[type] = 1;
+    }
+  }
+
+  //make a badge for each type
+  for (let [key, value] of Object.entries(resources_count)) {
+    resources_html += `
+    <div>
+      <span class="bg-indigo-100 text-indigo-800 text-xs font-small me-2 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300">${value} ${key}s</span> 
+    </div>
+    `;
+  }
+
+  //tailwind
+  let innerHTML = `
+     <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;min-height:150px;">
+        <div class="ml-4">
+            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
+              <img id="marineinfo_logo" class="h-5 w-5 mr-1" src="${layer_group}">
+              ${stringlengthshortener(title, 25)}
+            </h2>
+            <div class="flex space-x-1 mt-2 mr-2">
+            ${properties_html}
+            </div>
+            <div class="flex space-x-1 mb-2 mt-1 mr-1">
+            ${resources_html}
+            </div>
+            <div class="mt-2 flex space-x-4">
+                <a href="${_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
+                     <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
+                </a>
+                ${urls_html}
+            </div>
+        </div>
+    </div>
+     `;
+  html_element.innerHTML = innerHTML;
+  //add element to body
+  document.body.appendChild(html_element);
+  return html_element;
+}
+
 export function generateBibliographicResourceCardTemplate(
   data: { [key: string]: any },
   html_element: HTMLElement,
@@ -474,18 +606,27 @@ export function generateEventCardTemplate(
   let start_date = data.start_date || "";
   let end_date = data.end_date || "";
   let _link = affordance_link || "";
-  let otherLinks = data.otherLinks || [];
+  let urls = data.otherLinks || [];
 
   // other links section
-
-  let otherLinks_html = "";
-
-  for (let link of otherLinks) {
-    otherLinks_html += `
-    <a href="${link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
-         <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
-    </a>
-    `;
+  let urls_html = "";
+  if (typeof urls === "string") {
+    urls_html = `<a href="${urls}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
+                   <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
+                 </a>`;
+  } else {
+    for (let i = 0; i < Math.min(urls.length, 5); i++) {
+      urls_html += `<a href="${urls[i]}" class="text-gray-500 hover:text-gray-700 relative" mia-extra-properties="nochange">
+          <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
+        </a>`;
+    }
+    if (urls.length > 5) {
+      urls_html += `<div class=" relative">
+      <div class="h-6 w-6 rounded-full bg-blue-100 text-blue-800 text-xs dark:bg-blue-900 dark:text-blue-300 font-medium flex items-center justify-center">
+      +${urls.length - 5}
+      </div>
+      </div>`;
+    }
   }
 
   let innerHTML = `
@@ -493,7 +634,7 @@ export function generateEventCardTemplate(
      <div class="ml-4">
          <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
            <img class="h-5 w-5 mr-1 icon_svg" src="${bullhorn}" alt="location">
-           ${title}
+           ${stringlengthshortener(title, 25)}
          </h2>
          <p class="text-sm text-gray-500 mr-5">${type}</p>
          <p class="inline-flex items-center text-sm text-gray-500 mr-5">
@@ -508,7 +649,7 @@ export function generateEventCardTemplate(
              <a href="${_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
                   <img class="h-6 w-6 icon_svg mb-1" src="${marininfologo}" alt="marineinfo">
              </a>
-              ${otherLinks_html}
+              ${urls_html}
          </div>
      </div>
  </div>

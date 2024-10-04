@@ -35,6 +35,10 @@
     @apply h-5 w-5 mr-1;
   }
 
+  .marine_info_affordances .icon_svg {
+    vertical-align: text-bottom; /* Align images vertically */
+  }
+
   /* Custom styles for ordered lists within .marine_info_affordances */
   .marine_info_affordances ol {
     list-style-type: none; /* Remove default numbering */

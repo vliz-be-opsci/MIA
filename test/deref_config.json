@@ -200,7 +200,8 @@
         "ASSERTION_PATHS": [
             "dcterms:title",
             "dcterms:license",
-            "dcterms:abstract"
+            "dcterms:abstract",
+            "dcat:distribution/dcat:accessURL"
         ],
         "TEMPLATE": "dataset",
         "MAPPING": {
@@ -475,9 +476,11 @@
         ],
         "ASSERTION_PATHS": [
             "dcterms:title",
-            "dcat:resource"
+            "dcat:resource",
+            "dcat:dataset",
+            "schema:keywords/schema:name"
         ],
-        "TEMPLATE": "default",
+        "TEMPLATE": "collection",
         "MAPPING": {
             "title": {
                 "query": "dcterms:title",
@@ -485,6 +488,18 @@
             },
             "resources": {
                 "query": "dcat:resource",
+                "type": "list"
+            },
+            "dataset": {
+                "query": "dcat:dataset",
+                "type": "list"
+            },
+            "keywords": {
+                "query": "schema:keywords",
+                "type": "list"
+            },
+            "urls": {
+                "query": "schema:url",
                 "type": "list"
             }
         }
