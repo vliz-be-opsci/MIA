@@ -144,6 +144,7 @@ export default class AffordanceEntity {
       this.miaproperites.update === false ||
       this.miaproperites.decorator === false
     ) {
+      this.element.classList.remove("no-decorator-loader");
       return;
     }
     this.element.classList.add("confluence_box");
@@ -534,6 +535,8 @@ export default class AffordanceEntity {
 
     //if closest parent element is nodecorator then don't add the confluence_box_loading class
     if (this.miaproperites.decorator === false) {
+      //produce a different loader
+      this.element.classList.add("no-decorator-loader");
       return;
     }
 

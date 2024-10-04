@@ -150,3 +150,25 @@
 img.map_marineinfo_logo {
   vertical-align: top;
 }
+
+.no-decorator-loader {
+  /* underline animation */
+  text-decoration: none;
+  background-image: linear-gradient(lightblue, darkblue),
+    linear-gradient(lightblue, darkblue);
+  background-size: 0 2px, 100% 2px;
+  background-position: 0 100%, 100% 100%;
+  background-repeat: no-repeat;
+  animation: underline-animation 1s infinite alternate;
+}
+
+@keyframes underline-animation {
+  from {
+    background-size: 0 2px, 100% 2px;
+    background-position: 0 100%, 100% 100%;
+  }
+  to {
+    background-size: 100% 2px, 0 2px;
+    background-position: 0 100%, 0 100%;
+  }
+}
