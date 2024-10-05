@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
         <title>Web Widget</title>
         <script src="https://open-science.vliz.be/MIA/latest/mia.bundle.js" id="mia_script"
@@ -11,6 +10,7 @@
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
         <meta property="og:url" content="https://marineinfo.org/id/person/38476">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <script type="module" src="https://vocab.vliz.be/webcomponent/main.js"></script>
         <script>
@@ -91,206 +91,657 @@
                         });
                 };
         </script>
+        <style>
+                body {
+                    padding-top: 56px;
+                }
+                .sidebar {
+                    position: fixed;
+                    top: 56px;
+                    bottom: 0;
+                    left: 0;
+                    z-index: 1000;
+                    padding: 48px 0 0;
+                    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+                }
+                .sidebar-sticky {
+                    position: relative;
+                    top: 0;
+                    height: calc(100vh - 56px);
+                    padding-top: .5rem;
+                    overflow-x: hidden;
+                    overflow-y: auto;
+                }
+            </style>
 </head>
-
 <body>
-        <!-- The widget will be inserted here -->
-        <div class="jumbotron">
-                <h1 class="display-4">Welcome to the MIA's</h1>
-                <p class="lead">MIA or marine info affordances is a plugable webwidget that will convert links into
-                        hoverable items that will give the end-user a wikipedia like experience
-                        powered by linked open data</p>
-                <hr class="my-4">
-                <p>Discover all usecases of the MIA's below!</p>
-                <a class="btn btn-primary btn-lg" href="https://github.com/vliz-be-opsci/MIA" role="button"
-                        target="_blank">Learn more</a>
-                <a class="btn btn-primary btn-lg" href="https://open-science.vliz.be/" role="button">Part of vliz-be-opsci</a>
+        <!-- Navigation Bar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+                <a class="navbar-brand" href="#">MIA Documentation</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ml-auto">
+                                <li class="nav-item">
+                                        <a class="nav-link" href="#">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                        <a class="nav-link" href="#contact">Contact</a>
+                                </li>
+                                <li class="nav-item">
+                                        <a class="nav-link" href="https://github.com/vliz-be-opsci/MIA" target="_blank">Learn more</a>
+                                </li>
+                                <li class="nav-item">
+                                        <a class="nav-link" href="https://open-science.vliz.be/">Part of vliz-be-opsci</a>
+                                </li>
+                        </ul>
+                </div>
+        </nav>
+
+        <div class="container-fluid">
+                <div class="row">
+                        <!-- Sidebar -->
+                        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+                                <div class="sidebar-sticky">
+                                        <ul class="nav flex-column">
+                                                <li class="nav-item">
+                                                        <a class="nav-link active" href="#">
+                                                                Introduction
+                                                        </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                        <a class="nav-link" href="#">
+                                                                Getting Started
+                                                        </a>
+                                                        <ul>
+                                                                <li><a class="nav-link" href="#installation">Installation</a></li>
+                                                                <li><a class="nav-link" href="#usage">Usage</a></li>
+                                                                <ul>
+                                                                        <li><a class="nav-link" href="#deref-config">deref-config.json</a></li>
+                                                                        <li><a class="nav-link" href="#template-examples">template-examples</a></li>
+                                                                        <li><a class="nav-link" href="#mia-properties">mia-properties</a></li>
+                                                                </ul>
+                                                        </ul>
+                                                </li>
+                                        </ul>
+                                </div>
+                        </nav>
+                        <!-- Main Content -->
+                        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+                                <div id="container">
+                                        <!-- Your documentation content goes here -->
+                                        <h1>Welcome to the MIA's</h1>
+                                        <p class="lead">MIA or marine info affordances is a plugable webwidget that will convert links into
+                                                hoverable items that will give the end-user a wikipedia like experience
+                                                powered by linked open data.</p>
+                                        <hr class="my-4">
+                                        <h2>Getting Started</h2>
+                                        <h3 id="installation">Installation</h3>
+                                        <p>To install the MIA's, you can include the following script in the head of your HTML file:</p>
+                                        <pre>
+                                        <code class="language-html">
+                                        &lt;head&gt;
+                                        &lt;script 
+                                                src="https://open-science.vliz.be/MIA/latest/mia.bundle.js" 
+                                                id="mia_script"
+                                                deref-config="https://open-science.vliz.be/MIA/deref_config.json"
+                                                self-reference
+                                        &gt;&lt;/script&gt;
+                                        &lt;/head&gt;
+                                        </code>
+                                        </pre>
+                                        <p>This script is a plugin that includes additional parameters such as <code>deref-config</code> and <code>self-reference</code>. The <code>deref-config</code> parameter points to a configuration file, while the <code>self-reference</code> attribute is used to enable self-referencing capabilities within the script.</p>
+                                        
+                                        <h2 id="Usage">
+                                                Usage
+                                        </h2>
+                                        <p>Once the MIA's script is included in your HTML file, you can start using the plugin to enhance your content. The MIA's will automatically convert links to hoverable items that provide additional information when clicked. The plugin is designed to work seamlessly with linked open data sources, offering a rich browsing experience for users.</p>
+
+                                        <h3 id="deref-config">deref-config.json</h3>
+                                        <p>The <code>deref-config.json</code> file is a configuration file that specifies the dereferencing settings for the MIA's. </p>
+                                        <p>An example of a <code>deref-config.json</code> file is shown below:</p>
+                                        <pre>
+                                        <code class="language-json">
+                                        [
+                                        {
+                                                "RDF_TYPE": "http://marineregions.org/ns/ontology#MRGeoObject",
+                                                "PREFIXES": [
+                                                    {
+                                                        "prefix": "mr",
+                                                        "uri": "http://marineregions.org/ns/ontology#"
+                                                    },
+                                                    {
+                                                        "prefix": "skos",
+                                                        "uri": "http://www.w3.org/2004/02/skos/core#"
+                                                    },
+                                                    {
+                                                        "prefix": "dcterms",
+                                                        "uri": "http://purl.org/dc/terms/"
+                                                    },
+                                                    {
+                                                        "prefix": "gsp",
+                                                        "uri": "http://www.opengis.net/ont/geosparql#"
+                                                    }
+                                                ],
+                                                "ASSERTION_PATHS": [
+                                                    "mr:hasGeometry/gsp:asWKT",
+                                                    "<http://www.w3.org/ns/dcat#centroid>",
+                                                    "skos:prefLabel"
+                                                ],
+                                                "TEMPLATE": "map",
+                                                "MAPPING": {
+                                                    "name": {
+                                                        "query": "skos:prefLabel",
+                                                        "type": "single"
+                                                    },
+                                                    "mapwkt": {
+                                                        "query": "mr:hasGeometry/gsp:asWKT",
+                                                        "type": "single"
+                                                    },
+                                                    "centroid": {
+                                                        "query": "<http://www.w3.org/ns/dcat#centroid>",
+                                                        "type": "single"
+                                                    },
+                                                    "type_place": {
+                                                        "query": "rdf:type",
+                                                        "type": "list"
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "RDF_TYPE": "https://schema.org/Person",
+                                                "PREFIXES": [
+                                                    {
+                                                        "prefix": "schema",
+                                                        "uri": "https://schema.org/"
+                                                    },
+                                                    {
+                                                        "prefix": "org",
+                                                        "uri": "http://www.w3.org/ns/org#"
+                                                    },
+                                                    {
+                                                        "prefix": "skos",
+                                                        "uri": "http://www.w3.org/2004/02/skos/core#"
+                                                    }
+                                                ],
+                                                "ASSERTION_PATHS": [
+                                                    "schema:givenName",
+                                                    "schema:familyName",
+                                                    "schema:image",
+                                                    "schema:identifier",
+                                                    "org:hasMembership/org:organization/schema:name",
+                                                    "org:hasMembership/org:role/skos:prefLabel"
+                                                ],
+                                                "TEMPLATE": "person",
+                                                "MAPPING": {
+                                                    "name": {
+                                                        "query": "schema:givenName",
+                                                        "type": "single"
+                                                    },
+                                                    "family": {
+                                                        "query": "schema:familyName",
+                                                        "type": "single"
+                                                    },
+                                                    "image": {
+                                                        "query": "schema:image",
+                                                        "type": "single"
+                                                    },
+                                                    "orcid": {
+                                                        "query": "schema:identifier",
+                                                        "type": "single"
+                                                    },
+                                                    "organization": {
+                                                        "query": "org:hasMembership/org:organization ?a. \n ?a a org:Organization .\n ?a schema:name",
+                                                        "type": "single"
+                                                    },
+                                                    "job_position": {
+                                                        "query": "org:hasMembership/org:role/skos:prefLabel",
+                                                        "type": "single"
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                        </code>
+                                        </pre>
+
+                                        <p>
+                                                In the example above, the <code>deref-config.json</code> file contains two dereferencing configurations for different RDF types: 
+                                                <code>http://marineregions.org/ns/ontology#MRGeoObject</code> and <code>https://schema.org/Person</code>. 
+                                                Each configuration specifies the RDF type, prefixes, assertion paths, template, and mapping for the dereferencing process. 
+                                                The <code>TEMPLATE</code> field indicates the template to be used for rendering the dereferenced data, while the <code>MAPPING</code> field defines the mapping of data properties to the template.
+                                                Each <code>MAPPING</code> object contains a query and type field, which specify the SPARQL query and data type for the property, respectively.
+                                                The types can be either <code>single</code> or <code>list</code>, depending on the data structure.
+                                        </p>
+
+                                        <p>
+                                                Different templates yield different visual representations of the dereferenced data. The <code>map</code> template, for example, displays geographic data in a map format, while the <code>person</code> template shows information about a person.
+                                                A list of available templates can be found in the table below:
+                                        </p>
+
+                                        <table id="template-examples" class="table table-striped table-bordered table-hover table-responsive table-responsive-md">
+                                                <thead>
+                                                        <tr>
+                                                                <th scope="col">Template</th>
+                                                                <th scope="col">Description</th>
+                                                                <th scope="col">Examples</th>
+                                                        </tr>
+                                                </thead>
+                                                <tbody>
+                                                        <tr>
+                                                                <td>map</td>
+                                                                <td>Displays geographic data in a map format</td>
+                                                                <td>
+                                                                        <ul>
+                                                                                <li><a href="https://marineregions.org/mrgid/61473">No loading geom point</a></li>
+                                                                                <li><a href="https://marineregions.org/mrgid/4868">Also grey</a></li>
+                                                                                <li><a href="https://marineregions.org/mrgid/7632">Also grey</a></li>
+                                                                        </ul>
+                                                                </td>
+                                                        </tr>
+                                                        <tr>
+                                                                <td>person</td>
+                                                                <td>Shows information about a person</td>
+                                                                <td>
+                                                                        <ul>
+                                                                                <li><a href="https://marineinfo.org/id/person/38476">Linked data man</a></li>
+                                                                                <li><a href="https://marineinfo.org/id/person/48">Jan Mees</a></li>
+                                                                                <li><a href="https://marineinfo.org/id/person/19211">L.T</a></li>
+                                                                                <li><a href="https://marineinfo.org/id/person/41728">Rando</a></li>
+                                                                                <li><a href="https://marineinfo.org/id/person/30976">person with weird format picture</a></li>
+                                                                        </ul>
+                                                                </td>
+                                                        </tr>
+                                                        <tr>
+                                                                <td>organization</td>
+                                                                <td>Displays details about an organization</td>
+                                                                <td>
+                                                                        <ul>
+                                                                                <li><a href="https://marineinfo.org/id/institute/12919">institute</a></li>
+                                                                                <li><a href="https://marineinfo.org/id/institute/36">vliz</a></li>
+                                                                        </ul>
+                                                                </td>
+                                                        </tr>
+                                                        <tr>
+                                                                <td>publication</td>
+                                                                <td>Shows information about a publication</td>
+                                                                <td>
+                                                                        <ul>
+                                                                                <li><a href="https://marineinfo.org/id/publication/355430">publication with authors</a></li>
+                                                                                <li><a href="https://marineinfo.org/id/publication/300143">publication</a></li>
+                                                                                <li><a href="https://marineinfo.org/id/publication/225534">some multimedia</a></li>
+                                                                        </ul>
+                                                                </td>
+                                                        </tr>
+                                                        <tr>
+                                                                <td>event</td>
+                                                                <td>Displays details about an event</td>
+                                                                <td>
+                                                                        <ul>
+                                                                                <li><a href="https://marineinfo.org/id/event/3255">event</a></li>
+                                                                                <li><a href="https://marineinfo.org/id/event/3252">event</a></li>
+                                                                        </ul>
+                                                                </td>
+                                                        </tr>
+                                                        <tr>
+                                                                <td>project</td>
+                                                                <td>Shows information about a project</td>
+                                                                <td>
+                                                                        <ul>
+                                                                                <li><a href="https://marineinfo.org/id/project/5240">project</a></li>
+                                                                                <li><a href="https://marineinfo.org/id/project/1004">other project</a></li>
+                                                                        </ul>
+                                                                </td>
+                                                        </tr>
+                                                        <tr>
+                                                                <td>collection</td>
+                                                                <td>Displays details about a collection</td>
+                                                                <td>
+                                                                        <ul>
+                                                                                <li><a href="https://marineinfo.org/id/collection/917">collection</a></li>
+                                                                                <li><a href="https://marineinfo.org/id/collection/619">eurobis collection</a></li>
+                                                                        </ul>
+                                                                </td>
+                                                        </tr>
+                                                        <tr>
+                                                                <td>dataset</td>
+                                                                <td>Shows information about a dataset</td>
+                                                                <td>
+                                                                        <ul>
+                                                                                <li><a href="https://marineinfo.org/id/dataset/8135">dataset with urls</a></li>
+                                                                                <li><a href="https://marineinfo.org/id/dataset/6430">dataset</a></li>
+                                                                        </ul>
+                                                                </td>
+                                                        </tr>
+                                                        <tr>
+                                                                <td>taxonomy</td>
+                                                                <td>Shows information about a taxonomy</td>
+                                                                <td>
+                                                                        <ul>
+                                                                                <li><a href="https://aphia.org/id/taxname/127160">tasty fish</a></li>
+                                                                                <li><a href="https://aphia.org/id/taxname/110704">other organism</a></li>
+                                                                        </ul>
+                                                                </td>
+                                                        </tr>
+                                                </tbody>
+                                        </table>
+
+                                        <h3 id="mia-properties">MIA Properties</h3>
+
+                                        <p>The MIA's plugin provides a set of properties that can be used to customize the behavior and appearance of the plugin. These properties can be set in the <code>&lt;script&gt;</code> tag that includes the MIA's script. The available properties are listed below:</p>
+
+                                        <p>These properties affect 4 aspects of the MIA's</p>
+                                        <table  class="table table-striped table-bordered table-hover table-responsive">
+                                                <head>
+                                                        <tr>
+                                                                <th scope="col">Option</th>
+                                                                <th scope="col">Description/effect</th>
+                                                        </tr>
+                                                </head>
+                                                <body>
+                                                        <tr>
+                                                                <td scope="col">card</td>
+                                                                <td scope="col">
+                                                                        <p>When set to true, the MIA's will display the hoverable items in a card format. The card format includes a title, image, and description for each item.</p>
+                                                                        <p>When set to false, the MIA's will display the hoverable items in a simple format without a card.</p>
+                                                                </td>
+                                                        </tr> 
+                                                        <tr>
+                                                                <td scope="col">
+                                                                        decorator
+                                                                </td>
+                                                                <td scope="col">
+                                                                        <p>When set to true, the MIA's will display a decorator icon next to the hoverable items. The decorator icon indicates that the item is clickable and provides additional information.</p>
+                                                                        <p>When set to false, the MIA's will not display a decorator icon.</p>
+                                                                </td>
+                                                        </tr>
+                                                        <tr>
+                                                                <td scope="col">
+                                                                        update
+                                                                </td>
+                                                                <td scope="col">
+                                                                        <p>When set to true, the MIA's will automatically update the hoverable items when the content of the page changes. This ensures that the hoverable items remain up-to-date with the latest content.</p>
+                                                                        <p>When set to false, the MIA's will not automatically update the hoverable items.</p>
+                                                                </td>
+                                                        </tr>
+                                                        <tr>
+                                                                <td scope="col">
+                                                                        ellipse
+                                                                </td>
+                                                                <td scope="col">
+                                                                        <p>When set to true, the MIA's will display the hoverable items in an ellipse format. The ellipse format includes a title, image, and description for each item.</p>
+                                                                        <p>When set to false, the MIA's will display the hoverable items in a simple format without an ellipse.</p>
+                                                                </t>
+                                                        </tr>
+                                                </body>
+                                        </table>
+
+                                        <p>All options with example html and example appearance can be found in the table below</p>
+
+                                        <table class="table table-striped table-bordered table-hover table-responsive table-responsive-md">
+                                                <thead>
+                                                        <tr>
+                                                                <th scope="col">Option</th>
+                                                                <th scope="col">Description</th>
+                                                                <th scope="col">functions enabled</th>
+                                                                <th scope="col">Example HTML</th>
+                                                                <th scope="col">Example MIA</th>
+                                                        </tr>
+                                                </thead>
+                                                <body>
+                                                        <tr>
+                                                                <td>change</td>
+                                                                <td>Enables change detection for hoverable items</td>
+                                                                <td>
+                                                                        <ul>
+                                                                                <li>card: <code>true</code></li>
+                                                                                <li>decorator: <code>true</code></li>
+                                                                                <li>update: <code>true</code></li>
+                                                                                <li>ellipse: <code>true</code></li>
+                                                                        </ul>
+                                                                </td>
+                                                                <td>
+                                                                        <pre>
+                                                        <code class="language-html">
+&lt;head&gt;
+&lt;script 
+        src="https://open-science.vliz.be/MIA/latest/mia.bundle.js" 
+        id="mia_script"
+        deref-config="https://open-science.vliz.be/MIA/deref_config.json"
+        extra-properties="change"
+        self-reference
+&gt;&lt;/script&gt;
+&lt;/head&gt;
+                                                        </code>
+                                                                        </pre>
+                                                                </td>
+                                                                <td>
+                                                                        <p>
+                                                                                <a href="https://marineinfo.org/id/person/38476" mia-extra-properties="change">Hoverable items will update on change</a>
+                                                                        </p>
+                                                                </td>
+                                                        </tr>
+                                                        <tr>
+                                                                <td>nochange</td>
+                                                                <td>Disables change detection for hoverable items</td>
+                                                                <td>
+                                                                        <ul>
+                                                                                <li>card: <code>false</code></li>
+                                                                                <li>decorator: <code>false</code></li>
+                                                                                <li>update: <code>false</code></li>
+                                                                                <li>ellipse: <code>false</code></li>
+                                                                        </ul>
+                                                                </td>
+                                                                <td>
+                                                                        <pre>
+                                                        <code class="language-html">
+&lt;script 
+        src="https://open-science.vliz.be/MIA/latest/mia.bundle.js" 
+        id="mia_script"
+        deref-config="https://open-science.vliz.be/MIA/deref_config.json"
+        extra-properties="nochange"
+        self-reference
+&gt;&lt;/script&gt;
+                                                        </code>
+                                                                        </pre>
+                                                                </td>
+                                                                <td>
+                                                                        <p>
+                                                                                <a href="https://marineinfo.org/id/person/38476" mia-extra-properties="nochange">No update to link and also no card</a>
+                                                                        </p>
+                                                                </td>
+                                                        </tr>
+                                                        <tr>
+                                                                <td>update</td>
+                                                                <td>Automatically updates hoverable items when page content changes</td>
+                                                                <td>
+                                                                        <ul>
+                                                                                <li>update: <code>true</code></li>
+                                                                        </ul>
+                                                                </td>
+                                                                <td>
+                                                                        <pre>
+                                                        <code class="language-html">
+&lt;script 
+        src="https://open-science.vliz.be/MIA/latest/mia.bundle.js" 
+        id="mia_script"
+        deref-config="https://open-science.vliz.be/MIA/deref_config.json"
+        extra-properties="update"
+        self-reference
+&gt;&lt;/script&gt;
+                                                        </code>
+                                                                        </pre>
+                                                                </td>
+                                                                <td>
+                                                                        <p>
+                                                                                <a href="https://marineinfo.org/id/person/38476" mia-extra-properties="update">Hoverable items will automatically update</a>
+                                                                        </p>
+                                                                </td>
+                                                        </tr>
+                                                        <tr>
+                                                                <td>noupdate</td>
+                                                                <td>Disables automatic updates for hoverable items</td>
+                                                                <td>
+                                                                        <ul>
+                                                                                <li>update: <code>false</code></li>
+                                                                        </ul>
+                                                                </td>
+                                                                <td>
+                                                                        <pre>
+                                                        <code class="language-html">
+&lt;script 
+        src="https://open-science.vliz.be/MIA/latest/mia.bundle.js" 
+        id="mia_script"
+        deref-config="https://open-science.vliz.be/MIA/deref_config.json"
+        extra-properties="noupdate"
+        self-reference
+&gt;&lt;/script&gt;
+                                                        </code>
+                                                                        </pre>
+                                                                </td>
+                                                                <td>
+                                                                        <p>
+                                                                                <a href="https://marineinfo.org/id/person/38476" mia-extra-properties="noupdate">Hoverable items will not automatically update</a>
+                                                                        </p>
+                                                                </td>
+                                                        </tr>
+                                                        <tr>
+                                                                <td>no-decorator</td>
+                                                                <td>Disables decorator icon for hoverable items</td>
+                                                                <td>
+                                                                        <ul>
+                                                                                <li>decorator: <code>false</code></li>
+                                                                                <li>update: <code>false</code></li>
+                                                                        </ul>
+                                                                </td>
+                                                                <td>
+                                                                        <pre>
+                                                        <code class="language-html">
+&lt;script 
+        src="https://open-science.vliz.be/MIA/latest/mia.bundle.js" 
+        id="mia_script"
+        deref-config="https://open-science.vliz.be/MIA/deref_config.json"
+        extra-properties="no-decorator"
+        self-reference
+&gt;&lt;/script&gt;
+                                                        </code>
+                                                                        </pre>
+                                                                </td>
+                                                                <td>
+                                                                        <p>
+                                                                                <a href="https://marineinfo.org/id/person/38476" mia-extra-properties="no-decorator">No decorator icon will be displayed</a>
+                                                                        </p>
+                                                                </td>
+                                                        </tr>
+                                                        <tr>
+                                                                <td>decorator</td>
+                                                                <td>Enables decorator icon for hoverable items</td>
+                                                                <td>
+                                                                        <ul>
+                                                                                <li>decorator: <code>true</code></li>
+                                                                        </ul>
+                                                                </td>
+                                                                <td>
+                                                                        <pre>
+                                                        <code class="language-html">
+&lt;script 
+        src="https://open-science.vliz.be/MIA/latest/mia.bundle.js" 
+        id="mia_script"
+        deref-config="https://open-science.vliz.be/MIA/deref_config.json"
+        extra-properties="decorator"
+        self-reference
+&gt;&lt;/script&gt;
+                                                        </code>
+                                                                        </pre>
+                                                                </td>
+                                                                <td>
+                                                                        <p>
+                                                                                <a href="https://marineinfo.org/id/person/38476" mia-extra-properties="decorator">Decorator icon will be displayed</a>
+                                                                        </p>
+                                                                </td>
+                                                        </tr>
+                                                        <tr>
+                                                                <td>ellipse</td>
+                                                                <td>Displays hoverable items in an ellipse format</td>
+                                                                <td>
+                                                                        <ul>
+                                                                                <li>ellipse: <code>true</code></li>
+                                                                        </ul>
+                                                                </td>
+                                                                <td>
+                                                                        <pre>
+                                                        <code class="language-html">
+&lt;script 
+        src="https://open-science.vliz.be/MIA/latest/mia.bundle.js" 
+        id="mia_script"
+        deref-config="https://open-science.vliz.be/MIA/deref_config.json"
+        extra-properties="ellipse"
+        self-reference
+&gt;&lt;/script&gt;
+                                                        </code>
+                                                                        </pre>
+                                                                </td>
+                                                                <td>
+                                                                        <p>
+                                                                                <a href="https://marineinfo.org/id/person/38476" mia-extra-properties="ellipse">Hoverable items will be displayed in an ellipse format</a>
+                                                                        </p>
+                                                                </td>
+                                                        </tr>
+                                                        <tr>
+                                                                <td>no-ellipse</td>
+                                                                <td>Disables ellipse format for hoverable items</td>
+                                                                <td>
+                                                                        <ul>
+                                                                                <li>ellipse: <code>false</code></li>
+                                                                        </ul>
+                                                                </td>
+                                                                <td>
+                                                                        <pre>
+                                                        <code class="language-html">
+&lt;script 
+        src="https://open-science.vliz.be/MIA/latest/mia.bundle.js" 
+        id="mia_script"
+        deref-config="https://open-science.vliz.be/MIA/deref_config.json"
+        extra-properties="no-ellipse"
+        self-reference
+&gt;&lt;/script&gt;
+                                                        </code>
+                                                                        </pre>
+                                                                </td>
+                                                                <td>
+                                                                        <p>
+                                                                                <a href="https://marineinfo.org/id/person/38476" mia-extra-properties="no-ellipse">mpo</a>
+                                                                        </p>
+                                                                </td>
+                                                        </tr>
+                                                </body>
+                                        </table>
+
+                                        <h3 id="issues">Known Issues</h3>
+                                        <p>These are the links that have issues related to them</p>
+                                        <ul>
+                                                <li><a href="https://marineinfo.org/id/project/2078">Project where the ttl is not parsed
+                                                                correclty</a></li>
+                                                <li><a href="https://marineinfo.org/id/project/2102">ttl not parsed correctly</a></li>
+                                        </ul>
+                                </div>
+                        </main>
+
+
+                </div>
         </div>
-        <div class="container">
-
-                <h2>Index</h2>
-
-                <ul>
-                        <li><a href="#marineregions">marineregions</a></li>
-                        <li><a href="#marineinfo-persons">marineinfo-persons</a></li>
-                        <li><a href="#marineinfo-datasets">marineinfo-datasets</a></li>
-                        <li><a href="#marineinfo-publications">marineinfo-publications</a></li>
-                        <li><a href="#marineinfo-events">marineinfo-events</a></li>
-                        <li><a href="#marineinfo-projects">marineinfo-projects</a></li>
-                        <li><a href="#marineinfo-organizations">marineinfo-organizations</a></li>
-                        <li><a href="#marineinfo-collections">marineinfo-collections</a></li>
-                        <li><a href="#aphia-worms">aphia-worms</a></li>
-                        <li><a href="#integration with vocabserver-webapp">integration with vocabserver-webapp</a></li>
-                        <li><a href="#full text example">full text example</a></li>
-                        <li><a href="#no change / no update example">no change / no update example</a></li>
-                </ul>
-
-                <h3 id="marineregions">Marineregions</h3>
-                <p>These are the links to the marineregions website</p>
-                <ul>
-                        <li><a href="https://marineregions.org/mrgid/61473">No loading geom point</a></li>
-                        <li><a href="https://marineregions.org/mrgid/4868">Also grey</a></li>
-                        <li><a href="https://marineregions.org/mrgid/7632">Also grey</a></li>
-                </ul>
-
-                <h3 id="marineinfo-persons">Marineinfo-persons</h3>
-                <p>These are the links to the marineinfo-persons website</p>
-                <ul>
-                        <li><a href="https://marineinfo.org/id/person/38476">Linked data man </a></li>
-                        <li><a href="https://marineinfo.org/id/person/48">Jan Mees</a></li>
-                        <li><a href="https://marineinfo.org/id/person/19211">L.T</a></li>
-                        <li><a href="https://marineinfo.org/id/person/41728">Rando</a></li>
-                        <li><a href="https://marineinfo.org/id/person/30976">person with weird format picture</a></li>
-                </ul>
-
-                <h3 id="marineinfo-datasets">Marineinfo-datasets</h3>
-                <p>These are the links to the marineinfo-datasets website</p>
-                <ul>
-                        <li><a href="https://marineinfo.org/id/dataset/8135">dataset with urls</a></li>
-                        <li><a href="https://marineinfo.org/id/dataset/6430">dataset</a></li>
-                </ul>
-
-                <h3 id="marineinfo-publications">Marineinfo-publications</h3>
-                <p>These are the links to the marineinfo-publications website</p>
-                <ul>
-                        <li><a href="https://marineinfo.org/id/publication/355430">publication with authors</a></li>
-                        <li><a href="https://marineinfo.org/id/publication/300143">publication</a></li>
-                        <li><a href="https://marineinfo.org/id/publication/225534">some multimedia</a></li>
-                </ul>
-
-                <h3 id="marineinfo-events">Marineinfo-events</h3>
-                <p>These are the links to the marineinfo-events website</p>
-                <ul>
-                        <li><a href="https://marineinfo.org/id/event/3255">event</a></li>
-                        <li><a href="https://marineinfo.org/id/event/3252">event</a></li>
-                </ul>
-
-                <h3 id="marineinfo-projects">Marineinfo-projects</h3>
-                <p>These are the links to the marineinfo-projects website</p>
-
-                <ul>
-                        <li><a href="https://marineinfo.org/id/project/5240">project</a></li>
-                        <li><a href="https://marineinfo.org/id/project/1004">other project</a></li>
-
-
-                </ul>
-
-                <h3 id="marineinfo-organizations">Marineinfo-organizations</h3>
-                <p>These are the links to the marineinfo-organizations website</p>
-                <ul>
-                        <li><a href="https://marineinfo.org/id/institute/12919">institute</a></li>
-                        <li><a href="https://marineinfo.org/id/institute/36">vliz</a></li>
-                </ul>
-
-                <h3 id="marineinfo-collections">Marineinfo-collections</h3>
-                <p>These are the links to the marineinfo-collections website</p>
-                <ul>
-                        <li><a href="https://marineinfo.org/id/collection/917">collection</a></li>
-                        <li><a href="https://marineinfo.org/id/collection/619">eurobis collection</a></li>
-                </ul>
-
-                <h3 id="aphia-worms">Aphia-worms</h3>
-                <p>These are the links to the aphia-worms website . NOTE that these will be replaced by worms urls once
-                        the described-by is added to those html pages</p>
-                <ul>
-                        <li><a href="https://aphia.org/id/taxname/127160">tasty fish</a></li>
-                        <li><a href="https://aphia.org/id/taxname/110704">other organism</a></li>
-                </ul>
-
-                <h3 id="integration with vocabserver-webapp">Integration with vocabserver-webapp</h3>
-                <p>This section will demonstrate the interactions possible with the vocabserver</p>
-                <div id="container">
-                        <vocab-search-bar id="search" search-endpoint="https://vocab.vliz.be/" nochange>
-                        </vocab-search-bar>
+        <!-- Footer -->
+        <footer class="footer mt-auto py-3 bg-dark text-white">
+                <div class="container">
+                        <span>© 2024 Marine Info Affordances. All rights reserved.</span>
+                        <span class="float-right">
+                                <a class="text-white" href="https://open-science.vliz.be/" target="_blank">Part of vliz-be-opsci</a> |
+                                <a class="text-white" href="https://github.com/vliz-be-opsci/MIA" target="_blank">GitHub</a>
+                        </span>
                 </div>
-                <div id="selected_term_table">
-                </div>
-
-                <h3 id="full text example">Full text example</h3>
-                <p>This is a full text that you could find on any website that encorporates the MIA's</p>
-                <h3>Explore Marine Data, People, and Projects</h3>
-
-                <p>The world of marine research and information is vast and interconnected. Various platforms offer
-                        access to data, people, projects, and publications that contribute to our understanding of
-                        marine ecosystems. Below, we will guide you through some key resources where you can find
-                        detailed datasets, research publications, and more. Each section includes links to relevant
-                        content, providing a gateway to the treasure trove of marine information.</p>
-
-                <h4>Marine Regions and Geographic Data</h4>
-                <p>For those interested in marine regions and geographic points of interest, the <a
-                                href="https://marineregions.org/mrgid/61473">Marine Regions</a> website offers various
-                        resources. You can explore areas such as the <a href="https://marineregions.org/mrgid/4868">Grey
-                                Region</a> and other unique locations like the <a
-                                href="https://marineregions.org/mrgid/7632">Grey Region 2</a>. These regions provide
-                        insights into specific marine environments that are critical for researchers and policymakers
-                        alike.</p>
-
-                <h4>Marineinfo: Persons, Projects, and More</h4>
-                <p>The <a href="https://marineinfo.org">Marineinfo</a> platform is an excellent place to learn about key
-                        figures and contributors in the marine research community. For example, you can explore the
-                        profile of the <a href="https://marineinfo.org/id/person/38476">Linked Data Man</a>, a notable
-                        figure in the field, or meet people like <a
-                                href="https://marineinfo.org/id/person/41728">Rando</a> and <a
-                                href="https://marineinfo.org/id/person/23412">Other Rando</a>, who have contributed to
-                        marine science in various ways.</p>
-                <p>Additionally, Marineinfo provides access to <a href="https://marineinfo.org/id/dataset/8135">datasets
-                                with URLs</a> and general datasets like the <a
-                                href="https://marineinfo.org/id/dataset/6430">dataset</a> available for deeper
-                        exploration. This platform also features significant marine research projects, such as this <a
-                                href="https://marineinfo.org/id/project/5240">notable project</a> that delves into
-                        important marine challenges.</p>
-
-                <h4>Publications, Events, and Organizations</h4>
-                <p>For those seeking publications on marine topics, Marineinfo also hosts numerous resources. You can
-                        dive into research articles like the <a
-                                href="https://marineinfo.org/id/publication/355430">publication with authors</a> or
-                        explore other studies like this <a href="https://marineinfo.org/id/publication/300143">general
-                                publication</a> and even multimedia material such as <a
-                                href="https://marineinfo.org/id/publication/225534">some multimedia</a>.</p>
-                <p>If you're more interested in events, Marineinfo lists upcoming and past events such as <a
-                                href="https://marineinfo.org/id/event/3255">Event 1</a> and <a
-                                href="https://marineinfo.org/id/event/3252">Event 2</a>. Furthermore, you can discover
-                        organizations like this <a href="https://marineinfo.org/id/institute/12919">institute</a> and
-                        collections like the <a href="https://marineinfo.org/id/collection/619">Marine Collection</a>,
-                        which play a vital role in advancing marine science.</p>
-
-                <h4>Aphia and Vocabulary Integration</h4>
-                <p>Another crucial resource for marine biodiversity is the <a href="https://aphia.org"
-                                nochange>Aphia</a> platform, which provides taxonomic data on marine species. You can
-                        explore fascinating organisms like the <a href="https://aphia.org/id/taxname/127160">tasty
-                                fish</a> and <a href="https://aphia.org/id/taxname/110704">other organism</a>. Aphia
-                        ensures that detailed taxonomic information is readily available to researchers and enthusiasts
-                        alike.</p>
-                <p>Finally, the <a href="https://vocab.vliz.be">VocabServer</a> integrates marine data vocabularies,
-                        enabling smooth interactions and searches within marine datasets. This server offers a search
-                        bar to help users explore standardized terms and concepts crucial for marine data management.
-                </p>
-
-                <h3 id="no change / no update example">No change / No update example</h3>
-                <p> this wil demonstrate that even when a MIA url is given. It can be chosen not to be updated by the
-                        MIA's</p>
-                <div mia-extra-properties="nochange">
-                        <p> links in this div will not be affected by the MIA's</p>
-                        <p><a href="https://marineinfo.org/id/person/38476">Linked Data Man </a></p>
-                        <p><a href="https://marineinfo.org/id/person/37869">Very handsome person is behind this
-                                        curtain</a></p>
-                </div>
-                <div>
-                        <p> links where noupdate is defined will not be updated by the MIA's</p>
-                        <p><a href="https://marineinfo.org/id/person/38476" mia-extra-properties="noupdate">Linked man
-                                </a></p>
-                        <p><a href="https://marineinfo.org/id/person/37869" mia-extra-properties="nodecorator">Very
-                                        handsome person is behind this link</a></p>
-                </div>
-
-                <h3 id="issues">Known Issues</h3>
-                <p>These are the links that have issues related to them</p>
-                <ul>
-                        <li><a href="https://marineinfo.org/id/project/2078">Project where the ttl is not parsed
-                                        correclty</a></li>
-                        <li><a href="https://marineinfo.org/id/project/2102">ttl not parsed correctly</a></li>
-                </ul>
-        </div>
+        </footer>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-html.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
                 integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
                 crossorigin="anonymous"></script>
