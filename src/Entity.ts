@@ -92,7 +92,7 @@ export class SelfEntity {
           .map((profile) => {
             let getAffix = getAffixByProfile(profile);
             let uri = this.uri + getAffix;
-            return `<li><a href="${uri}">${profile}</a></li>`;
+            return `<li><a mia-extra-properties="nochange" href="${uri}">${profile}</a></li>`;
           })
           .join("")}
         </ul>
