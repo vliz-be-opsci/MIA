@@ -1,5 +1,102 @@
 [
     {
+        "RDF_TYPE": "http://www.w3.org/2004/02/skos/core#Concept",
+        "PREFIXES": [
+            {
+                "prefix": "ns1",
+                "uri": "http://www.w3.org/ns/dx/prof/"
+            },
+            {
+                "prefix": "owl",
+                "uri": "http://www.w3.org/2002/07/owl#"
+            },
+            {
+                "prefix": "pav",
+                "uri": "http://purl.org/pav/"
+            },
+            {
+                "prefix": "prov",
+                "uri": "https://www.w3.org/ns/prov#"
+            },
+            {
+                "prefix": "puv",
+                "uri": "https://w3id.org/env/puv#"
+            },
+            {
+                "prefix": "qudt",
+                "uri": "https://qudt.org/2.1/schema/qudt#"
+            },
+            {
+                "prefix": "rdf",
+                "uri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+            },
+            {
+                "prefix": "rdfs",
+                "uri": "http://www.w3.org/2000/01/rdf-schema#"
+            },
+            {
+                "prefix": "reg",
+                "uri": "http://purl.org/linked-data/registry#"
+            },
+            {
+                "prefix": "semapv",
+                "uri": "http://w3id.org/semapv/vocab/"
+            },
+            {
+                "prefix": "skos",
+                "uri": "http://www.w3.org/2004/02/skos/core#"
+            },
+            {
+                "prefix": "sssom",
+                "uri": "https://w3id.org/sssom/schema/"
+            },
+            {
+                "prefix": "void",
+                "uri": "http://rdfs.org/ns/void#"
+            }
+        ],
+        "ASSERTION_PATHS": [
+            "skos:broader",
+            "skos:prefLabel",
+            "skos:note",
+            "skos:definition",
+            "dc:date",
+            "skos:narrower",
+            "pav:version"
+        ],
+        "TEMPLATE": "default",
+        "MAPPING": {
+            "title": {
+                "query": "skos:prefLabel",
+                "type": "single"
+            },
+            "definition": {
+                "query": "skos:definition",
+                "type": "single"
+            },
+            "note": {
+                "query": "skos:note",
+                "type": "single"
+            },
+            "date": {
+                "query": "dc:date",
+                "type": "single"
+            },
+            "broader": {
+                "query": "skos:broader",
+                "type": "list"
+            },
+            "narrower": {
+                "query": "skos:narrower",
+                "type": "list"
+            },
+            "version": {
+                "query": "pav:version",
+                "type": "single"
+            }
+        }
+    },
+    {
         "RDF_TYPE": "http://marineregions.org/ns/ontology#MRGeoObject",
         "PREFIXES": [
             {
