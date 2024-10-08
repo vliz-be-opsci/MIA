@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html>
+
 <head>
         <title>Web Widget</title>
         <script src="https://open-science.vliz.be/MIA/latest/mia.bundle.js" id="mia_script"
-                deref-config="https://open-science.vliz.be/MIA/deref_config.json"
-                self-reference
-                ></script>
+                deref-config="https://open-science.vliz.be/MIA/deref_config.json" self-reference></script>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
         <meta property="og:url" content="https://marineinfo.org/id/person/38476">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+                integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+                crossorigin="anonymous">
         <script type="module" src="https://vocab.vliz.be/webcomponent/main.js"></script>
         <script>
 
@@ -93,47 +94,47 @@
         </script>
         <style>
                 body {
-                    padding-top: 56px;
+                        padding-top: 56px;
                 }
+
                 .sidebar {
-                    position: fixed;
-                    top: 56px;
-                    bottom: 0;
-                    left: 0;
-                    z-index: 1000;
-                    padding: 48px 0 0;
-                    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+                        position: fixed;
+                        top: 56px;
+                        bottom: 0;
+                        left: 0;
+                        z-index: 1000;
+                        padding: 48px 0 0;
+                        box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
                 }
+
                 .sidebar-sticky {
-                    position: relative;
-                    top: 0;
-                    height: calc(100vh - 56px);
-                    padding-top: .5rem;
-                    overflow-x: hidden;
-                    overflow-y: auto;
+                        position: relative;
+                        top: 0;
+                        height: calc(100vh - 56px);
+                        padding-top: .5rem;
+                        overflow-x: hidden;
+                        overflow-y: auto;
                 }
-            </style>
+        </style>
 </head>
+
 <body>
         <!-- Navigation Bar -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
                 <a class="navbar-brand" href="#">MIA Documentation</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav ml-auto">
                                 <li class="nav-item">
-                                        <a class="nav-link" href="#">Home</a>
+                                        <a class="nav-link" href="https://github.com/vliz-be-opsci/MIA"
+                                                target="_blank">Learn more</a>
                                 </li>
                                 <li class="nav-item">
-                                        <a class="nav-link" href="#contact">Contact</a>
-                                </li>
-                                <li class="nav-item">
-                                        <a class="nav-link" href="https://github.com/vliz-be-opsci/MIA" target="_blank">Learn more</a>
-                                </li>
-                                <li class="nav-item">
-                                        <a class="nav-link" href="https://open-science.vliz.be/">Part of vliz-be-opsci</a>
+                                        <a class="nav-link" href="https://open-science.vliz.be/">Part of
+                                                vliz-be-opsci</a>
                                 </li>
                         </ul>
                 </div>
@@ -155,12 +156,20 @@
                                                                 Getting Started
                                                         </a>
                                                         <ul>
-                                                                <li><a class="nav-link" href="#installation">Installation</a></li>
+                                                                <li><a class="nav-link"
+                                                                                href="#installation">Installation</a>
+                                                                </li>
                                                                 <li><a class="nav-link" href="#usage">Usage</a></li>
                                                                 <ul>
-                                                                        <li><a class="nav-link" href="#deref-config">deref-config.json</a></li>
-                                                                        <li><a class="nav-link" href="#template-examples">template-examples</a></li>
-                                                                        <li><a class="nav-link" href="#mia-properties">mia-properties</a></li>
+                                                                        <li><a class="nav-link"
+                                                                                        href="#deref-config">deref-config.json</a>
+                                                                        </li>
+                                                                        <li><a class="nav-link"
+                                                                                        href="#template-examples">template-examples</a>
+                                                                        </li>
+                                                                        <li><a class="nav-link"
+                                                                                        href="#mia-properties">mia-properties</a>
+                                                                        </li>
                                                                 </ul>
                                                         </ul>
                                                 </li>
@@ -172,154 +181,177 @@
                                 <div id="container">
                                         <!-- Your documentation content goes here -->
                                         <h1>Welcome to the MIA's</h1>
-                                        <p class="lead">MIA or marine info affordances is a plugable webwidget that will convert links into
+                                        <p class="lead">MIA or marine info affordances is a plugable webwidget that will
+                                                convert links into
                                                 hoverable items that will give the end-user a wikipedia like experience
                                                 powered by linked open data.</p>
                                         <hr class="my-4">
                                         <h2>Getting Started</h2>
                                         <h3 id="installation">Installation</h3>
-                                        <p>To install the MIA's, you can include the following script in the head of your HTML file:</p>
+                                        <p>To install the MIA's, you can include the following script in the head of
+                                                your HTML file:</p>
                                         <pre>
                                         <code class="language-html">
-                                        &lt;head&gt;
-                                        &lt;script 
-                                                src="https://open-science.vliz.be/MIA/latest/mia.bundle.js" 
-                                                id="mia_script"
-                                                deref-config="https://open-science.vliz.be/MIA/deref_config.json"
-                                                self-reference
-                                        &gt;&lt;/script&gt;
-                                        &lt;/head&gt;
+&lt;head&gt;
+&lt;script 
+        src="https://open-science.vliz.be/MIA/latest/mia.bundle.js" 
+        id="mia_script"
+        deref-config="https://open-science.vliz.be/MIA/deref_config.json"
+        self-reference
+&gt;&lt;/script&gt;
+&lt;/head&gt;
                                         </code>
                                         </pre>
-                                        <p>This script is a plugin that includes additional parameters such as <code>deref-config</code> and <code>self-reference</code>. The <code>deref-config</code> parameter points to a configuration file, while the <code>self-reference</code> attribute is used to enable self-referencing capabilities within the script.</p>
-                                        
+                                        <p>This script is a plugin that includes additional parameters such as
+                                                <code>deref-config</code> and <code>self-reference</code>. The
+                                                <code>deref-config</code> parameter points to a configuration file,
+                                                while the <code>self-reference</code> attribute is used to enable
+                                                self-referencing capabilities within the script.
+                                        </p>
+
                                         <h2 id="Usage">
                                                 Usage
                                         </h2>
-                                        <p>Once the MIA's script is included in your HTML file, you can start using the plugin to enhance your content. The MIA's will automatically convert links to hoverable items that provide additional information when clicked. The plugin is designed to work seamlessly with linked open data sources, offering a rich browsing experience for users.</p>
+                                        <p>Once the MIA's script is included in your HTML file, you can start using the
+                                                plugin to enhance your content. The MIA's will automatically convert
+                                                links to hoverable items that provide additional information when
+                                                clicked. The plugin is designed to work seamlessly with linked open data
+                                                sources, offering a rich browsing experience for users.</p>
 
                                         <h3 id="deref-config">deref-config.json</h3>
-                                        <p>The <code>deref-config.json</code> file is a configuration file that specifies the dereferencing settings for the MIA's. </p>
+                                        <p>The <code>deref-config.json</code> file is a configuration file that
+                                                specifies the dereferencing settings for the MIA's. </p>
                                         <p>An example of a <code>deref-config.json</code> file is shown below:</p>
                                         <pre>
-                                        <code class="language-json">
-                                        [
-                                        {
-                                                "RDF_TYPE": "http://marineregions.org/ns/ontology#MRGeoObject",
-                                                "PREFIXES": [
-                                                    {
-                                                        "prefix": "mr",
-                                                        "uri": "http://marineregions.org/ns/ontology#"
-                                                    },
-                                                    {
-                                                        "prefix": "skos",
-                                                        "uri": "http://www.w3.org/2004/02/skos/core#"
-                                                    },
-                                                    {
-                                                        "prefix": "dcterms",
-                                                        "uri": "http://purl.org/dc/terms/"
-                                                    },
-                                                    {
-                                                        "prefix": "gsp",
-                                                        "uri": "http://www.opengis.net/ont/geosparql#"
-                                                    }
-                                                ],
-                                                "ASSERTION_PATHS": [
-                                                    "mr:hasGeometry/gsp:asWKT",
-                                                    "<http://www.w3.org/ns/dcat#centroid>",
-                                                    "skos:prefLabel"
-                                                ],
-                                                "TEMPLATE": "map",
-                                                "MAPPING": {
-                                                    "name": {
-                                                        "query": "skos:prefLabel",
-                                                        "type": "single"
-                                                    },
-                                                    "mapwkt": {
-                                                        "query": "mr:hasGeometry/gsp:asWKT",
-                                                        "type": "single"
-                                                    },
-                                                    "centroid": {
-                                                        "query": "<http://www.w3.org/ns/dcat#centroid>",
-                                                        "type": "single"
-                                                    },
-                                                    "type_place": {
-                                                        "query": "rdf:type",
-                                                        "type": "list"
-                                                    }
-                                                }
-                                            },
-                                            {
-                                                "RDF_TYPE": "https://schema.org/Person",
-                                                "PREFIXES": [
-                                                    {
-                                                        "prefix": "schema",
-                                                        "uri": "https://schema.org/"
-                                                    },
-                                                    {
-                                                        "prefix": "org",
-                                                        "uri": "http://www.w3.org/ns/org#"
-                                                    },
-                                                    {
-                                                        "prefix": "skos",
-                                                        "uri": "http://www.w3.org/2004/02/skos/core#"
-                                                    }
-                                                ],
-                                                "ASSERTION_PATHS": [
-                                                    "schema:givenName",
-                                                    "schema:familyName",
-                                                    "schema:image",
-                                                    "schema:identifier",
-                                                    "org:hasMembership/org:organization/schema:name",
-                                                    "org:hasMembership/org:role/skos:prefLabel"
-                                                ],
-                                                "TEMPLATE": "person",
-                                                "MAPPING": {
-                                                    "name": {
-                                                        "query": "schema:givenName",
-                                                        "type": "single"
-                                                    },
-                                                    "family": {
-                                                        "query": "schema:familyName",
-                                                        "type": "single"
-                                                    },
-                                                    "image": {
-                                                        "query": "schema:image",
-                                                        "type": "single"
-                                                    },
-                                                    "orcid": {
-                                                        "query": "schema:identifier",
-                                                        "type": "single"
-                                                    },
-                                                    "organization": {
-                                                        "query": "org:hasMembership/org:organization ?a. \n ?a a org:Organization .\n ?a schema:name",
-                                                        "type": "single"
-                                                    },
-                                                    "job_position": {
-                                                        "query": "org:hasMembership/org:role/skos:prefLabel",
-                                                        "type": "single"
-                                                    }
-                                                }
-                                            }
-                                        ]
-                                        </code>
-                                        </pre>
+<code class="language-json">
+[
+{
+        "RDF_TYPE": "http://marineregions.org/ns/ontology#MRGeoObject",
+        "PREFIXES": [
+                {
+                "prefix": "mr",
+                "uri": "http://marineregions.org/ns/ontology#"
+                },
+                {
+                "prefix": "skos",
+                "uri": "http://www.w3.org/2004/02/skos/core#"
+                },
+                {
+                "prefix": "dcterms",
+                "uri": "http://purl.org/dc/terms/"
+                },
+                {
+                "prefix": "gsp",
+                "uri": "http://www.opengis.net/ont/geosparql#"
+                }
+        ],
+        "ASSERTION_PATHS": [
+                "mr:hasGeometry/gsp:asWKT",
+                "<http://www.w3.org/ns/dcat#centroid>",
+                "skos:prefLabel"
+        ],
+        "TEMPLATE": "map",
+        "MAPPING": {
+                "name": {
+                "query": "skos:prefLabel",
+                "type": "single"
+                },
+                "mapwkt": {
+                "query": "mr:hasGeometry/gsp:asWKT",
+                "type": "single"
+                },
+                "centroid": {
+                "query": "<http://www.w3.org/ns/dcat#centroid>",
+                "type": "single"
+                },
+                "type_place": {
+                "query": "rdf:type",
+                "type": "list"
+                }
+        }
+        },
+        {
+        "RDF_TYPE": "https://schema.org/Person",
+        "PREFIXES": [
+                {
+                "prefix": "schema",
+                "uri": "https://schema.org/"
+                },
+                {
+                "prefix": "org",
+                "uri": "http://www.w3.org/ns/org#"
+                },
+                {
+                "prefix": "skos",
+                "uri": "http://www.w3.org/2004/02/skos/core#"
+                }
+        ],
+        "ASSERTION_PATHS": [
+                "schema:givenName",
+                "schema:familyName",
+                "schema:image",
+                "schema:identifier",
+                "org:hasMembership/org:organization/schema:name",
+                "org:hasMembership/org:role/skos:prefLabel"
+        ],
+        "TEMPLATE": "person",
+        "MAPPING": {
+                "name": {
+                "query": "schema:givenName",
+                "type": "single"
+                },
+                "family": {
+                "query": "schema:familyName",
+                "type": "single"
+                },
+                "image": {
+                "query": "schema:image",
+                "type": "single"
+                },
+                "orcid": {
+                "query": "schema:identifier",
+                "type": "single"
+                },
+                "organization": {
+                "query": "org:hasMembership/org:organization ?a. \n ?a a org:Organization .\n ?a schema:name",
+                "type": "single"
+                },
+                "job_position": {
+                "query": "org:hasMembership/org:role/skos:prefLabel",
+                "type": "single"
+                }
+        }
+        }
+]
+</code>
+</pre>
 
                                         <p>
-                                                In the example above, the <code>deref-config.json</code> file contains two dereferencing configurations for different RDF types: 
-                                                <code>http://marineregions.org/ns/ontology#MRGeoObject</code> and <code>https://schema.org/Person</code>. 
-                                                Each configuration specifies the RDF type, prefixes, assertion paths, template, and mapping for the dereferencing process. 
-                                                The <code>TEMPLATE</code> field indicates the template to be used for rendering the dereferenced data, while the <code>MAPPING</code> field defines the mapping of data properties to the template.
-                                                Each <code>MAPPING</code> object contains a query and type field, which specify the SPARQL query and data type for the property, respectively.
-                                                The types can be either <code>single</code> or <code>list</code>, depending on the data structure.
+                                                In the example above, the <code>deref-config.json</code> file contains
+                                                two dereferencing configurations for different RDF types:
+                                                <code>http://marineregions.org/ns/ontology#MRGeoObject</code> and
+                                                <code>https://schema.org/Person</code>.
+                                                Each configuration specifies the RDF type, prefixes, assertion paths,
+                                                template, and mapping for the dereferencing process.
+                                                The <code>TEMPLATE</code> field indicates the template to be used for
+                                                rendering the dereferenced data, while the <code>MAPPING</code> field
+                                                defines the mapping of data properties to the template.
+                                                Each <code>MAPPING</code> object contains a query and type field, which
+                                                specify the SPARQL query and data type for the property, respectively.
+                                                The types can be either <code>single</code> or <code>list</code>,
+                                                depending on the data structure.
                                         </p>
 
                                         <p>
-                                                Different templates yield different visual representations of the dereferenced data. The <code>map</code> template, for example, displays geographic data in a map format, while the <code>person</code> template shows information about a person.
+                                                Different templates yield different visual representations of the
+                                                dereferenced data. The <code>map</code> template, for example, displays
+                                                geographic data in a map format, while the <code>person</code> template
+                                                shows information about a person.
                                                 A list of available templates can be found in the table below:
                                         </p>
 
-                                        <table id="template-examples" class="table table-striped table-bordered table-hover table-responsive table-responsive-md">
+                                        <table id="template-examples"
+                                                class="table table-striped table-bordered table-hover table-responsive table-responsive-md">
                                                 <thead>
                                                         <tr>
                                                                 <th scope="col">Template</th>
@@ -333,9 +365,13 @@
                                                                 <td>Displays geographic data in a map format</td>
                                                                 <td>
                                                                         <ul>
-                                                                                <li><a href="https://marineregions.org/mrgid/61473">No loading geom point</a></li>
-                                                                                <li><a href="https://marineregions.org/mrgid/4868">Also grey</a></li>
-                                                                                <li><a href="https://marineregions.org/mrgid/7632">Also grey</a></li>
+                                                                                <li><a href="https://marineregions.org/mrgid/61473">No
+                                                                                                loading geom point</a>
+                                                                                </li>
+                                                                                <li><a href="https://marineregions.org/mrgid/4868">Also
+                                                                                                grey</a></li>
+                                                                                <li><a href="https://marineregions.org/mrgid/7632">Also
+                                                                                                grey</a></li>
                                                                         </ul>
                                                                 </td>
                                                         </tr>
@@ -344,11 +380,17 @@
                                                                 <td>Shows information about a person</td>
                                                                 <td>
                                                                         <ul>
-                                                                                <li><a href="https://marineinfo.org/id/person/38476">Linked data man</a></li>
-                                                                                <li><a href="https://marineinfo.org/id/person/48">Jan Mees</a></li>
-                                                                                <li><a href="https://marineinfo.org/id/person/19211">L.T</a></li>
-                                                                                <li><a href="https://marineinfo.org/id/person/41728">Rando</a></li>
-                                                                                <li><a href="https://marineinfo.org/id/person/30976">person with weird format picture</a></li>
+                                                                                <li><a href="https://marineinfo.org/id/person/38476">Linked
+                                                                                                data man</a></li>
+                                                                                <li><a href="https://marineinfo.org/id/person/48">Jan
+                                                                                                Mees</a></li>
+                                                                                <li><a href="https://marineinfo.org/id/person/19211">L.T</a>
+                                                                                </li>
+                                                                                <li><a href="https://marineinfo.org/id/person/41728">Rando</a>
+                                                                                </li>
+                                                                                <li><a href="https://marineinfo.org/id/person/30976">person
+                                                                                                with weird format
+                                                                                                picture</a></li>
                                                                         </ul>
                                                                 </td>
                                                         </tr>
@@ -357,8 +399,10 @@
                                                                 <td>Displays details about an organization</td>
                                                                 <td>
                                                                         <ul>
-                                                                                <li><a href="https://marineinfo.org/id/institute/12919">institute</a></li>
-                                                                                <li><a href="https://marineinfo.org/id/institute/36">vliz</a></li>
+                                                                                <li><a href="https://marineinfo.org/id/institute/12919">institute</a>
+                                                                                </li>
+                                                                                <li><a href="https://marineinfo.org/id/institute/36">vliz</a>
+                                                                                </li>
                                                                         </ul>
                                                                 </td>
                                                         </tr>
@@ -367,9 +411,12 @@
                                                                 <td>Shows information about a publication</td>
                                                                 <td>
                                                                         <ul>
-                                                                                <li><a href="https://marineinfo.org/id/publication/355430">publication with authors</a></li>
-                                                                                <li><a href="https://marineinfo.org/id/publication/300143">publication</a></li>
-                                                                                <li><a href="https://marineinfo.org/id/publication/225534">some multimedia</a></li>
+                                                                                <li><a href="https://marineinfo.org/id/publication/355430">publication
+                                                                                                with authors</a></li>
+                                                                                <li><a href="https://marineinfo.org/id/publication/300143">publication</a>
+                                                                                </li>
+                                                                                <li><a href="https://marineinfo.org/id/publication/225534">some
+                                                                                                multimedia</a></li>
                                                                         </ul>
                                                                 </td>
                                                         </tr>
@@ -378,8 +425,10 @@
                                                                 <td>Displays details about an event</td>
                                                                 <td>
                                                                         <ul>
-                                                                                <li><a href="https://marineinfo.org/id/event/3255">event</a></li>
-                                                                                <li><a href="https://marineinfo.org/id/event/3252">event</a></li>
+                                                                                <li><a href="https://marineinfo.org/id/event/3255">event</a>
+                                                                                </li>
+                                                                                <li><a href="https://marineinfo.org/id/event/3252">event</a>
+                                                                                </li>
                                                                         </ul>
                                                                 </td>
                                                         </tr>
@@ -388,8 +437,10 @@
                                                                 <td>Shows information about a project</td>
                                                                 <td>
                                                                         <ul>
-                                                                                <li><a href="https://marineinfo.org/id/project/5240">project</a></li>
-                                                                                <li><a href="https://marineinfo.org/id/project/1004">other project</a></li>
+                                                                                <li><a href="https://marineinfo.org/id/project/5240">project</a>
+                                                                                </li>
+                                                                                <li><a href="https://marineinfo.org/id/project/1004">other
+                                                                                                project</a></li>
                                                                         </ul>
                                                                 </td>
                                                         </tr>
@@ -398,8 +449,10 @@
                                                                 <td>Displays details about a collection</td>
                                                                 <td>
                                                                         <ul>
-                                                                                <li><a href="https://marineinfo.org/id/collection/917">collection</a></li>
-                                                                                <li><a href="https://marineinfo.org/id/collection/619">eurobis collection</a></li>
+                                                                                <li><a href="https://marineinfo.org/id/collection/917">collection</a>
+                                                                                </li>
+                                                                                <li><a href="https://marineinfo.org/id/collection/619">eurobis
+                                                                                                collection</a></li>
                                                                         </ul>
                                                                 </td>
                                                         </tr>
@@ -408,8 +461,10 @@
                                                                 <td>Shows information about a dataset</td>
                                                                 <td>
                                                                         <ul>
-                                                                                <li><a href="https://marineinfo.org/id/dataset/8135">dataset with urls</a></li>
-                                                                                <li><a href="https://marineinfo.org/id/dataset/6430">dataset</a></li>
+                                                                                <li><a href="https://marineinfo.org/id/dataset/8135">dataset
+                                                                                                with urls</a></li>
+                                                                                <li><a href="https://marineinfo.org/id/dataset/6430">dataset</a>
+                                                                                </li>
                                                                         </ul>
                                                                 </td>
                                                         </tr>
@@ -418,8 +473,10 @@
                                                                 <td>Shows information about a taxonomy</td>
                                                                 <td>
                                                                         <ul>
-                                                                                <li><a href="https://aphia.org/id/taxname/127160">tasty fish</a></li>
-                                                                                <li><a href="https://aphia.org/id/taxname/110704">other organism</a></li>
+                                                                                <li><a href="https://aphia.org/id/taxname/127160">tasty
+                                                                                                fish</a></li>
+                                                                                <li><a href="https://aphia.org/id/taxname/110704">other
+                                                                                                organism</a></li>
                                                                         </ul>
                                                                 </td>
                                                         </tr>
@@ -428,31 +485,46 @@
 
                                         <h3 id="mia-properties">MIA Properties</h3>
 
-                                        <p>The MIA's plugin provides a set of properties that can be used to customize the behavior and appearance of the plugin. These properties can be set in the <code>&lt;script&gt;</code> tag that includes the MIA's script. The available properties are listed below:</p>
+                                        <p>The MIA's plugin provides a set of properties that can be used to customize
+                                                the behavior and appearance of the plugin. These properties can be set
+                                                in the <code>&lt;script&gt;</code> tag that includes the MIA's script.
+                                                The available properties are listed below:</p>
 
                                         <p>These properties affect 4 aspects of the MIA's</p>
-                                        <table  class="table table-striped table-bordered table-hover table-responsive">
+                                        <table class="table table-striped table-bordered table-hover table-responsive">
+
                                                 <head>
                                                         <tr>
                                                                 <th scope="col">Option</th>
                                                                 <th scope="col">Description/effect</th>
                                                         </tr>
                                                 </head>
+
                                                 <body>
                                                         <tr>
                                                                 <td scope="col">card</td>
                                                                 <td scope="col">
-                                                                        <p>When set to true, the MIA's will display the hoverable items in a card format. The card format includes a title, image, and description for each item.</p>
-                                                                        <p>When set to false, the MIA's will display the hoverable items in a simple format without a card.</p>
+                                                                        <p>When set to true, the MIA's will display the
+                                                                                hoverable items in a card format. The
+                                                                                card format includes a title, image, and
+                                                                                description for each item.</p>
+                                                                        <p>When set to false, the MIA's will display the
+                                                                                hoverable items in a simple format
+                                                                                without a card.</p>
                                                                 </td>
-                                                        </tr> 
+                                                        </tr>
                                                         <tr>
                                                                 <td scope="col">
                                                                         decorator
                                                                 </td>
                                                                 <td scope="col">
-                                                                        <p>When set to true, the MIA's will display a decorator icon next to the hoverable items. The decorator icon indicates that the item is clickable and provides additional information.</p>
-                                                                        <p>When set to false, the MIA's will not display a decorator icon.</p>
+                                                                        <p>When set to true, the MIA's will display a
+                                                                                decorator icon next to the hoverable
+                                                                                items. The decorator icon indicates that
+                                                                                the item is clickable and provides
+                                                                                additional information.</p>
+                                                                        <p>When set to false, the MIA's will not display
+                                                                                a decorator icon.</p>
                                                                 </td>
                                                         </tr>
                                                         <tr>
@@ -460,8 +532,15 @@
                                                                         update
                                                                 </td>
                                                                 <td scope="col">
-                                                                        <p>When set to true, the MIA's will automatically update the hoverable items when the content of the page changes. This ensures that the hoverable items remain up-to-date with the latest content.</p>
-                                                                        <p>When set to false, the MIA's will not automatically update the hoverable items.</p>
+                                                                        <p>When set to true, the MIA's will
+                                                                                automatically update the hoverable items
+                                                                                when the content of the page changes.
+                                                                                This ensures that the hoverable items
+                                                                                remain up-to-date with the latest
+                                                                                content.</p>
+                                                                        <p>When set to false, the MIA's will not
+                                                                                automatically update the hoverable
+                                                                                items.</p>
                                                                 </td>
                                                         </tr>
                                                         <tr>
@@ -469,16 +548,24 @@
                                                                         ellipse
                                                                 </td>
                                                                 <td scope="col">
-                                                                        <p>When set to true, the MIA's will display the hoverable items in an ellipse format. The ellipse format includes a title, image, and description for each item.</p>
-                                                                        <p>When set to false, the MIA's will display the hoverable items in a simple format without an ellipse.</p>
-                                                                </t>
+                                                                        <p>When set to true, the MIA's will display the
+                                                                                hoverable items in an ellipse format.
+                                                                                The ellipse format includes a title,
+                                                                                image, and description for each item.
+                                                                        </p>
+                                                                        <p>When set to false, the MIA's will display the
+                                                                                hoverable items in a simple format
+                                                                                without an ellipse.</p>
+                                                                        </t>
                                                         </tr>
                                                 </body>
                                         </table>
 
-                                        <p>All options with example html and example appearance can be found in the table below</p>
+                                        <p>All options with example html and example appearance can be found in the
+                                                table below</p>
 
-                                        <table class="table table-striped table-bordered table-hover table-responsive table-responsive-md">
+                                        <table
+                                                class="table table-striped table-bordered table-hover table-responsive table-responsive-md">
                                                 <thead>
                                                         <tr>
                                                                 <th scope="col">Option</th>
@@ -488,6 +575,7 @@
                                                                 <th scope="col">Example MIA</th>
                                                         </tr>
                                                 </thead>
+
                                                 <body>
                                                         <tr>
                                                                 <td>change</td>
@@ -517,7 +605,9 @@
                                                                 </td>
                                                                 <td>
                                                                         <p>
-                                                                                <a href="https://marineinfo.org/id/person/38476" mia-extra-properties="change">Hoverable items will update on change</a>
+                                                                                <a href="https://marineinfo.org/id/person/38476"
+                                                                                        mia-extra-properties="change">Hoverable
+                                                                                        items will update on change</a>
                                                                         </p>
                                                                 </td>
                                                         </tr>
@@ -547,13 +637,17 @@
                                                                 </td>
                                                                 <td>
                                                                         <p>
-                                                                                <a href="https://marineinfo.org/id/person/38476" mia-extra-properties="nochange">No update to link and also no card</a>
+                                                                                <a href="https://marineinfo.org/id/person/38476"
+                                                                                        mia-extra-properties="nochange">No
+                                                                                        update to link and also no
+                                                                                        card</a>
                                                                         </p>
                                                                 </td>
                                                         </tr>
                                                         <tr>
                                                                 <td>update</td>
-                                                                <td>Automatically updates hoverable items when page content changes</td>
+                                                                <td>Automatically updates hoverable items when page
+                                                                        content changes</td>
                                                                 <td>
                                                                         <ul>
                                                                                 <li>update: <code>true</code></li>
@@ -574,7 +668,10 @@
                                                                 </td>
                                                                 <td>
                                                                         <p>
-                                                                                <a href="https://marineinfo.org/id/person/38476" mia-extra-properties="update">Hoverable items will automatically update</a>
+                                                                                <a href="https://marineinfo.org/id/person/38476"
+                                                                                        mia-extra-properties="update">Hoverable
+                                                                                        items will automatically
+                                                                                        update</a>
                                                                         </p>
                                                                 </td>
                                                         </tr>
@@ -601,7 +698,10 @@
                                                                 </td>
                                                                 <td>
                                                                         <p>
-                                                                                <a href="https://marineinfo.org/id/person/38476" mia-extra-properties="noupdate">Hoverable items will not automatically update</a>
+                                                                                <a href="https://marineinfo.org/id/person/38476"
+                                                                                        mia-extra-properties="noupdate">Hoverable
+                                                                                        items will not automatically
+                                                                                        update</a>
                                                                         </p>
                                                                 </td>
                                                         </tr>
@@ -629,7 +729,10 @@
                                                                 </td>
                                                                 <td>
                                                                         <p>
-                                                                                <a href="https://marineinfo.org/id/person/38476" mia-extra-properties="no-decorator">No decorator icon will be displayed</a>
+                                                                                <a href="https://marineinfo.org/id/person/38476"
+                                                                                        mia-extra-properties="no-decorator">No
+                                                                                        decorator icon will be
+                                                                                        displayed</a>
                                                                         </p>
                                                                 </td>
                                                         </tr>
@@ -656,7 +759,9 @@
                                                                 </td>
                                                                 <td>
                                                                         <p>
-                                                                                <a href="https://marineinfo.org/id/person/38476" mia-extra-properties="decorator">Decorator icon will be displayed</a>
+                                                                                <a href="https://marineinfo.org/id/person/38476"
+                                                                                        mia-extra-properties="decorator">Decorator
+                                                                                        icon will be displayed</a>
                                                                         </p>
                                                                 </td>
                                                         </tr>
@@ -683,7 +788,10 @@
                                                                 </td>
                                                                 <td>
                                                                         <p>
-                                                                                <a href="https://marineinfo.org/id/person/38476" mia-extra-properties="ellipse">Hoverable items will be displayed in an ellipse format</a>
+                                                                                <a href="https://marineinfo.org/id/person/38476"
+                                                                                        mia-extra-properties="ellipse">Hoverable
+                                                                                        items will be displayed in an
+                                                                                        ellipse format</a>
                                                                         </p>
                                                                 </td>
                                                         </tr>
@@ -710,7 +818,8 @@
                                                                 </td>
                                                                 <td>
                                                                         <p>
-                                                                                <a href="https://marineinfo.org/id/person/38476" mia-extra-properties="no-ellipse">mpo</a>
+                                                                                <a href="https://marineinfo.org/id/person/38476"
+                                                                                        mia-extra-properties="no-ellipse">mpo</a>
                                                                         </p>
                                                                 </td>
                                                         </tr>
@@ -720,9 +829,11 @@
                                         <h3 id="issues">Known Issues</h3>
                                         <p>These are the links that have issues related to them</p>
                                         <ul>
-                                                <li><a href="https://marineinfo.org/id/project/2078">Project where the ttl is not parsed
+                                                <li><a href="https://marineinfo.org/id/project/2078">Project where the
+                                                                ttl is not parsed
                                                                 correclty</a></li>
-                                                <li><a href="https://marineinfo.org/id/project/2102">ttl not parsed correctly</a></li>
+                                                <li><a href="https://marineinfo.org/id/project/2102">ttl not parsed
+                                                                correctly</a></li>
                                         </ul>
                                 </div>
                         </main>
@@ -735,13 +846,15 @@
                 <div class="container">
                         <span>© 2024 Marine Info Affordances. All rights reserved.</span>
                         <span class="float-right">
-                                <a class="text-white" href="https://open-science.vliz.be/" target="_blank">Part of vliz-be-opsci</a> |
-                                <a class="text-white" href="https://github.com/vliz-be-opsci/MIA" target="_blank">GitHub</a>
+                                <a class="text-white" href="https://open-science.vliz.be/" target="_blank">Part of
+                                        vliz-be-opsci</a> |
+                                <a class="text-white" href="https://github.com/vliz-be-opsci/MIA"
+                                        target="_blank">GitHub</a>
                         </span>
                 </div>
         </footer>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-html.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-html.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
                 integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
                 crossorigin="anonymous"></script>
