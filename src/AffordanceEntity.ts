@@ -89,11 +89,33 @@ export default class AffordanceEntity {
           if (this.isCancelled) return;
           console.log(error);
           this.removeLoader();
+          // on error also remove the conflunce_box class from the element
+          if (this.miaproperites.decorator) {
+            this.element.classList.remove("confluence_box");
+            this.disableMIAfunctionality();
+          }
         }
         return;
       }
       this.produce_HTML_view(event);
     });
+  }
+
+  disableMIAfunctionality() {
+    // Remove the hover effect on the element
+    this.element.removeEventListener("mouseover", () => {});
+    // Remove the loader from the element
+    this.element.classList.remove("confluence_box_loading");
+    // Remove the confluence_box class from the element
+    this.element.classList.remove("confluence_box");
+    // Remove the no-decorator-loader class from the element
+    this.element.classList.remove("no-decorator-loader");
+
+    //set the miaproperites to false
+    this.miaproperites.card = false;
+    this.miaproperites.decorator = false;
+    this.miaproperites.update = false;
+    this.miaproperites.ellipsis = false;
   }
 
   cancelHoverEffect() {
@@ -526,6 +548,11 @@ export default class AffordanceEntity {
     // console.log("producing HTML loader");
     //check if the link already has a loader
     // by checking for the confluence_box_loading class
+
+    if (this.miaproperites.card === false) {
+      return;
+    }
+
     let loader = document.querySelector(".confluence_box_loading");
     if (loader !== null) {
       return;
@@ -533,7 +560,6 @@ export default class AffordanceEntity {
     //create loader by adding confluence_box_loading class to this.element
     this.element.classList.remove("confluence_box");
 
-    //if closest parent element is nodecorator then don't add the confluence_box_loading class
     if (this.miaproperites.decorator === false) {
       //produce a different loader
       this.element.classList.add("no-decorator-loader");
