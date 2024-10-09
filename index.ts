@@ -12,9 +12,9 @@ document.addEventListener("DOMContentLoaded", function () {
     console.error("mia_script DOM element not found");
     return;
   }
-  const deref_config_path = script_tag.getAttribute("deref-config");
-  const self_reference = script_tag.getAttribute("self-reference");
-  const extra_properties = script_tag.getAttribute("extra-properties");
+  const deref_config_path = script_tag.getAttribute("data-deref-config");
+  const self_reference = script_tag.getAttribute("data-self-reference");
+  const extra_properties = script_tag.getAttribute("data-extra-properties");
 
   // check the contents of the extra-properties and see if there is a nochange / nodecorator / noupdate value in them
   // for each found add the corresponding property to the body
