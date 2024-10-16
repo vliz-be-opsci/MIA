@@ -214,7 +214,8 @@ export default class AffordanceEntity {
       this.link.includes("marineinfo.org") ||
       this.link.includes("marineregions.org") ||
       this.link.includes("aphia.org") ||
-      this.link.includes("vocab.nerc")
+      this.link.includes("vocab.nerc") ||
+      this.link.includes("zenodo.org")
     ) {
       // check if any parent element has the mia-extra-properties attribute set to nochange
       // nochange can be set on any parent element to prevent the element from being changed

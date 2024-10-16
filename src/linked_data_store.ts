@@ -282,7 +282,7 @@ export async function getLinkedDataNQuads(
 
   const data = await getData(uri, return_formats);
   let text = await data.response.text();
-  //console.log(text);
+  console.log(text);
 
   const parser = new N3.Parser({ format: data.format });
   let quads;
@@ -302,6 +302,15 @@ export async function getLinkedDataNQuads(
 }
 
 async function getData(uri: string, formats: string[]) {
+  // Retrieve proxy_url from the window object
+  const proxy_url = (window as any).proxy_url;
+
+  console.log("Proxy URL:", proxy_url);
+
+  if (proxy_url) {
+    uri = `${proxy_url}?url=${encodeURIComponent(uri)}`;
+  }
+
   for (const format of formats) {
     try {
       //make uri https if http and log this
@@ -310,6 +319,16 @@ async function getData(uri: string, formats: string[]) {
       const contentType = response.headers.get("Content-Type");
 
       if (response.ok && contentType?.includes(format)) {
+        if (contentType.includes("text/html")) {
+          const signpostedData = await getSignpostedData(uri);
+          if (signpostedData) {
+            return {
+              format: signpostedData.format,
+              response: new Response(signpostedData.content),
+            };
+          }
+        }
+
         return { format, response };
       }
     } catch (error) {
@@ -335,6 +354,42 @@ async function getData(uri: string, formats: string[]) {
     }
   }
   throw new Error("No acceptable format found");
+}
+
+//
+export async function getSignpostedData(
+  url: string
+): Promise<{ format: string; content: string } | null> {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch ${url}`);
+    }
+
+    const html = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+
+    const scriptTags = doc.querySelectorAll(
+      'script[rel="describedby"], script[type="application/ld+json"]'
+    );
+    for (const script of scriptTags) {
+      if (script.getAttribute("rel") === "describedby") {
+        const format = script.getAttribute("type") || "text/html";
+        const content = script.textContent || "";
+        return { format, content };
+      } else if (script.getAttribute("type") === "application/ld+json") {
+        const format = "application/ld+json";
+        const content = script.textContent || "";
+        return { format, content };
+      }
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Error fetching signposted data:", error);
+    return null;
+  }
 }
 
 export function storeSize(store: N3.Store) {
