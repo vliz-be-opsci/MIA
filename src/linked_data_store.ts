@@ -6,6 +6,7 @@ import { Store } from "n3";
 import { QueryEngine as QueryEngineTraversal } from "@comunica/query-sparql-link-traversal";
 import { QueryEngine } from "@comunica/query-sparql";
 import { BindingsStream, Bindings } from "@comunica/types";
+import jsonld from 'jsonld';
 
 const engine = new QueryEngine();
 const linkengine = new QueryEngineTraversal();
@@ -272,76 +273,150 @@ export async function getLinkedDataNQuads(
   const return_formats = [
     "text/turtle",
     "application/ld+json",
+    "text/html",
+    /*
     "application/rdf+xml",
     "application/n-triples",
     "application/n-quads",
     "text/n3",
     "text/rdf+n3",
-    "text/html",
+    */
+
   ];
 
-  const data = await getData(uri, return_formats);
-  let text = await data.response.text();
-  console.log(text);
+  let filteredFormats = return_formats;
 
-  const parser = new N3.Parser({ format: data.format });
-  let quads;
+
   try {
-    quads = parser.parse(text);
+    // First, make a HEAD request to get available formats
+    const headResponse = await fetch(uri, { method: "HEAD" });
+    const availableFormats = headResponse.headers.get("Accept-Patch")?.split(",") || [];
+    console.log("Available formats:", availableFormats);
+
+    // Filter return_formats based on available formats
+    filteredFormats = return_formats.filter(format => availableFormats.includes(format));
+    console.log("Filtered formats:", filteredFormats);
   } catch (error) {
-    console.log("parsing error", error);
-    throw error;
+    console.log("Error fetching HEAD response:", error);
+  }
+
+  try {
+    // If there is a proxy, also try the proxy
+    const proxy_url = (window as any).proxy_url;
+    if (proxy_url) {
+      const proxiedUri = `${proxy_url}?url=${uri}`;
+      const headResponse = await fetch(proxiedUri, { method: "HEAD" });
+      console.log("HEAD response proxy:", headResponse);
+      const availableFormats = headResponse.headers.get("Accept-Patch")?.split(",") || [];
+      console.log("Available formats proxy:", availableFormats);
+      filteredFormats = return_formats.filter(format => availableFormats.includes(format));
+      console.log("Filtered formats proxy:", filteredFormats);
+    }
+  } catch (error) {
+    console.log("Error fetching HEAD response via proxy:", error);
+  }
+
+  const to_get = filteredFormats.length > 0 ? filteredFormats : return_formats;
+  console.log("To get:", to_get);
+
+  const data = await getData(uri, to_get);
+  let text = await data.response.text();
+  console.warn(text);
+  console.warn(data.format);
+
+  if (data.format.includes("text/html")) {
+    const signpostedData = await getSignpostedDataFromHtml(text);
+    if (signpostedData) {
+      text = signpostedData.content;
+      data.format = signpostedData.format;
+    }
+  }
+
+  console.info("data format: ", data.format);
+  console.info("data text: ", text);
+
+  let quads;
+  if (data.format.includes("application/ld+json")) {
+    try {
+      // Parse JSON-LD
+      const jsonldDoc = JSON.parse(text);
+      // get the  @context from the jsonldDoc if it exists 
+      // and gets the context from the uri
+      // then replace the context in the jsonldDoc
+      if (jsonldDoc["@context"]) {
+        const context = await getJSONLDContext(jsonldDoc["@context"]);
+        jsonldDoc["@context"] = context;
+      }
+      console.warn(jsonldDoc);
+      const nquads = await jsonld.toRDF(jsonldDoc, { format: 'application/n-quads' });
+      const parser = new N3.Parser({ format: 'N-Quads' });
+      quads = parser.parse(nquads.toString());
+    } catch (error) {
+      console.error("Error parsing JSON-LD:", error);
+      throw error;
+    }
+  } else {
+    // Parse other RDF formats
+    const parser = new N3.Parser({ format: data.format });
+    try {
+      quads = parser.parse(text);
+    } catch (error) {
+      console.log("parsing error", error);
+      throw error;
+    }
   }
 
   for (const quad of quads) {
     store.addQuad(quad);
   }
 
-  //console.log(store);
   return store;
 }
 
+// async function here to get data from context file
+async function getJSONLDContext(uri: string) {
+  //ask proxy if there is one
+  const proxy_url = (window as any).proxy_url;
+  if (proxy_url) {
+    uri = `${proxy_url}?url=${uri}`;
+  }
+  try {
+    const response = await fetch(uri, { headers: { Accept: "application/json" } });
+    const contentType = response.headers.get("Content-Type");
+    console.warn("Context content type:", contentType);
+    console.warn("Context response:", await response.text());
+    if (response.ok && contentType?.includes("application/json")) {
+      const text = await response.text();
+      return JSON.parse(text);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 async function getData(uri: string, formats: string[]) {
-  // Retrieve proxy_url from the window object
   const proxy_url = (window as any).proxy_url;
 
   console.log("Proxy URL:", proxy_url);
 
-  if (proxy_url) {
-    uri = `${proxy_url}?url=${encodeURIComponent(uri)}`;
-  }
-
   for (const format of formats) {
     try {
-      //make uri https if http and log this
-      //this is to prevent mixed content errors
       const response = await fetch(uri, { headers: { Accept: format } });
       const contentType = response.headers.get("Content-Type");
 
       if (response.ok && contentType?.includes(format)) {
-        if (contentType.includes("text/html")) {
-          const signpostedData = await getSignpostedData(uri);
-          if (signpostedData) {
-            return {
-              format: signpostedData.format,
-              response: new Response(signpostedData.content),
-            };
-          }
-        }
-
         return { format, response };
       }
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  if (proxy_url) {
+    const proxiedUri = `${proxy_url}?url=${uri}`;
+    for (const format of formats) {
       try {
-        //make uri https if http and log this
-        //this is to prevent mixed content errors
-
-        if (uri.startsWith("http:")) {
-          uri = uri.replace("http://", "https://");
-        }
-
-        const response = await fetch(uri, { headers: { Accept: format } });
+        const response = await fetch(proxiedUri, { headers: { Accept: format } });
         const contentType = response.headers.get("Content-Type");
 
         if (response.ok && contentType?.includes(format)) {
@@ -349,24 +424,17 @@ async function getData(uri: string, formats: string[]) {
         }
       } catch (error) {
         console.log(error);
-        throw error;
       }
     }
   }
+
   throw new Error("No acceptable format found");
 }
 
-//
-export async function getSignpostedData(
-  url: string
+export async function getSignpostedDataFromHtml(
+  html: string
 ): Promise<{ format: string; content: string } | null> {
   try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch ${url}`);
-    }
-
-    const html = await response.text();
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, "text/html");
 
@@ -387,7 +455,7 @@ export async function getSignpostedData(
 
     return null;
   } catch (error) {
-    console.error("Error fetching signposted data:", error);
+    console.error("Error parsing signposted data:", error);
     return null;
   }
 }
