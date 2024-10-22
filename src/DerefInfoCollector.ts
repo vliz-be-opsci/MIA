@@ -48,6 +48,29 @@ export default class DerefInfoCollector {
     const config_type_info = get_config_for_rdf_type(types, this.derefconfig);
     // console.log(config_type_info);
     if (config_type_info === null) {
+
+      console.info("No config found for: ", url);
+
+      // get all properties where the subject is the url
+      const query = `
+            SELECT ?p ?o WHERE {
+                <${url}> ?p ?o .
+            }
+        `;
+      let result = await comunicaQuery(query, this.triplestore);
+      const bindings = await result.toArray();
+      console.info("bindings: ", bindings);
+      let info_keys: any = {};
+      bindings.forEach((binding: Bindings) => {
+        let p = (binding.get("p") as Term).value;
+        let o = (binding.get("o") as Term).value;
+        info_keys[p] = o;
+      });
+      const template_name = "default";
+      const to_cache: any = {};
+      to_cache[template_name] = info_keys;
+      this.cashedInfo[url] = to_cache;
+      console.info("cashed info: ", this.cashedInfo);
       return;
     }
     const ppaths = this.ppath_for_type(config_type_info);
