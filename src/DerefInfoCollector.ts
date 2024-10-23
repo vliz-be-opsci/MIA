@@ -44,11 +44,10 @@ export default class DerefInfoCollector {
     this.triplestore = this._combine_triplestores(this.triplestore, emptystore);
     const types = await this.get_type_uri(url);
     // console.info("url: ", url);
-    // console.info("types: ", types);
+    console.info("types: ", types);
     const config_type_info = get_config_for_rdf_type(types, this.derefconfig);
     // console.log(config_type_info);
     if (config_type_info === null) {
-
       console.info("No config found for: ", url);
 
       // get all properties where the subject is the url
@@ -155,6 +154,24 @@ export default class DerefInfoCollector {
       // reverse the array
       // this is because of the way comunica works
       // first triples found are the last ones
+      types = types.reverse();
+    }
+
+    // if types length is still 0 then try with blank node
+    if (types.length === 0) {
+      // Try query with schema:identifier
+      const query = `
+                SELECT ?type WHERE {
+                    ?blankNode <http://schema.org/identifier> <${url}> .
+                    ?blankNode <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?type .
+                }
+            `;
+      let result = await comunicaQuery(query, this.triplestore);
+      const bindings = await result.toArray();
+      bindings.forEach((binding: Bindings) => {
+        let type = (binding.get("type") as Term).value;
+        types.push(type);
+      });
       types = types.reverse();
     }
 

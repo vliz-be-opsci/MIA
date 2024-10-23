@@ -15,14 +15,24 @@ document.addEventListener("DOMContentLoaded", function () {
   const deref_config_path = script_tag.getAttribute("data-deref-config");
   const self_reference = script_tag.getAttribute("data-self-reference");
   const extra_properties = script_tag.getAttribute("data-extra-properties");
+  const default_template = script_tag.getAttribute("data-default-template");
   let proxy_url = null;
+  let default_template_url = null;
   if (script_tag.hasAttribute("data-proxy")) {
     proxy_url = script_tag.getAttribute("data-proxy");
   }
   console.log("proxy_url", proxy_url);
 
+  if (default_template !== null) {
+    default_template_url = default_template;
+  }
+
   // Set proxy_url in the window object
   (window as any).proxy_url = proxy_url;
+
+  // Set default template url in the window object
+  (window as any).default_template_url = default_template_url;
+  console.log("default_template_url", default_template_url);
 
   // check the contents of the extra-properties and see if there is a nochange / nodecorator / noupdate value in them
   // for each found add the corresponding property to the body

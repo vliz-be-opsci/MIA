@@ -1,0 +1,41 @@
+{
+    "PREFIXES": [
+        {
+            "prefix": "schema",
+            "uri": "https://schema.org/"
+        },
+        {
+            "prefix": "org",
+            "uri": "http://www.w3.org/ns/org#"
+        },
+        {
+            "prefix": "skos",
+            "uri": "http://www.w3.org/2004/02/skos/core#"
+        }
+    ],
+    "MODAL": {
+        "title": [
+            [
+                "schema:name",
+                "schema:givenName"
+            ],
+            [
+                "dcterms:title"
+            ]
+        ],
+        "description": [
+            [
+                "schema:description"
+            ],
+            [
+                "dcterms:license",
+                "dc:bibliographicCitation"
+            ]
+        ],
+        "affordances": [
+            [
+                "schema:isAccessibleForFree"
+            ]
+        ]
+    }
+}
