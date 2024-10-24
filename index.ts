@@ -30,10 +30,6 @@ document.addEventListener("DOMContentLoaded", function () {
   // Set proxy_url in the window object
   (window as any).proxy_url = proxy_url;
 
-  // Set default template url in the window object
-  (window as any).default_template_url = default_template_url;
-  console.log("default_template_url", default_template_url);
-
   // check the contents of the extra-properties and see if there is a nochange / nodecorator / noupdate value in them
   // for each found add the corresponding property to the body
   // for instance if nochange is found then add the mia-extra-properties="nochange" to the body
@@ -44,6 +40,13 @@ document.addEventListener("DOMContentLoaded", function () {
   if (self_reference !== null) {
     new SelfEntity(self_reference);
   }
+
+  fetchderefconfig(default_template_url).then((default_template_config) => {
+    console.log(default_template_config);
+    // Set default template config in the window object
+    (window as any).default_template_config = default_template_config;
+  });
+
 
   //fetch the deref config file then initialise the Affordance Manager
   fetchderefconfig(deref_config_path).then((derefconfig) => {

@@ -3,8 +3,9 @@
 
 <head>
         <title>Web Widget</title>
-        <script src="../dist/mia.bundle.js" id="mia_script" data-deref-config="./test/deref_config.json"
-                data-proxy="https://docker-dev.vliz.be:5301/" data-self-reference data-extra-properties="nodecorator"
+        <script src="../dist/mia.bundle.js" id="mia_script" data-deref-config="./deref_config.json"
+                data-proxy="https://docker-dev.vliz.be:5301/" data-extra-properties="nodecorator"
+                data-default-template="./default_template.json"
                 defer>
                 </script>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -34,9 +35,14 @@
                 <h1>Problem childs</h1>
                 <p>These are the links that have issues related to them</p>
                 <ul>
+                        
                         <li><a href="https://zenodo.org/records/13934886">zenodo example</a></li>
                         <li><a href="https://doi.org/10.5281/zenodo.13934886">DOI reference</a></li>
                         <li><a href="https://doi.org/10.5281/zenodo.7074291">DOI reference</a></li>
+                        <!--
+                        <li><a href="https://www.marineregions.org/mrgid/7130">test mr region</a></li>
+                        <li><a href="https://marineregions.org/mrgid/3293"> does work</a></li>
+                        -->
                 </ul>
 
                 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

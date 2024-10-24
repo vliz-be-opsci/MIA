@@ -33,21 +33,20 @@ export const traverseURI = async (
   }
   for (const url of urls) {
     for (let index = 0; index < trajectory_path.length; index++) {
-      //console.log(part);
       //console log store length
-      //console.log(storeSize(store));
+      console.log(storeSize(store));
       //change the current trajectory path to the slice of the path
       let current_trajectory = trajectory_path.slice(0, index + 1).join("/");
       let query = `SELECT ?value WHERE {<${url}> ${current_trajectory} ?value . }`;
-      //console.log(query);
+      console.log(query);
       try {
         const results = await linkengine.queryBindings(query, {
           sources: [N3store],
         });
 
-        //console.log(results);
 
         const bindings = await results.toArray();
+        console.log(bindings);
         if (bindings.length === 0) {
           // console.log("no value found for query: " + query);
           //continue to next in forloop

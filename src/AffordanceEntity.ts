@@ -14,6 +14,7 @@ import {
   generateProjectCardTemplate,
   generateCollectionCardTemplate,
 } from "./Templates";
+import { generateDefaultCardTemplate } from "./DefaultTemplateGenerator";
 import "./css/mia.css";
 
 // make maiproperties an interface
@@ -335,12 +336,12 @@ export default class AffordanceEntity {
       aphia_worms: generateAphiaCardTemplate,
       project: generateProjectCardTemplate,
       collection: generateCollectionCardTemplate,
-      default: generateInfoCardTemplate,
+      default: generateDefaultCardTemplate,
     };
     let toreturn = mapping[name];
     if (toreturn === undefined) {
       // console.log("template not found");
-      return generateInfoCardTemplate;
+      return generateDefaultCardTemplate;
     }
     return mapping[name];
   }

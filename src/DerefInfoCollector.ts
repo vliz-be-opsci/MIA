@@ -9,6 +9,7 @@ import { DerefConfig, DerefConfigType } from "./AffordanceManager";
 import { Bindings, Variable } from "@rdfjs/types";
 //import { QueryStringContext, QuerySourceUnidentified, BindingsStream } from '@comunica/types';
 import { Store, Term, Quad } from "n3";
+import { defaultTemplateInfoCollector } from "./DefaultTemplateGenerator";
 
 export default class DerefInfoCollector {
   cashedInfo: any;
@@ -45,11 +46,14 @@ export default class DerefInfoCollector {
     const types = await this.get_type_uri(url);
     // console.info("url: ", url);
     console.info("types: ", types);
+    console.info("derefconfig: ", this.derefconfig);
     const config_type_info = get_config_for_rdf_type(types, this.derefconfig);
     // console.log(config_type_info);
     if (config_type_info === null) {
       console.info("No config found for: ", url);
-
+      let info_keys: any = {};
+      info_keys = defaultTemplateInfoCollector(emptystore);
+      info_keys = {};
       // get all properties where the subject is the url
       const query = `
             SELECT ?p ?o WHERE {
@@ -58,8 +62,7 @@ export default class DerefInfoCollector {
         `;
       let result = await comunicaQuery(query, this.triplestore);
       const bindings = await result.toArray();
-      console.info("bindings: ", bindings);
-      let info_keys: any = {};
+      //console.info("bindings: ", bindings);
       bindings.forEach((binding: Bindings) => {
         let p = (binding.get("p") as Term).value;
         let o = (binding.get("o") as Term).value;
@@ -69,10 +72,11 @@ export default class DerefInfoCollector {
       const to_cache: any = {};
       to_cache[template_name] = info_keys;
       this.cashedInfo[url] = to_cache;
-      console.info("cashed info: ", this.cashedInfo);
+      //console.info("cashed info: ", this.cashedInfo);
       return;
     }
     const ppaths = this.ppath_for_type(config_type_info);
+    console.info("ppaths: ", ppaths);
     // first deref all the paths so we have all the triples needed
     for (const ppath in ppaths) {
       const value_path = await traverseURI(
@@ -109,7 +113,7 @@ export default class DerefInfoCollector {
     //add empty store to the triplestore
     this.triplestore = this._combine_triplestores(this.triplestore, emptystore);
     this.cashedInfo[url] = to_cache;
-    console.info("cashed info: ", this.cashedInfo);
+    //console.info("cashed info: ", this.cashedInfo);
   }
 
   async get_type_uri(url: any): Promise<string[]> {
@@ -217,6 +221,8 @@ function get_config_for_rdf_type(
 ): DerefConfigType | null {
   for (const rtype of rdf_type) {
     for (const key in derefconfig) {
+      //console.log("key: ", key);
+      //console.log("rtype: ", rtype);
       const config = derefconfig[key];
       if (config.RDF_TYPE === rtype) {
         return config;
