@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+        <title>MIA default config builder</title>
+        <script src="https://open-science.vliz.be/MIA/latest/mia.bundle.js" id="mia_script"
+                data-deref-config="https://open-science.vliz.be/MIA/deref_config.json" 
+                data-default-template="https://open-science.vliz.be/MIA/default_template_config.json"
+                ></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+                integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+                crossorigin="anonymous">
+</head>
+
+<body>
+        <!-- Navigation Bar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+                <a class="navbar-brand" href="#">MIA Default config builder</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ml-auto">
+                                <li class="nav-item">
+                                        <a class="nav-link" href="https://open-science.vliz.be/MIA/"
+                                                target="_blank">Documentation</a>
+                                </li>
+                                <li class="nav-item">
+                                        <a class="nav-link" href="https://open-science.vliz.be/">Part of
+                                                vliz-be-opsci</a>
+                                </li>
+                        </ul>
+                </div>
+        </nav>
+
+        <div class="container-fluid">
+                <div class="row">
+                        <!-- Main Content -->
+                        <main role="main" class="col-md-12 ml-sm-auto col-lg-12 px-4">
+                                <div id="container">
+                                        <div class="row mt-5">
+                                            <div class="col-md-12">
+                                                    <div class="form-check mt-3">
+                                                        <input class="form-check-input" type="checkbox" id="use-proxy">
+                                                        <label class="form-check-label" for="use-proxy">
+                                                            Use Proxy
+                                                        </label>
+                                                        <script>
+                                                            document.getElementById('use-proxy').addEventListener('change', function() {
+                                                                const proxyUrlContainer = document.getElementById('proxy-url-container');
+                                                                if (this.checked) {
+                                                                    proxyUrlContainer.style.display = 'block';
+                                                                } else {
+                                                                    proxyUrlContainer.style.display = 'none';
+                                                                }
+                                                            });
+                                                        </script>
+                                                    </div>
+                                                    <div id="proxy-url-container" class="mt-3" style="display: none;">
+                                                        <div class="row">
+                                                            <div class="col-md-2">
+                                                                <button id="submit-proxy-url" class="btn btn-primary w-100">Update Proxy URL</button>
+                                                            </div>
+                                                            <div class="col-md-10">
+                                                                <input type="url" class="form-control mr-2" id="proxy-url" placeholder="Enter proxy URL">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div id="url-container" class="mt-3">
+                                                        <div class="row">
+                                                            <div class="col-md-2">
+                                                                <button id="submit-url" class="btn btn-primary w-100">Update URL</button>
+                                                            </div>
+                                                            <div class="col-md-10">
+                                                                <input type="url" class="form-control mr-2" id="url" placeholder="Enter URL to check">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                            </div> 
+                                        </div>
+                                        <div class="row mt-5 mb-5">
+                                            <div class="col-md-4 ml-sm-auto col-lg-4 px-4" >
+                                                <div class="row">
+                                                    <div class="col-md-12 p-0" style="min-height: 300px; max-height: 300px; overflow-y: scroll;" id="console_logs">
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-3">
+                                                    <div class="col-md-12" style="border: 1px solid black; min-height: 360px; max-height: 360px; overflow-y: scroll;">
+                                                        found triples here in table spo format
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8 ml-sm-auto col-lg-8 px-4" style="border: 1px solid black;">
+                                                <div class="row">
+                                                    <div class="col-md-6" style="border: 1px solid black;">
+                                                        export functionality here
+                                                    </div>
+                                                    <div class="col-md-6" style="border: 1px solid black;" id="url_show">
+                                                        <a href="https://marineinfo.org/id/person/38476"> marineinfo test url</a>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-3">
+                                                    <div class="col-md-12" style="border: 1px solid black;">
+                                                        <div class="row">
+                                                            <div class="col-md-3" style="border: 1px solid black;">
+                                                                config UI for keys in custom modal
+                                                            </div>
+                                                            <div class="col-md-9" style="border: 1px solid black;">
+                                                                searchbar and UI for editing and shuffling prop values here
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+                        </main>
+
+
+                </div>
+        </div>
+        <!-- Footer -->
+        <footer class="footer mt-auto py-3 bg-dark text-white fixed-bottom">
+            <div class="container">
+            <span>© 2024 Marine Info Affordances. All rights reserved.</span>
+            <span class="float-right">
+                <a class="text-white" href="https://open-science.vliz.be/" target="_blank">Part of vliz-be-opsci</a> |
+                <a class="text-white" href="https://github.com/vliz-be-opsci/MIA" target="_blank">GitHub</a>
+            </span>
+            </span>
+            </div>
+        </footer>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-html.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+                integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+                crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+                integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+                crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+                integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+                crossorigin="anonymous"></script>
+                <script>
+                    // Custom event system to capture console logs
+                    (function() {
+                        const originalLog = console.log;
+                        const originalInfo = console.info;
+                        const originalWarn = console.warn;
+                        const originalError = console.error;
+        
+                        function escapeHtml(unsafe) {
+                            return unsafe
+                                .replace(/&/g, "&amp;")
+                                .replace(/</g, "&lt;")
+                                .replace(/>/g, "&gt;")
+                                .replace(/"/g, "&quot;")
+                                .replace(/'/g, "&#039;");
+                        }
+        
+                        function truncateAndEscape(message) {
+                            if (message.length > 100) {
+                                message = message.substring(0, 100) + '...';
+                            }
+                            return escapeHtml(message);
+                        }
+        
+                        console.log = function(...args) {
+                            originalLog.apply(console, args);
+                            document.dispatchEvent(new CustomEvent('logEvent', { detail: truncateAndEscape(args.join(' ')) }));
+                        };
+        
+                        console.info = function(...args) {
+                            originalInfo.apply(console, args);
+                            document.dispatchEvent(new CustomEvent('infoEvent', { detail: truncateAndEscape(args.join(' ')) }));
+                        };
+        
+                        console.warn = function(...args) {
+                            originalWarn.apply(console, args);
+                            document.dispatchEvent(new CustomEvent('warnEvent', { detail: truncateAndEscape(args.join(' ')) }));
+                        };
+        
+                        console.error = function(...args) {
+                            originalError.apply(console, args);
+                            document.dispatchEvent(new CustomEvent('errorEvent', { detail: truncateAndEscape(args.join(' ')) }));
+                        };
+                    })();
+        
+                    function appendConsoleTextElement(event, className, bgColor) {
+                        const consoleLogsElement = document.getElementById('console_logs');
+                        const newConsoleTextElement = document.createElement('div');
+                        newConsoleTextElement.className = className;
+                        newConsoleTextElement.setAttribute('mia-extra-properties', 'nochange');
+                        newConsoleTextElement.style.backgroundColor = bgColor;
+                        newConsoleTextElement.style.color = 'white';
+                        newConsoleTextElement.style.padding = '10px';
+                        newConsoleTextElement.style.borderRadius = '5px';
+                        newConsoleTextElement.style.margin = '1px 0';
+                        newConsoleTextElement.innerHTML = event.detail;
+                        consoleLogsElement.insertBefore(newConsoleTextElement, consoleLogsElement.firstChild);
+                    }
+        
+                    document.addEventListener('logEvent', function(event) {
+                        appendConsoleTextElement(event, 'white', 'rgba(0, 123, 255, 0.8)');
+                    });
+        
+                    document.addEventListener('infoEvent', function(event) {
+                        appendConsoleTextElement(event, 'white', 'rgba(23, 162, 184, 0.8)');
+                    });
+        
+                    document.addEventListener('warnEvent', function(event) {
+                        appendConsoleTextElement(event, 'black', 'rgba(255, 193, 7, 0.8)');
+                    });
+        
+                    document.addEventListener('errorEvent', function(event) {
+                        appendConsoleTextElement(event, 'white', 'rgba(220, 53, 69, 0.8)');
+                    });
+            
+                    document.getElementById('submit-url').addEventListener('click', function() {
+                        // Clear the console logs
+                        const consoleLogsElement = document.getElementById('console_logs');
+                        // remove all children
+                        while (consoleLogsElement.firstChild) {
+                            consoleLogsElement.removeChild(consoleLogsElement.firstChild);
+                        }
+
+                        const url = document.getElementById('url').value;
+                        window.url_to_check = url;
+                        let url_html = '<a href="' + url + '" target="_blank">' + url + '</a>';
+            
+                        const urlShowElement = document.getElementById('url_show');
+                        const parentElement = urlShowElement.parentNode;
+            
+                        // Remove the existing element
+                        parentElement.removeChild(urlShowElement);
+            
+                        // Create a new element
+                        const newUrlShowElement = document.createElement('div');
+                        newUrlShowElement.className = 'col-md-12 mb-1';
+                        newUrlShowElement.id = 'url_show';
+                        newUrlShowElement.innerHTML = url_html;
+            
+                        // Insert the new element into the DOM as first child
+                        parentElement.insertBefore(newUrlShowElement, parentElement.firstChild);
+
+                        
+                    });
+                </script>
+</body>
+
+</html>
