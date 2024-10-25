@@ -1,131 +1,134 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-        <title>MIA default config builder</title>
-        <script src="../dist/mia.bundle.js" id="mia_script"
-                data-deref-config="./deref_config.json" 
-                data-default-template="./default_templat.json"
-                ></script>
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
-                integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-                crossorigin="anonymous">
-        <script src="https://unpkg.com/n3/browser/n3.min.js"></script>
+    <title>MIA default config builder</title>
+    <script src="../dist/mia.bundle.js" id="mia_script" data-deref-config="./deref_config.json"
+        data-default-template="./default_template.json"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://unpkg.com/n3/browser/n3.min.js"></script>
 </head>
+
 <body>
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="#">MIA Default config builder</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ml-auto">
-                            <li class="nav-item">
-                                    <a class="nav-link" href="https://open-science.vliz.be/MIA/"
-                                            target="_blank">Documentation</a>
-                            </li>
-                            <li class="nav-item">
-                                    <a class="nav-link" href="https://open-science.vliz.be/">Part of
-                                            vliz-be-opsci</a>
-                            </li>
-                    </ul>
-            </div>
+        <a class="navbar-brand" href="#">MIA Default config builder</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="https://open-science.vliz.be/MIA/" target="_blank">Documentation</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://open-science.vliz.be/">Part of
+                        vliz-be-opsci</a>
+                </li>
+            </ul>
+        </div>
     </nav>
     <div class="container-fluid">
-            <div class="row">
-                    <!-- Main Content -->
-                    <main role="main" class="col-md-12 ml-sm-auto col-lg-12 px-4">
-                            <div id="container">
-                                    <div class="row mt-5">
-                                        <div class="col-md-12">
-                                                <div class="form-check mt-3">
-                                                    <input class="form-check-input" type="checkbox" id="use-proxy">
-                                                    <label class="form-check-label" for="use-proxy">
-                                                        Use Proxy
-                                                    </label>
-                                                </div>
-                                                <div id="proxy-url-container" class="mt-3" style="display: none;">
-                                                    <div class="row">
-                                                        <div class="col-md-2">
-                                                            <button id="submit-proxy-url" class="btn btn-primary w-100">Update Proxy URL</button>
-                                                        </div>
-                                                        <div class="col-md-10">
-                                                            <input type="url" class="form-control mr-2" id="proxy-url" placeholder="Enter proxy URL">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div id="url-container" class="mt-3">
-                                                    <div class="row">
-                                                        <div class="col-md-2">
-                                                            <button id="submit-url" class="btn btn-primary w-100">Update URL</button>
-                                                        </div>
-                                                        <div class="col-md-10">
-                                                            <input type="url" class="form-control mr-2" id="url" placeholder="Enter URL to check">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                
-                                        </div> 
-                                    </div>
-                                    <div class="row mt-5 mb-5">
-                                        <div class="col-md-5 ml-sm-auto col-lg-5 px-4" >
-                                            <div class="row">
-                                                <div class="col-md-12 p-0" style="min-height: 300px; max-height: 300px; overflow-y: scroll;" id="console_logs">
-                                                </div>
-                                            </div>
-                                            <div class="row mt-3" style=" min-height: 360px; max-height: 360px; overflow-y: scroll;">
-                                                <div class="col-md-12" style="border: 1px solid black;" id="triples_table">
-                                                    found triples here in table spo format
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-7 ml-sm-auto col-lg-7 px-4" style="border: 1px solid black;">
-                                            <div class="row">
-                                                <div class="col-md-6" style="border: 1px solid black;">
-                                                    export functionality here
-                                                </div>
-                                                <div class="col-md-6" style="border: 1px solid black;" id="url_show">
-                                                    <a href="https://marineinfo.org/id/person/38476"> marineinfo test url</a>
-                                                </div>
-                                            </div>
-                                            <div class="row mt-3">
-                                                <div class="col-md-12" style="border: 1px solid black;">
-                                                    <div class="row">
-                                                        <div class="col-md-3" style="border: 1px solid black;">
-                                                            config UI for keys in custom modal
-                                                        </div>
-                                                        <div class="col-md-9" style="border: 1px solid black;">
-                                                            searchbar and UI for editing and shuffling prop values here
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+        <div class="row">
+            <!-- Main Content -->
+            <main role="main" class="col-md-12 ml-sm-auto col-lg-12 px-4">
+                <div id="container">
+                    <div class="row mt-5">
+                        <div class="col-md-12">
+                            <div class="form-check mt-3">
+                                <input class="form-check-input" type="checkbox" id="use-proxy">
+                                <label class="form-check-label" for="use-proxy">
+                                    Use Proxy
+                                </label>
                             </div>
-                    </main>
-
-
-            </div>
+                            <div id="proxy-url-container" class="mt-3" style="display: none;">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <button id="submit-proxy-url" class="btn btn-primary w-100">Update Proxy
+                                            URL</button>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <input type="url" class="form-control mr-2" id="proxy-url"
+                                            placeholder="Enter proxy URL">
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="url-container" class="mt-3">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <button id="submit-url" class="btn btn-primary w-100">Update URL</button>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <input type="url" class="form-control mr-2" id="url"
+                                            placeholder="Enter URL to check">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-5 mb-5">
+                        <div class="col-md-5 ml-sm-auto col-lg-5 px-4">
+                            <div class="row">
+                                <div class="col-md-12 p-0"
+                                    style="min-height: 300px; max-height: 300px; overflow-y: scroll;" id="console_logs">
+                                </div>
+                            </div>
+                            <div class="row mt-3" style=" min-height: 360px; max-height: 360px; overflow-y: scroll;">
+                                <div class="col-md-12" style="border: 1px solid black;" id="triples_table">
+                                    found triples here in table spo format
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7 ml-sm-auto col-lg-7 px-4" style="border: 1px solid black;">
+                            <div class="row">
+                                <div class="col-md-6" style="border: 1px solid black;">
+                                    export functionality here
+                                </div>
+                                <div class="col-md-6" style="border: 1px solid black;" id="url_show">
+                                    <a href="https://marineinfo.org/id/person/38476"> marineinfo test url</a>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-12" style="border: 1px solid black;">
+                                    <div class="row">
+                                        <div class="col-md-3" style="border: 1px solid black;">
+                                            <div id="keysmodal">
+                                                config UI for keys in custom modal
+                                            </div>
+                                        </div>
+                                        <div class="col-md-9" style="border: 1px solid black;">
+                                            <div id="uiconfigprop">
+                                                searchbar and UI for editing and shuffling prop values here
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
     </div>
     <!-- Footer -->
     <footer class="footer mt-auto py-3 bg-dark text-white fixed-bottom">
         <div class="container">
-        <span>© 2024 Marine Info Affordances. All rights reserved.</span>
-        <span class="float-right">
-            <a class="text-white" href="https://open-science.vliz.be/" target="_blank">Part of vliz-be-opsci</a> |
-            <a class="text-white" href="https://github.com/vliz-be-opsci/MIA" target="_blank">GitHub</a>
-        </span>
-        </span>
+            <span>© 2024 Marine Info Affordances. All rights reserved.</span>
+            <span class="float-right">
+                <a class="text-white" href="https://open-science.vliz.be/" target="_blank">Part of vliz-be-opsci</a> |
+                <a class="text-white" href="https://github.com/vliz-be-opsci/MIA" target="_blank">GitHub</a>
+            </span>
+            </span>
         </div>
     </footer>
     <script>
-        document.getElementById('use-proxy').addEventListener('change', function() {
+        document.getElementById('use-proxy').addEventListener('change', function () {
             const proxyUrlContainer = document.getElementById('proxy-url-container');
             if (this.checked) {
                 proxyUrlContainer.style.display = 'block';
@@ -133,26 +136,131 @@
                 proxyUrlContainer.style.display = 'none';
             }
         });
-        document.getElementById('submit-proxy-url').addEventListener('click', function() {
+        document.getElementById('submit-proxy-url').addEventListener('click', function () {
             const proxyUrl = document.getElementById('proxy-url').value;
             window.proxy_url = proxyUrl;
             console.log('Proxy URL updated to:', proxyUrl);
         });
+
+        //on document load, check get the default template from the window object
+        //if if is none then wait 1 sec and try again
+        // if not none then make a button per key in the template.MODAL
+        document.addEventListener('DOMContentLoaded', function () {
+            let defaultTemplate = window.default_template_config;
+            if (defaultTemplate === undefined) {
+                console.warn('Default template not found, waiting 1 second');
+                setTimeout(function () {
+                    defaultTemplate = window.default_template_config;
+                    if (defaultTemplate === undefined) {
+                        console.error('Default template not found');
+                    } else {
+                        console.warn('Default template found:', defaultTemplate);
+                        createKeysModal(defaultTemplate);
+                    }
+                }, 1000);
+            } else {
+                console.warn('Default template found:', defaultTemplate);
+                createKeysModal(defaultTemplate);
+            }
+        });
+
+
+        function createKeysModal(defaultTemplate) {
+            const keysModalElement = document.getElementById('keysmodal');
+
+            console.debug('Default template:', defaultTemplate);
+
+            // make new html element to store buttons in
+            let keysModalHtml = document.createElement('div');
+            let keys_defaulttemplate_keys = Object.keys(defaultTemplate.MODAL);
+            for (let key of keys_defaulttemplate_keys) {
+                console.debug('Key:', key);
+                let keyButton = document.createElement('button');
+                keyButton.className = 'btn btn-primary w-100 p-2 mb-1';
+                keyButton.innerHTML = key;
+                keyButton.addEventListener('click', function () {
+                    const uiconfigpropElement = document.getElementById('uiconfigprop');
+                    // get the list of values from the key clicked in the default template
+                    let value_clicked = this.innerHTML;
+                    console.debug('Value clicked:', value_clicked);
+                    let values = defaultTemplate.MODAL[value_clicked];
+                    console.debug('Values:', values);
+                    // make new html element to store list of boxes in
+                    let uiconfigpropHtml = document.createElement('div');
+                    uiconfigpropHtml.id = 'uiconfigprop';
+                    for (let value of values) {
+                        let valueBox = document.createElement('div');
+                        // background white, padding 3 and margin 1 and border 1px solid black
+                        valueBox.className = 'p-3 m-1 border border-dark';
+                        valueBox.innerHTML = value;
+                        uiconfigpropHtml.appendChild(valueBox);
+                    }
+                    // get the parentnode of the uiconfigprop element
+                    const parentElementUiconfigprop = uiconfigpropElement.parentNode;
+                    // Remove the existing element
+                    parentElementUiconfigprop.removeChild(uiconfigpropElement);
+                    // Insert the new element into the DOM as first child
+                    parentElementUiconfigprop.insertBefore(uiconfigpropHtml, parentElementUiconfigprop.firstChild);
+                });
+                keysModalHtml.appendChild(keyButton);
+            }
+
+            // add another button that says add key with id addkey
+            let addKeyButton = document.createElement('button');
+            addKeyButton.className = 'btn btn-primary w-100 p-2 mb-1';
+            addKeyButton.innerHTML = 'Add Key';
+            addKeyButton.id = 'addkey';
+            addKeyButton.addEventListener('click', function () {
+                console.debug('Add Key button clicked');
+            });
+            keysModalHtml.appendChild(addKeyButton);
+
+            //get the parentnode of the keysmodal element
+            const parentElement = keysModalElement.parentNode;
+            // Remove the existing element
+            parentElement.removeChild(keysModalElement);
+            // Insert the new element into the DOM as first child
+            parentElement.insertBefore(keysModalHtml, parentElement.firstChild);
+
+            //get the html element of uiconfigprop
+            const uiconfigpropElement = document.getElementById('uiconfigprop');
+            //get the list of values from the first key in the default template
+            let values = defaultTemplate.MODAL[keys_defaulttemplate_keys[0]];
+            console.debug('Values:', values);
+            //make new html element to store list of boxes in 
+            let uiconfigpropHtml = document.createElement('div');
+            uiconfigpropHtml.id = 'uiconfigprop';
+            for (let value of values) {
+                let valueBox = document.createElement('div');
+                // background white, padding 3 and margin 1 and border 1px solid black
+                valueBox.className = 'p-3 m-1 border border-dark';
+                valueBox.innerHTML = value;
+                uiconfigpropHtml.appendChild(valueBox);
+            }
+            //get the parentnode of the uiconfigprop element
+            const parentElementUiconfigprop = uiconfigpropElement.parentNode;
+            // Remove the existing element
+            parentElementUiconfigprop.removeChild(uiconfigpropElement);
+            // Insert the new element into the DOM as first child
+            parentElementUiconfigprop.insertBefore(uiconfigpropHtml, parentElementUiconfigprop.firstChild);
+
+        }
+
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-html.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-            crossorigin="anonymous"></script>
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
-            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-            crossorigin="anonymous"></script>
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
-            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-            crossorigin="anonymous"></script>
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
     <script>
         // Custom event system to capture console logs
-        (function() {
+        (function () {
             const originalLog = console.log;
             const originalInfo = console.info;
             const originalWarn = console.warn;
@@ -174,22 +282,22 @@
                 return escapeHtml(message);
             }
 
-            console.log = function(...args) {
+            console.log = function (...args) {
                 originalLog.apply(console, args);
                 document.dispatchEvent(new CustomEvent('logEvent', { detail: truncateAndEscape(args.join(' ')) }));
             };
 
-            console.info = function(...args) {
+            console.info = function (...args) {
                 originalInfo.apply(console, args);
                 document.dispatchEvent(new CustomEvent('infoEvent', { detail: truncateAndEscape(args.join(' ')) }));
             };
 
-            console.warn = function(...args) {
+            console.warn = function (...args) {
                 originalWarn.apply(console, args);
                 document.dispatchEvent(new CustomEvent('warnEvent', { detail: truncateAndEscape(args.join(' ')) }));
             };
 
-            console.error = function(...args) {
+            console.error = function (...args) {
                 originalError.apply(console, args);
                 document.dispatchEvent(new CustomEvent('errorEvent', { detail: truncateAndEscape(args.join(' ')) }));
             };
@@ -214,19 +322,19 @@
         });
         */
 
-        document.addEventListener('infoEvent', function(event) {
+        document.addEventListener('infoEvent', function (event) {
             appendConsoleTextElement(event, 'white', 'rgba(23, 162, 184, 0.8)');
         });
 
-        document.addEventListener('warnEvent', function(event) {
+        document.addEventListener('warnEvent', function (event) {
             appendConsoleTextElement(event, 'black', 'rgba(255, 193, 7, 0.8)');
         });
 
-        document.addEventListener('errorEvent', function(event) {
+        document.addEventListener('errorEvent', function (event) {
             appendConsoleTextElement(event, 'white', 'rgba(220, 53, 69, 0.8)');
         });
 
-        document.getElementById('submit-url').addEventListener('click', function() {
+        document.getElementById('submit-url').addEventListener('click', function () {
             // Clear the console logs
             const consoleLogsElement = document.getElementById('console_logs');
             // remove all children
@@ -257,7 +365,7 @@
             // if the window.derefinfocollector has not changed in the last 5 seconds, stop the process
             let lastDerefInfoCollector = null;
             console.warn('Starting DerefInfoCollector interval');
-            let derefInfoCollectorInterval = setInterval(function() {
+            let derefInfoCollectorInterval = setInterval(function () {
                 if (window.derefinfocollector !== lastDerefInfoCollector) {
                     lastDerefInfoCollector = window.derefinfocollector;
                     console.warn('DerefInfoCollector:', window.derefinfocollector.triplestore);
@@ -276,7 +384,7 @@
         // take this object and turn it into a table
         // the table should have the following columns: subject, predicate, object
         // the table should be displayed in the div with id 'deref_info_table'
-        document.addEventListener('derefInfoCollectorEvent', function(event) {
+        document.addEventListener('derefInfoCollectorEvent', function (event) {
             const derefInfoCollector = event.detail;
             console.debug('DerefInfoCollector:', derefInfoCollector.triplestore);
             const derefInfoTableElement = document.getElementById('triples_table');
