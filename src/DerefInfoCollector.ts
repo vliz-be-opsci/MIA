@@ -52,22 +52,7 @@ export default class DerefInfoCollector {
     if (config_type_info === null) {
       console.info("No config found for: ", url);
       let info_keys: any = {};
-      info_keys = defaultTemplateInfoCollector(emptystore);
-      info_keys = {};
-      // get all properties where the subject is the url
-      const query = `
-            SELECT ?p ?o WHERE {
-                <${url}> ?p ?o .
-            }
-        `;
-      let result = await comunicaQuery(query, this.triplestore);
-      const bindings = await result.toArray();
-      //console.info("bindings: ", bindings);
-      bindings.forEach((binding: Bindings) => {
-        let p = (binding.get("p") as Term).value;
-        let o = (binding.get("o") as Term).value;
-        info_keys[p] = o;
-      });
+      info_keys = await defaultTemplateInfoCollector(emptystore, url);
       const template_name = "default";
       const to_cache: any = {};
       to_cache[template_name] = info_keys;

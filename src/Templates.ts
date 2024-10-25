@@ -931,7 +931,7 @@ function adaptcardwidthtocontent(html_element: HTMLElement) {
   //console.debug("width of the element", html_element.style.width);
 }
 
-function stringlengthshortener(
+export function stringlengthshortener(
   str: string,
   length: number,
   classes?: string

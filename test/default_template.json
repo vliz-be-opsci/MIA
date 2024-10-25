@@ -1,8 +1,12 @@
 {
     "PREFIXES": [
         {
-            "prefix": "schema",
+            "prefix": "schemaSafe",
             "uri": "https://schema.org/"
+        },
+        {
+            "prefix": "schema",
+            "uri": "http://schema.org/"
         },
         {
             "prefix": "org",
@@ -11,6 +15,14 @@
         {
             "prefix": "skos",
             "uri": "http://www.w3.org/2004/02/skos/core#"
+        },
+        {
+            "prefix": "dcterms",
+            "uri": "http://purl.org/dc/terms/"
+        },
+        {
+            "prefix": "dc",
+            "uri": "http://purl.org/dc/elements/1.1/"
         }
     ],
     "MODAL": {
@@ -25,7 +37,14 @@
         ],
         "description": [
             [
-                "schema:description"
+                "schema:description",
+                "schema:license",
+                "schema:datePublished"
+            ],
+            [
+                "schemaSafe:description",
+                "schemaSafe:license",
+                "schemaSafe:datePublished"
             ],
             [
                 "dcterms:license",
