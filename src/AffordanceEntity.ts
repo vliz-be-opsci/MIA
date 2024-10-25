@@ -184,6 +184,8 @@ export default class AffordanceEntity {
         Object.keys(this.derefinfocollector.cashedInfo[this.link]).length === 0
       ) {
         await this.derefinfocollector.collectInfo(this.link);
+        // expose the collected info to the window object for debugging
+        (window as any).derefinfocollector = this.derefinfocollector;
         this.collected_info.content =
           this.derefinfocollector.cashedInfo[this.link];
         return;
@@ -210,15 +212,21 @@ export default class AffordanceEntity {
     // console.debug("miaExtraPropertiesArray: ", this.miaproperites);
 
     //if the element href contains marineinfo or marineregions in it
-    //add class confluence_box to elemnt if not already there
+    //add class confluence_box to element if not already there
+
+    // if the element has a class named retrieveMIA then add it 
+
     if (
+      this.element.classList.contains("retrieveMIA") ||
       this.link.includes("marineinfo.org") ||
       this.link.includes("marineregions.org") ||
       this.link.includes("aphia.org") ||
       this.link.includes("vocab.nerc") ||
       this.link.includes("zenodo.org") ||
-      this.link.includes("doi.org")
+      this.link.includes("doi.org") ||
+      this.link.includes("orcid.org") 
     ) {
+      console.info("starting to update dom for uri: ", this.link);
       // check if any parent element has the mia-extra-properties attribute set to nochange
       // nochange can be set on any parent element to prevent the element from being changed
       // eg: <div mia-extra-properties="nochange"><a>text</a></div>
