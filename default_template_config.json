@@ -1,0 +1,60 @@
+{
+    "PREFIXES": [
+        {
+            "prefix": "schemaSafe",
+            "uri": "https://schema.org/"
+        },
+        {
+            "prefix": "schema",
+            "uri": "http://schema.org/"
+        },
+        {
+            "prefix": "org",
+            "uri": "http://www.w3.org/ns/org#"
+        },
+        {
+            "prefix": "skos",
+            "uri": "http://www.w3.org/2004/02/skos/core#"
+        },
+        {
+            "prefix": "dcterms",
+            "uri": "http://purl.org/dc/terms/"
+        },
+        {
+            "prefix": "dc",
+            "uri": "http://purl.org/dc/elements/1.1/"
+        }
+    ],
+    "MODAL": {
+        "title": [
+            [
+                "schema:name",
+                "schema:givenName"
+            ],
+            [
+                "dcterms:title"
+            ]
+        ],
+        "description": [
+            [
+                "schema:description",
+                "schema:license",
+                "schema:datePublished"
+            ],
+            [
+                "schemaSafe:description",
+                "schemaSafe:license",
+                "schemaSafe:datePublished"
+            ],
+            [
+                "dcterms:license",
+                "dc:bibliographicCitation"
+            ]
+        ],
+        "affordances": [
+            [
+                "schema:isAccessibleForFree"
+            ]
+        ]
+    }
+}

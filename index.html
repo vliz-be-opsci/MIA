@@ -4,7 +4,10 @@
 <head>
         <title>Web Widget</title>
         <script src="https://open-science.vliz.be/MIA/latest/mia.bundle.js" id="mia_script"
-                data-deref-config="https://open-science.vliz.be/MIA/deref_config.json" data-self-reference></script>
+                data-deref-config="https://open-science.vliz.be/MIA/deref_config.json" 
+                data-default-template="https://open-science.vliz.be/MIA/default_template_config.json"
+                data-self-reference
+                ></script>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
@@ -217,6 +220,45 @@
                                                 links to hoverable items that provide additional information when
                                                 clicked. The plugin is designed to work seamlessly with linked open data
                                                 sources, offering a rich browsing experience for users.</p>
+
+                                        <h2>
+                                                Demo
+                                        </h2>
+
+                                        <div class="form-group"></div>
+                                                <label for="urlInput">Enter URL:</label>
+                                                <input type="url" class="form-control" id="urlInput" placeholder="Enter URL">
+                                        </div>
+                                        <button class="btn btn-primary" id="addUrlButton">Add URL</button>
+
+                                        <table id="urlTable" class="table table-striped table-bordered table-hover table-responsive">
+                                                <thead>
+                                                        <tr>
+                                                                <th scope="col">URL</th>
+                                                        </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                        </table>
+
+                                        <script>
+                                                document.getElementById('addUrlButton').addEventListener('click', function() {
+                                                        const urlInput = document.getElementById('urlInput');
+                                                        const urlTableBody = document.getElementById('urlTable').querySelector('tbody');
+
+                                                        if (urlInput.value) {
+                                                                        const newRow = document.createElement('tr');
+                                                                        const newCell = document.createElement('td');
+                                                                        const newLink = document.createElement('a');
+                                                                        newLink.href = urlInput.value;
+                                                                        newLink.innerText = urlInput.value;
+                                                                        newCell.appendChild(newLink);
+                                                                        newRow.appendChild(newCell);
+                                                                        urlTableBody.appendChild(newRow);
+                                                                        urlInput.value = '';
+                                                        }
+                                                });
+                                        </script>
 
                                         <h3 id="deref-config">deref-config.json</h3>
                                         <p>The <code>deref-config.json</code> file is a configuration file that
