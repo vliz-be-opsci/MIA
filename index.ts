@@ -15,11 +15,17 @@ document.addEventListener("DOMContentLoaded", function () {
   const deref_config_path = script_tag.getAttribute("data-deref-config");
   const self_reference = script_tag.getAttribute("data-self-reference");
   const extra_properties = script_tag.getAttribute("data-extra-properties");
+  const default_template = script_tag.getAttribute("data-default-template");
   let proxy_url = null;
+  let default_template_url = null;
   if (script_tag.hasAttribute("data-proxy")) {
     proxy_url = script_tag.getAttribute("data-proxy");
   }
   console.log("proxy_url", proxy_url);
+
+  if (default_template !== null) {
+    default_template_url = default_template;
+  }
 
   // Set proxy_url in the window object
   (window as any).proxy_url = proxy_url;
@@ -34,6 +40,13 @@ document.addEventListener("DOMContentLoaded", function () {
   if (self_reference !== null) {
     new SelfEntity(self_reference);
   }
+
+  fetchderefconfig(default_template_url).then((default_template_config) => {
+    console.log(default_template_config);
+    // Set default template config in the window object
+    (window as any).default_template_config = default_template_config;
+  });
+
 
   //fetch the deref config file then initialise the Affordance Manager
   fetchderefconfig(deref_config_path).then((derefconfig) => {

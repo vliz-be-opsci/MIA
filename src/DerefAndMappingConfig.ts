@@ -1,6 +1,6 @@
 export default async function fetchderefconfig(path: string | null) {
   if (path === null) {
-    // console.error('deref-config attribute not found in script tag');
+    console.error('deref-config attribute not found in script tag');
     return;
   }
   try {
@@ -9,8 +9,9 @@ export default async function fetchderefconfig(path: string | null) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const json = await response.json();
+    //console.log(json);
     return json;
   } catch (error) {
-    // console.error("Error:", error);
+    console.error("Error:", error);
   }
 }

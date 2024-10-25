@@ -6,6 +6,7 @@ import { Store } from "n3";
 import { QueryEngine as QueryEngineTraversal } from "@comunica/query-sparql-link-traversal";
 import { QueryEngine } from "@comunica/query-sparql";
 import { BindingsStream, Bindings } from "@comunica/types";
+import jsonld from 'jsonld';
 
 const engine = new QueryEngine();
 const linkengine = new QueryEngineTraversal();
@@ -32,21 +33,20 @@ export const traverseURI = async (
   }
   for (const url of urls) {
     for (let index = 0; index < trajectory_path.length; index++) {
-      //console.log(part);
       //console log store length
-      //console.log(storeSize(store));
+      console.log(storeSize(store));
       //change the current trajectory path to the slice of the path
       let current_trajectory = trajectory_path.slice(0, index + 1).join("/");
       let query = `SELECT ?value WHERE {<${url}> ${current_trajectory} ?value . }`;
-      //console.log(query);
+      console.log(query);
       try {
         const results = await linkengine.queryBindings(query, {
           sources: [N3store],
         });
 
-        //console.log(results);
 
         const bindings = await results.toArray();
+        console.log(bindings);
         if (bindings.length === 0) {
           // console.log("no value found for query: " + query);
           //continue to next in forloop
@@ -272,76 +272,110 @@ export async function getLinkedDataNQuads(
   const return_formats = [
     "text/turtle",
     "application/ld+json",
+    "application/vnd.schemaorg.ld+json",
+    "text/html",
+    /*
     "application/rdf+xml",
     "application/n-triples",
     "application/n-quads",
     "text/n3",
     "text/rdf+n3",
-    "text/html",
+    */
+
   ];
 
-  const data = await getData(uri, return_formats);
-  let text = await data.response.text();
-  console.log(text);
+  let filteredFormats = return_formats;
 
-  const parser = new N3.Parser({ format: data.format });
+  const to_get = filteredFormats.length > 0 ? filteredFormats : return_formats;
+  console.log("To get:", to_get);
+
+  const data = await getData(uri, to_get);
+  let text = await data.response.text();
+  console.warn(text);
+  console.warn(data.format);
+
+  if (data.format.includes("text/html")) {
+    const signpostedData = await getSignpostedDataFromHtml(text);
+    if (signpostedData) {
+      text = signpostedData.content;
+      data.format = signpostedData.format;
+    }
+  }
+
+  console.info("data format: ", data.format);
+  console.info("data text: ", text);
+
   let quads;
-  try {
-    quads = parser.parse(text);
-  } catch (error) {
-    console.log("parsing error", error);
-    throw error;
+  if (data.format.includes("application/ld+json") || data.format.includes("application/vnd.schemaorg.ld+json")) {
+    try {
+      // Parse JSON-LD
+      const jsonldDoc = JSON.parse(text);
+      // get the  @context from the jsonldDoc if it exists 
+      // and gets the context from the uri
+      // then replace the context in the jsonldDoc
+      
+      if (jsonldDoc["@context"]) {
+        let to_compact = jsonldDoc["@context"]+"/docs/jsonldcontext.jsonld";
+        jsonldDoc["@context"] = to_compact
+        // replace the http with https
+        jsonldDoc["@context"] = jsonldDoc["@context"].replace("http://", "https://");
+        jsonldDoc["@context"] = await jsonld.compact(jsonldDoc, jsonldDoc["@context"]);
+      }
+      
+      console.warn(jsonldDoc);
+      const nquads = await jsonld.toRDF(jsonldDoc, { format: 'application/n-quads' });
+      console.warn(nquads);
+      const parser = new N3.Parser({ format: 'N-Quads' });
+      quads = parser.parse(nquads.toString());
+      console.warn(quads);
+    } catch (error) {
+      console.error("Error parsing JSON-LD:", error);
+      throw error;
+    }
+  } else {
+    // Parse other RDF formats
+    const parser = new N3.Parser({ format: data.format });
+    try {
+      quads = parser.parse(text);
+    } catch (error) {
+      console.log("parsing error", error);
+      throw error;
+    }
   }
 
   for (const quad of quads) {
     store.addQuad(quad);
   }
 
-  //console.log(store);
   return store;
 }
 
 async function getData(uri: string, formats: string[]) {
-  // Retrieve proxy_url from the window object
   const proxy_url = (window as any).proxy_url;
 
   console.log("Proxy URL:", proxy_url);
 
-  if (proxy_url) {
-    uri = `${proxy_url}?url=${encodeURIComponent(uri)}`;
-  }
-
   for (const format of formats) {
     try {
-      //make uri https if http and log this
-      //this is to prevent mixed content errors
       const response = await fetch(uri, { headers: { Accept: format } });
       const contentType = response.headers.get("Content-Type");
 
-      if (response.ok && contentType?.includes(format)) {
-        if (contentType.includes("text/html")) {
-          const signpostedData = await getSignpostedData(uri);
-          if (signpostedData) {
-            return {
-              format: signpostedData.format,
-              response: new Response(signpostedData.content),
-            };
-          }
-        }
+      console.log("Response:", response);
+      console.log("Content Type:", contentType);
 
+      if (response.ok && contentType?.includes(format)) {
         return { format, response };
       }
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  if (proxy_url) {
+    const proxiedUri = `${proxy_url}${uri}`;
+    for (const format of formats) {
       try {
-        //make uri https if http and log this
-        //this is to prevent mixed content errors
-
-        if (uri.startsWith("http:")) {
-          uri = uri.replace("http://", "https://");
-        }
-
-        const response = await fetch(uri, { headers: { Accept: format } });
+        const response = await fetch(proxiedUri, { headers: { Accept: format } });
         const contentType = response.headers.get("Content-Type");
 
         if (response.ok && contentType?.includes(format)) {
@@ -349,24 +383,18 @@ async function getData(uri: string, formats: string[]) {
         }
       } catch (error) {
         console.log(error);
-        throw error;
       }
     }
   }
+
   throw new Error("No acceptable format found");
 }
 
-//
-export async function getSignpostedData(
-  url: string
+export async function getSignpostedDataFromHtml(
+  html: string
 ): Promise<{ format: string; content: string } | null> {
   try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch ${url}`);
-    }
-
-    const html = await response.text();
+    console.log("Parsing signposted data from HTML");
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, "text/html");
 
@@ -387,7 +415,7 @@ export async function getSignpostedData(
 
     return null;
   } catch (error) {
-    console.error("Error fetching signposted data:", error);
+    console.error("Error parsing signposted data:", error);
     return null;
   }
 }

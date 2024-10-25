@@ -14,6 +14,7 @@ import {
   generateProjectCardTemplate,
   generateCollectionCardTemplate,
 } from "./Templates";
+import { generateDefaultCardTemplate } from "./DefaultTemplateGenerator";
 import "./css/mia.css";
 
 // make maiproperties an interface
@@ -215,7 +216,8 @@ export default class AffordanceEntity {
       this.link.includes("marineregions.org") ||
       this.link.includes("aphia.org") ||
       this.link.includes("vocab.nerc") ||
-      this.link.includes("zenodo.org")
+      this.link.includes("zenodo.org") ||
+      this.link.includes("doi.org")
     ) {
       // check if any parent element has the mia-extra-properties attribute set to nochange
       // nochange can be set on any parent element to prevent the element from being changed
@@ -334,12 +336,12 @@ export default class AffordanceEntity {
       aphia_worms: generateAphiaCardTemplate,
       project: generateProjectCardTemplate,
       collection: generateCollectionCardTemplate,
-      default: generateInfoCardTemplate,
+      default: generateDefaultCardTemplate,
     };
     let toreturn = mapping[name];
     if (toreturn === undefined) {
       // console.log("template not found");
-      return generateInfoCardTemplate;
+      return generateDefaultCardTemplate;
     }
     return mapping[name];
   }
