@@ -214,7 +214,7 @@ export default class AffordanceEntity {
     //if the element href contains marineinfo or marineregions in it
     //add class confluence_box to element if not already there
 
-    // if the element has a class named retrieveMIA then add it 
+    // if the element has a class named retrieveMIA then add it
 
     if (
       this.element.classList.contains("retrieveMIA") ||
@@ -224,7 +224,7 @@ export default class AffordanceEntity {
       this.link.includes("vocab.nerc") ||
       this.link.includes("zenodo.org") ||
       this.link.includes("doi.org") ||
-      this.link.includes("orcid.org") 
+      this.link.includes("orcid.org")
     ) {
       console.info("starting to update dom for uri: ", this.link);
       // check if any parent element has the mia-extra-properties attribute set to nochange
@@ -345,6 +345,7 @@ export default class AffordanceEntity {
       project: generateProjectCardTemplate,
       collection: generateCollectionCardTemplate,
       default: generateDefaultCardTemplate,
+      concept: generateInfoCardTemplate,
     };
     let toreturn = mapping[name];
     if (toreturn === undefined) {

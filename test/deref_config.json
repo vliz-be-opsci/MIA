@@ -64,7 +64,7 @@
             "skos:narrower",
             "pav:version"
         ],
-        "TEMPLATE": "default",
+        "TEMPLATE": "concept",
         "MAPPING": {
             "title": {
                 "query": "skos:prefLabel",

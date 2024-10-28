@@ -12,6 +12,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://unpkg.com/n3/browser/n3.min.js"></script>
+    <link
+        href="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.1.8/b-3.1.2/cr-2.0.4/r-3.0.3/sc-2.4.3/sb-1.8.1/sp-2.3.3/datatables.min.css"
+        rel="stylesheet">
+    <script
+        src="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.1.8/b-3.1.2/cr-2.0.4/r-3.0.3/sc-2.4.3/sb-1.8.1/sp-2.3.3/datatables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@shopify/draggable/build/umd/index.min.js"></script>
 </head>
 
 <body>
@@ -76,19 +82,45 @@
                         <div class="col-md-5 ml-sm-auto col-lg-5 px-4">
                             <div class="row">
                                 <div class="col-md-12 p-0"
-                                    style="min-height: 300px; max-height: 300px; overflow-y: scroll;" id="console_logs">
+                                    style="min-height: 100px; max-height: 20vh; overflow-y: scroll;" id="console_logs">
                                 </div>
                             </div>
-                            <div class="row mt-3" style=" min-height: 360px; max-height: 360px; overflow-y: scroll;">
+                            <div class="row mt-3" style=" min-height: 420px; max-height: 65vh; overflow-y: scroll;">
                                 <div class="col-md-12" style="border: 1px solid black;" id="triples_table">
-                                    found triples here in table spo format
+                                    <table class="display" id="triples_table_content"
+                                        style="min-width: 330px; overflow-y: scroll;">
+                                        <thead>
+                                            <tr>
+                                                <th>Subject</th>
+                                                <th>Predicate</th>
+                                                <th>Object</th>
+                                            </tr>
+                                        <tbody id="triples_table_body">
+                                            <tr>
+                                                <td>Subject 1</td>
+                                                <td>Predicate 1</td>
+                                                <td>Object 1</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-7 ml-sm-auto col-lg-7 px-4" style="border: 1px solid black;">
                             <div class="row">
                                 <div class="col-md-6" style="border: 1px solid black;">
-                                    export functionality here
+                                    <button id="show-config-json" class="btn btn-secondary w-100">Show Config
+                                        JSON</button>
+                                    <script>
+                                        document.getElementById('show-config-json').addEventListener('click', function () {
+                                            const configJson = window.default_template_config;
+                                            if (configJson) {
+                                                alert(JSON.stringify(configJson, null, 2));
+                                            } else {
+                                                alert('Config JSON not found.');
+                                            }
+                                        });
+                                    </script>
                                 </div>
                                 <div class="col-md-6" style="border: 1px solid black;" id="url_show">
                                     <a href="https://marineinfo.org/id/person/38476"> marineinfo test url</a>
@@ -164,6 +196,25 @@
             }
         });
 
+        function updateModalKeyValue(key, valueArray) {
+            if (typeof key !== 'string' || !Array.isArray(valueArray)) {
+                console.error('Invalid input: key must be a string and valueArray must be an array of arrays.');
+                return;
+            }
+
+            if (!window.default_template_config || !window.default_template_config.MODAL) {
+                console.error('Default template config or MODAL object not found in window.');
+                return;
+            }
+
+            window.default_template_config.MODAL[key] = valueArray;
+            console.log(`Updated key "${key}" with value:`, valueArray);
+
+            //pretty alert the updated config
+            alert(JSON.stringify(window.default_template_config, null, 2));
+
+        }
+
 
         function createKeysModal(defaultTemplate) {
             const keysModalElement = document.getElementById('keysmodal');
@@ -188,19 +239,66 @@
                     // make new html element to store list of boxes in
                     let uiconfigpropHtml = document.createElement('div');
                     uiconfigpropHtml.id = 'uiconfigprop';
+                    uiconfigpropHtml.className = 'uiconfig-group';
                     for (let value of values) {
                         let valueBox = document.createElement('div');
                         // background white, padding 3 and margin 1 and border 1px solid black
-                        valueBox.className = 'p-3 m-1 border border-dark';
+                        valueBox.className = 'p-3 m-1 border border-dark draggable';
                         valueBox.innerHTML = value;
                         uiconfigpropHtml.appendChild(valueBox);
                     }
+
+                    // Make the value boxes draggable and sortable
+                    const sortable = new Draggable.Sortable(uiconfigpropHtml, {
+                        draggable: '.draggable',
+                        mirror: {
+                            constrainDimensions: true,
+                        },
+                    });
+
+                    // Add event listener to alert the current order of draggable elements
+                    sortable.on('sortable:stop', () => {
+                        // Get the order of the draggable elements by sorting them according to their height on the page
+                        let order = [];
+                        const draggableElements = Array.from(uiconfigpropHtml.getElementsByClassName('draggable'));
+
+                        // Sort elements by their offsetTop (height on the page)
+                        draggableElements.sort((a, b) => a.offsetTop - b.offsetTop);
+
+                        // Get unique values from the sorted elements
+                        const uniqueOrder = new Set();
+                        for (let element of draggableElements) {
+                            console.debug('Element:', element);
+                            uniqueOrder.add(element.innerHTML);
+                        }
+
+                        order = Array.from(uniqueOrder);
+                        //go over each element in the array and split the value by , 
+                        //replace the array value by the new array 
+                        for (let i = 0; i < order.length; i++) {
+                            order[i] = order[i].split(',');
+                        }
+
+                        //get the current button that is active and get the key value
+                        let activeKey = document.querySelector('button.active');
+                        let activeKeyValue = activeKey.innerHTML;
+                        //update the default template with the new order
+                        updateModalKeyValue(activeKeyValue, order);
+
+                    });
+
                     // get the parentnode of the uiconfigprop element
                     const parentElementUiconfigprop = uiconfigpropElement.parentNode;
                     // Remove the existing element
                     parentElementUiconfigprop.removeChild(uiconfigpropElement);
                     // Insert the new element into the DOM as first child
                     parentElementUiconfigprop.insertBefore(uiconfigpropHtml, parentElementUiconfigprop.firstChild);
+
+                    // change class of the key button to active
+                    for (let child of keysModalHtml.children) {
+                        child.className = 'btn btn-primary w-100 p-2 mb-1';
+                    }
+                    this.className = 'btn btn-primary w-100 p-2 mb-1 active';
                 });
                 keysModalHtml.appendChild(keyButton);
             }
@@ -230,13 +328,55 @@
             //make new html element to store list of boxes in 
             let uiconfigpropHtml = document.createElement('div');
             uiconfigpropHtml.id = 'uiconfigprop';
+            uiconfigpropHtml.className = 'uiconfig-group';
             for (let value of values) {
                 let valueBox = document.createElement('div');
                 // background white, padding 3 and margin 1 and border 1px solid black
-                valueBox.className = 'p-3 m-1 border border-dark';
+                valueBox.className = 'p-3 m-1 border border-dark draggable';
                 valueBox.innerHTML = value;
                 uiconfigpropHtml.appendChild(valueBox);
             }
+
+            // Make the value boxes draggable and sortable
+            const sortable = new Draggable.Sortable(uiconfigpropHtml, {
+                draggable: '.draggable',
+                mirror: {
+                    constrainDimensions: true,
+                },
+            });
+
+            // Add event listener to alert the current order of draggable elements
+            sortable.on('sortable:stop', () => {
+                // Get the order of the draggable elements by sorting them according to their height on the page
+                let order = [];
+                const draggableElements = Array.from(uiconfigpropHtml.getElementsByClassName('draggable'));
+
+                // Sort elements by their offsetTop (height on the page)
+                draggableElements.sort((a, b) => a.offsetTop - b.offsetTop);
+
+                // Get unique values from the sorted elements
+                const uniqueOrder = new Set();
+                for (let element of draggableElements) {
+                    console.debug('Element:', element);
+                    uniqueOrder.add(element.innerHTML);
+                }
+
+                order = Array.from(uniqueOrder);
+
+                //go over each element in the array and split the value by , 
+                //replace the array value by the new array 
+                for (let i = 0; i < order.length; i++) {
+                    order[i] = order[i].split(',');
+                }
+
+                console.warn('Current order:', order);
+                //get the current button that is active and get the key value
+                let activeKey = document.querySelector('button.active');
+                let activeKeyValue = activeKey.innerHTML;
+                //update the default template with the new order
+                updateModalKeyValue(activeKeyValue, order);
+            });
+
             //get the parentnode of the uiconfigprop element
             const parentElementUiconfigprop = uiconfigpropElement.parentNode;
             // Remove the existing element
@@ -244,21 +384,19 @@
             // Insert the new element into the DOM as first child
             parentElementUiconfigprop.insertBefore(uiconfigpropHtml, parentElementUiconfigprop.firstChild);
 
+            //change class of the first key button to active
+            let firstKeyButton = keysModalHtml.children[0];
+            firstKeyButton.className = 'btn btn-primary w-100 p-2 mb-1 active';
         }
 
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-html.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
     <script>
+        $(document).ready(function () {
+            $('#triples_table_content').DataTable();
+        });
         // Custom event system to capture console logs
         (function () {
             const originalLog = console.log;
@@ -389,7 +527,20 @@
             console.debug('DerefInfoCollector:', derefInfoCollector.triplestore);
             const derefInfoTableElement = document.getElementById('triples_table');
             const parentElement = derefInfoTableElement.parentNode;
-            let tableHtml = '<table class="table table-striped table-bordered table-hover table-sm col-5" style="max-height: 330px; overflow-y: scroll;">';
+            let tableHtml = '<table class="display" id="triples_table_content" style="min-width: 330px; overflow-y: scroll;">';
+
+            //add the table headers
+            tableHtml += '<thead>';
+            tableHtml += '<tr>';
+            tableHtml += '<th>Subject</th>';
+            tableHtml += '<th>Predicate</th>';
+            tableHtml += '<th>Object</th>';
+            tableHtml += '</tr>';
+            tableHtml += '</thead>';
+
+            // begin the table body
+            tableHtml += '<tbody>';
+
             //go over each quad in the store and console.debug it
             for (let quad of derefInfoCollector.triplestore.getQuads()) {
                 console.debug('Quad:', quad);
@@ -399,6 +550,9 @@
                 tableHtml += '<td>' + quad.object.id + '</td>';
                 tableHtml += '</tr>';
             }
+
+            //close the table body
+            tableHtml += '</tbody>';
 
             //close the table
             tableHtml += '</table>';
@@ -414,6 +568,11 @@
 
             // Insert the new element into the DOM as first child
             parentElement.insertBefore(newDerefInfoTableElement, parentElement.firstChild);
+
+            //initialize the datatable
+            $(document).ready(function () {
+                $('#triples_table_content').DataTable();
+            });
         });
 
     </script>
