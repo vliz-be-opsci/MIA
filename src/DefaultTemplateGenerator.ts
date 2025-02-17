@@ -256,9 +256,13 @@ export function generateDefaultCardTemplate(
   let title = data["title"];
 
   // description is the data["description"] imploded with newline
+  // first check if the description is an array
+  if (Array.isArray(data["description"])) {
+    data["description"] = data["description"].join("<br>");
+  }
   let description = `
     <p class="text-gray-600 text-sm mt-2">
-      ${data["description"].join("<br>")}
+      ${data["description"]}
     </p>`;
 
   let defaulthtml = `
