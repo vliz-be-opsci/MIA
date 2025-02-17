@@ -249,7 +249,11 @@ export function generateDefaultCardTemplate(
   let _link = affordance_link;
 
   //title the the data["title"] imploded with a space
-  let title = data["title"].join(" ");
+  //first check if the title is an array
+  if (Array.isArray(data["title"])) {
+    data["title"] = data["title"].join(" ");
+  }
+  let title = data["title"];
 
   // description is the data["description"] imploded with newline
   let description = `
