@@ -70,7 +70,7 @@
                 "query": "skos:prefLabel",
                 "type": "single"
             },
-            "definition": {
+            "description": {
                 "query": "skos:definition",
                 "type": "single"
             },
