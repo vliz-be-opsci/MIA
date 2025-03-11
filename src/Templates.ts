@@ -39,9 +39,12 @@ export function generatePersonCardTemplate(
   let organization = data.organization || "";
   let job_position = data.job_position || "";
   let orcid = data.orcid || "";
+  let doc = data.doc || "";
   let _link = affordance_link || "";
 
   let image_html = "";
+
+  let marineinfo_link = doc || _link;
 
   if (image != "") {
     image_html = `<img src="${cleanURI(image)}" alt="Card Image" class="h-30">`;
@@ -59,7 +62,7 @@ export function generatePersonCardTemplate(
             <p class="text-sm text-gray-500 mr-5">${job_position}</p>
             <p class="text-sm text-gray-500 mr-5">${organization}</p>
             <div class="mt-2 flex space-x-4">
-                <a href="${_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
+                <a href="${marineinfo_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
                      <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
                 </a>
                 <a href="${orcid}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
@@ -118,7 +121,9 @@ export function generateDatasetCardTemplate(
   let license = data.license || "";
   let citation_html = "";
   let citation = data.citation || "";
+  let doc = data.doc || "";
   let date_html = "";
+  let marineinfo_link = doc || _link;
 
   if (date != "") {
     date = new Date(date).toLocaleDateString()
@@ -171,7 +176,7 @@ export function generateDatasetCardTemplate(
             <p class="text-sm text-gray-500 mr-5"><b>license: </b>${license}</p>
             ${date_html}
             <div class="mt-2 flex space-x-4">
-                <a href="${_link}" class="text-gray-500 hover:text-gray-700 mb-2" mia-extra-properties="nochange">
+                <a href="${marineinfo_link}" class="text-gray-500 hover:text-gray-700 mb-2" mia-extra-properties="nochange">
                      <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
                 </a>
                 <!--${citation_html}-->
@@ -205,6 +210,8 @@ export function generateProjectCardTemplate(
   let end_date = data.end_date || "";
   let keywords = data.keywords || [];
   let urls = data.otherLinks || [];
+  let doc = data.doc || "";
+  let marineinfo_link = doc || _link;
 
   //url section
   let urls_html = "";
@@ -260,7 +267,7 @@ export function generateProjectCardTemplate(
             </div>
             <p class="text-sm text-gray-500 mr-5"><b>span: </b>${start_date} - ${end_date}</p>
             <div class="mt-2 flex space-x-4">
-                <a href="${_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
+                <a href="${marineinfo_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
                      <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
                 </a>
                 ${urls_html}
@@ -369,6 +376,8 @@ export function generateOrganizationCardTemplate(
   let contact = data.contact || "";
   let adress = data.adress || "";
   let name = data.name || "";
+  let doc = data.doc || "";
+  let marineinfo_link = doc || _link;
 
   let organization_html = `
      <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;min-height:150px;">
@@ -380,7 +389,7 @@ export function generateOrganizationCardTemplate(
             <p class="text-sm text-gray-500 mr-5">${contact}</p>
             <p class="text-sm text-gray-500 mr-5">${adress}</p>
             <div class="mt-2 flex space-x-4">
-                <a href="${_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
+                <a href="${marineinfo_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
                      <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
                 </a>
                 <a href="mailto:${email_info}" class="text-gray-500 hover:text-gray-700">
@@ -413,6 +422,8 @@ export function generateCollectionCardTemplate(
   let keywords = data.keywords || [];
   let _link = affordance_link || "";
   let urls = data.urls || [];
+  let doc = data.doc || "";
+  let marineinfo_link = doc || _link;
 
   //url section
   let urls_html = "";
@@ -504,7 +515,7 @@ export function generateCollectionCardTemplate(
             ${resources_html}
             </div>
             <div class="mt-2 flex space-x-4">
-                <a href="${_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
+                <a href="${marineinfo_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
                      <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
                 </a>
                 ${urls_html}
@@ -533,6 +544,8 @@ export function generateBibliographicResourceCardTemplate(
   let publishDate = data.publishDate || "";
   let download_url = data.download || "";
   let citation = data.citation || "";
+  let doc = data.doc || "";
+  let marineinfo_link = doc || _link;
 
   // console.info("download url: ", download_url);
   let c_type_image = lock_closed;
@@ -562,7 +575,7 @@ export function generateBibliographicResourceCardTemplate(
             <p class="items-center inline-flex text-sm text-gray-500 mr-5"><img class="h-4 w-4 mr-1" src="${c_type_image}"> ${type}</p>
             <p class="text-sm text-gray-500 mr-5"><b>release date: </b>${publishDate}</p>
             <div class="mt-2 flex space-x-4">
-                <a href="${_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
+                <a href="${marineinfo_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
                      <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
                 </a>
                 <a href="#" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange" id="clipboard">
@@ -607,6 +620,8 @@ export function generateEventCardTemplate(
   let end_date = data.end_date || "";
   let _link = affordance_link || "";
   let urls = data.otherLinks || [];
+  let doc = data.doc || "";
+  let marineinfo_link = doc || _link;
 
   // other links section
   let urls_html = "";
@@ -646,7 +661,7 @@ export function generateEventCardTemplate(
           ${start_date} - ${end_date}
          </p>
          <div class="mt-2 flex space-x-4">
-             <a href="${_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
+             <a href="${marineinfo_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
                   <img class="h-6 w-6 icon_svg mb-1" src="${marininfologo}" alt="marineinfo">
              </a>
               ${urls_html}
