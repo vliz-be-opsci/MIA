@@ -177,6 +177,15 @@ export default class AffordanceEntity {
     try {
       //function to collect info
       console.log("collecting info for " + this.link);
+
+      // there is a special case where the this.link is a doc version of marineinfo
+      if (this.link.includes("marineinfo.org/doc/")) {
+        console.warn("Special case for marineinfo document version");
+        //make the this.link into a id one by replaceing marineinfo.org/doc/ with marineinfo.org/id/
+        this.link = this.link.replace("marineinfo.org/doc/", "marineinfo.org/id/");
+        console.log("new link: ", this.link);
+      }
+
       //this one is also needed since there are 2 ways to trigger this
       // via the hover effect or via the scheduler
       if (
