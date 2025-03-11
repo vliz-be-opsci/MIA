@@ -64,7 +64,7 @@
             "skos:narrower",
             "pav:version"
         ],
-        "TEMPLATE": "default",
+        "TEMPLATE": "concept",
         "MAPPING": {
             "title": {
                 "query": "skos:prefLabel",
@@ -161,6 +161,7 @@
             "schema:givenName",
             "schema:familyName",
             "schema:image",
+            "schema:subjectOf",
             "schema:identifier",
             "org:hasMembership/org:organization/schema:name",
             "org:hasMembership/org:role/skos:prefLabel"
@@ -189,6 +190,10 @@
             },
             "job_position": {
                 "query": "org:hasMembership/org:role/skos:prefLabel",
+                "type": "single"
+            },
+            "doc": {
+                "query": "schema:subjectOf",
                 "type": "single"
             }
         }
@@ -255,6 +260,10 @@
             "otherLinks": {
                 "query": "schema:workFeatured/schema:url",
                 "type": "list"
+            },
+            "doc": {
+                "query": "schema:subjectOf",
+                "type": "single"
             }
         }
     },
@@ -325,6 +334,10 @@
             "citation": {
                 "query": "dc:bibliographicCitation",
                 "type": "single"
+            },
+            "doc": {
+                "query": "schema:subjectOf",
+                "type": "single"
             }
         }
     },
@@ -385,6 +398,10 @@
             "otherLinks": {
                 "query": "schema:hasPart/schema:mainEntityOfPage",
                 "type": "list"
+            },
+            "doc": {
+                "query": "schema:subjectOf",
+                "type": "single"
             }
         }
     },
@@ -436,6 +453,10 @@
             },
             "email": {
                 "query": "vcard:hasEmail",
+                "type": "single"
+            },
+            "doc": {
+                "query": "schema:subjectOf",
                 "type": "single"
             }
         }
@@ -493,6 +514,10 @@
             },
             "citation": {
                 "query": "dcterms:bibliographicCitation",
+                "type": "single"
+            },
+            "doc": {
+                "query": "schema:subjectOf",
                 "type": "single"
             }
         }
@@ -598,6 +623,10 @@
             "urls": {
                 "query": "schema:url",
                 "type": "list"
+            },
+            "doc": {
+                "query": "schema:subjectOf",
+                "type": "single"
             }
         }
     }
