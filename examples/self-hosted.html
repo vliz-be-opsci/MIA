@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>MIA Self-Hosted Example</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Include MIA from local build (change paths as needed) -->
+    <script src="../dist/mia.bundle.js" id="mia_script"
+        data-deref-config="../test/deref_config.json"></script>
+    
+    <!-- Include Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-8 bg-gray-100">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-green-800 mb-6">MIA Self-Hosted Example</h1>
+        
+        <div class="bg-yellow-100 border-l-4 border-yellow-500 p-4 mb-6">
+            <h3 class="font-semibold text-yellow-800 mb-2">⚠️ Self-Hosting Setup Required</h3>
+            <p class="text-yellow-700">
+                This example requires you to build MIA locally and serve this file via HTTP server. 
+                See the development setup instructions in the README.
+            </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-xl font-semibold mb-4">Setup Instructions</h2>
+            <ol class="list-decimal list-inside space-y-2">
+                <li>Clone the MIA repository: <code class="bg-gray-200 p-1 rounded">git clone https://github.com/vliz-be-opsci/MIA.git</code></li>
+                <li>Install dependencies: <code class="bg-gray-200 p-1 rounded">npm install</code></li>
+                <li>Build the project: <code class="bg-gray-200 p-1 rounded">npm run build</code></li>
+                <li>Start HTTP server: <code class="bg-gray-200 p-1 rounded">http-server</code></li>
+                <li>Navigate to <code class="bg-gray-200 p-1 rounded">http://localhost:8080/examples/self-hosted.html</code></li>
+            </ol>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-xl font-semibold mb-4">Marine Research Content</h2>
+            <p class="mb-4">
+                Our research team at <a href="https://marineinfo.org/id/institute/36" class="text-green-600 hover:underline">VLIZ</a> 
+                focuses on understanding marine ecosystems in the 
+                <a href="https://marineregions.org/mrgid/3293" class="text-green-600 hover:underline">Belgian waters</a>.
+            </p>
+            
+            <p class="mb-4">
+                Lead researcher <a href="https://marineinfo.org/id/person/48" class="text-green-600 hover:underline">Jan Mees</a> 
+                oversees multiple <a href="https://marineinfo.org/id/project/5240" class="text-green-600 hover:underline">marine projects</a> 
+                that contribute to our understanding of biodiversity.
+            </p>
+
+            <p>
+                Access our latest <a href="https://marineinfo.org/id/dataset/6430" class="text-green-600 hover:underline">research dataset</a> 
+                and explore findings about <a href="https://aphia.org/id/taxname/127160" class="text-green-600 hover:underline">key marine species</a>.
+            </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold mb-4">Advantages of Self-Hosting</h2>
+            <ul class="list-disc list-inside space-y-1">
+                <li>Full control over configuration and customization</li>
+                <li>No external dependencies for the core MIA functionality</li>
+                <li>Ability to modify templates and styling</li>
+                <li>Custom proxy settings for internal networks</li>
+                <li>Enhanced privacy and security for sensitive applications</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
