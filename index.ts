@@ -83,5 +83,7 @@ document.addEventListener("DOMContentLoaded", function () {
     (window as any).affordanceManager = affordanceManager;
     (window as any).getPerformanceStats = () => affordanceManager.getPerformanceStats();
     (window as any).resetPerformanceMetrics = () => affordanceManager.resetPerformanceMetrics();
+    
+    // Note: runPerformanceBenchmark is available as a separate module
   });
 });
