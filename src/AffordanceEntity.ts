@@ -51,6 +51,13 @@ export default class AffordanceEntity {
     this._update_dom_uri();
   }
 
+  /**
+   * Get the URL/link for this affordance
+   */
+  getLink(): string {
+    return this.link;
+  }
+
   async onHover() {
     this.element.addEventListener("mouseover", async (event: MouseEvent) => {
       // Cancel the previous active entity's hover effect
