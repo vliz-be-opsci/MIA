@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIA Performance Testing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .section {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .test-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .test-links a {
+            padding: 10px;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #333;
+        }
+        .test-links a:hover {
+            background: #e5e5e5;
+        }
+        .controls {
+            margin: 20px 0;
+        }
+        .controls button {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #007cba;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .controls button:hover {
+            background: #005a87;
+        }
+        .stats {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .log {
+            height: 200px;
+            overflow-y: scroll;
+            background: #f0f0f0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .config-info {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>MIA Performance Testing</h1>
+    
+    <div class="config-info">
+        <h3>Current Configuration</h3>
+        <p><strong>Scheduler Type:</strong> <span id="scheduler-type">Auto-detect</span></p>
+        <p><strong>Max Concurrency:</strong> <span id="max-concurrency">Auto</span></p>
+        <p><strong>Performance Monitoring:</strong> Enabled</p>
+    </div>
+
+    <div class="container">
+        <div class="section">
+            <h2>Test Links</h2>
+            <p>Hover over these links to trigger MIA data collection:</p>
+            <div class="test-links">
+                <a href="https://marineinfo.org/id/dataset/2198">Marine Dataset 2198</a>
+                <a href="https://marineinfo.org/id/dataset/2199">Marine Dataset 2199</a>
+                <a href="https://marineinfo.org/id/dataset/2200">Marine Dataset 2200</a>
+                <a href="https://marineregions.org/mrgid/2114">Marine Region 2114</a>
+                <a href="https://marineregions.org/mrgid/2115">Marine Region 2115</a>
+                <a href="https://orcid.org/0000-0002-1825-0097">ORCID Example</a>
+                <a href="https://doi.org/10.1000/example">DOI Example</a>
+                <a href="https://vocab.nerc.ac.uk/collection/P01/current/TEMPPR01/">NERC Vocab</a>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Performance Controls</h2>
+            <div class="controls">
+                <button onclick="showPerformanceStats()">Show Performance Stats</button>
+                <button onclick="resetPerformanceMetrics()">Reset Metrics</button>
+                <button onclick="runBenchmark()">Run Benchmark</button>
+                <button onclick="clearLog()">Clear Log</button>
+            </div>
+            
+            <h3>Performance Statistics</h3>
+            <div id="stats" class="stats">Click "Show Performance Stats" to view current metrics...</div>
+            
+            <h3>Activity Log</h3>
+            <div id="log" class="log"></div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Instructions</h2>
+        <ol>
+            <li><strong>Test Normal Usage:</strong> Hover over the test links above to see MIA in action</li>
+            <li><strong>Monitor Performance:</strong> Click "Show Performance Stats" to see current metrics</li>
+            <li><strong>Run Benchmark:</strong> Click "Run Benchmark" to compare sequential vs parallel performance</li>
+            <li><strong>Check Console:</strong> Open browser DevTools to see detailed logging</li>
+        </ol>
+        
+        <h3>What to Look For</h3>
+        <ul>
+            <li><strong>Adaptive Delays:</strong> Watch console logs for varying delay times</li>
+            <li><strong>Parallel Processing:</strong> Multiple requests processed simultaneously</li>
+            <li><strong>Smart Backoff:</strong> Longer delays after failures, shorter after successes</li>
+            <li><strong>Performance Metrics:</strong> Real-time statistics on success rates and response times</li>
+        </ul>
+    </div>
+
+    <!-- MIA Script with parallel scheduler configuration -->
+    <script 
+        id="mia_script" 
+        src="./dist/mia.bundle.js"
+        data-deref-config="./test/deref_config.json"
+        data-scheduler-type="parallel"
+        data-max-concurrency="3">
+    </script>
+
+    <script>
+        let logContainer;
+        
+        // Initialize logging
+        document.addEventListener('DOMContentLoaded', function() {
+            logContainer = document.getElementById('log');
+            
+            // Update configuration display
+            const scriptTag = document.getElementById('mia_script');
+            const schedulerType = scriptTag.getAttribute('data-scheduler-type') || 'auto-detect';
+            const maxConcurrency = scriptTag.getAttribute('data-max-concurrency') || 'auto';
+            
+            document.getElementById('scheduler-type').textContent = schedulerType;
+            document.getElementById('max-concurrency').textContent = maxConcurrency;
+            
+            log('MIA Performance Testing initialized');
+            log(`Scheduler Type: ${schedulerType}`);
+            log(`Max Concurrency: ${maxConcurrency}`);
+            
+            // Override console.log to capture MIA logs
+            const originalLog = console.log;
+            console.log = function(...args) {
+                originalLog.apply(console, args);
+                if (args.length > 0 && typeof args[0] === 'string') {
+                    const message = args.join(' ');
+                    if (message.includes('collecting') || 
+                        message.includes('scheduler') || 
+                        message.includes('performance') ||
+                        message.includes('delay') ||
+                        message.includes('retry')) {
+                        log(message);
+                    }
+                }
+            };
+        });
+        
+        function log(message) {
+            if (!logContainer) return;
+            
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}\n`;
+            logContainer.textContent += logEntry;
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+        
+        function showPerformanceStats() {
+            if (typeof window.getPerformanceStats === 'function') {
+                const stats = window.getPerformanceStats();
+                const statsContainer = document.getElementById('stats');
+                
+                if (stats) {
+                    statsContainer.textContent = JSON.stringify(stats, null, 2);
+                    log('Performance stats updated');
+                } else {
+                    statsContainer.textContent = 'No performance stats available yet. Try hovering over some links first.';
+                    log('No performance stats available');
+                }
+            } else {
+                document.getElementById('stats').textContent = 'Performance monitoring not available. MIA may not be fully loaded.';
+                log('Performance monitoring not available');
+            }
+        }
+        
+        function resetPerformanceMetrics() {
+            if (typeof window.resetPerformanceMetrics === 'function') {
+                window.resetPerformanceMetrics();
+                log('Performance metrics reset');
+                document.getElementById('stats').textContent = 'Performance metrics have been reset.';
+            } else {
+                log('Reset function not available');
+            }
+        }
+        
+        async function runBenchmark() {
+            log('Performance benchmark is available via console.');
+            log('Open browser DevTools and run: new Promise(r => import("./src/PerformanceBenchmark").then(m => r(new m.default().runComparison())))');
+            document.getElementById('stats').textContent = 'Benchmark functionality available via browser console. See activity log for instructions.';
+        }
+        
+        function clearLog() {
+            logContainer.textContent = '';
+            log('Log cleared');
+        }
+        
+        // Auto-refresh stats every 10 seconds
+        setInterval(() => {
+            if (document.getElementById('stats').textContent.includes('JSON') || 
+                document.getElementById('stats').textContent.includes('BENCHMARK')) {
+                showPerformanceStats();
+            }
+        }, 10000);
+    </script>
+</body>
+</html>
