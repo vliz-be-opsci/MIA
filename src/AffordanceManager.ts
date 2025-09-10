@@ -1,6 +1,6 @@
 import AffordanceEntity from "./AffordanceEntity";
-import CollectingScheduler from "./CollectingScheduler";
 import DerefInfoCollector from "./DerefInfoCollector";
+import SchedulerFactory, { ICollectingScheduler, SchedulerConfig } from "./SchedulerFactory";
 
 export interface DerefConfigType {
   RDF_TYPE: string;
@@ -50,13 +50,19 @@ export interface DerefConfig {
 
 export default class AffordanceManager {
   private affordances: AffordanceEntity[];
-  private collectingScheduler: CollectingScheduler;
+  private collectingScheduler: ICollectingScheduler;
   derefInfoCollector: DerefInfoCollector;
   private documentWatcher: DocumentWatcher;
-  constructor(derefconfig: DerefConfig) {
+  
+  constructor(derefconfig: DerefConfig, schedulerConfig?: SchedulerConfig) {
     // console.log("Affordance Manager initialised");
     this.affordances = [];
-    this.collectingScheduler = new CollectingScheduler();
+    
+    // Create scheduler based on config or use optimal defaults
+    this.collectingScheduler = schedulerConfig 
+      ? SchedulerFactory.createScheduler(schedulerConfig)
+      : SchedulerFactory.createOptimalScheduler();
+    
     this.derefInfoCollector = new DerefInfoCollector(derefconfig);
     this.initAffordances(this.derefInfoCollector);
     this.documentWatcher = new DocumentWatcher(this);
@@ -87,6 +93,20 @@ export default class AffordanceManager {
       this.affordances.splice(index, 1);
       // console.log("Affordance removed: " + affordance);
     }
+  }
+
+  /**
+   * Get performance statistics from the scheduler
+   */
+  getPerformanceStats() {
+    return this.collectingScheduler.getPerformanceStats?.();
+  }
+
+  /**
+   * Reset performance metrics
+   */
+  resetPerformanceMetrics() {
+    this.collectingScheduler.resetPerformanceMetrics?.();
   }
 }
 

@@ -102,6 +102,10 @@ export default class AffordanceEntity {
     });
   }
 
+  getLink(): string {
+    return this.link;
+  }
+
   disableMIAfunctionality() {
     // Remove the hover effect on the element
     this.element.removeEventListener("mouseover", () => {});

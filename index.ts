@@ -2,6 +2,7 @@
 import AffordanceManager from "./src/AffordanceManager";
 import fetchderefconfig from "./src/DerefAndMappingConfig";
 import { SelfEntity } from "./src/Entity";
+import { SchedulerConfig } from "./src/SchedulerFactory";
 import "./src/css/styles.css";
 
 // on document ready init the Affordance Manager
@@ -16,6 +17,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const self_reference = script_tag.getAttribute("data-self-reference");
   const extra_properties = script_tag.getAttribute("data-extra-properties");
   const default_template = script_tag.getAttribute("data-default-template");
+  const scheduler_type = script_tag.getAttribute("data-scheduler-type") as 'sequential' | 'parallel' | null;
+  const max_concurrency = script_tag.getAttribute("data-max-concurrency");
+  
   let proxy_url = null;
   let default_template_url = null;
   if (script_tag.hasAttribute("data-proxy")) {
@@ -51,6 +55,33 @@ document.addEventListener("DOMContentLoaded", function () {
   //fetch the deref config file then initialise the Affordance Manager
   fetchderefconfig(deref_config_path).then((derefconfig) => {
     console.log(derefconfig);
-    new AffordanceManager(derefconfig);
+    
+    // Create scheduler configuration
+    let schedulerConfig: SchedulerConfig | undefined;
+    if (scheduler_type) {
+      schedulerConfig = {
+        type: scheduler_type,
+        enablePerformanceMonitoring: true
+      };
+      
+      if (max_concurrency && scheduler_type === 'parallel') {
+        const concurrency = parseInt(max_concurrency, 10);
+        if (!isNaN(concurrency) && concurrency > 0) {
+          schedulerConfig.maxConcurrency = Math.min(concurrency, 8); // Cap at 8
+        }
+      }
+      
+      console.log("Using custom scheduler configuration:", schedulerConfig);
+    } else {
+      console.log("Using optimal scheduler configuration (auto-detect)");
+    }
+    
+    // Create AffordanceManager with scheduler configuration
+    const affordanceManager = new AffordanceManager(derefconfig, schedulerConfig);
+    
+    // Expose affordance manager and its performance stats to window for debugging
+    (window as any).affordanceManager = affordanceManager;
+    (window as any).getPerformanceStats = () => affordanceManager.getPerformanceStats();
+    (window as any).resetPerformanceMetrics = () => affordanceManager.resetPerformanceMetrics();
   });
 });
