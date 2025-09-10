@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>MIA Advanced Configuration Example</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Include MIA with advanced configuration options -->
+    <script src="https://open-science.vliz.be/MIA/dist/mia.bundle.js" id="mia_script"
+        data-deref-config="https://open-science.vliz.be/MIA/test/deref_config.json"
+        data-proxy="https://docker-dev.vliz.be:5301/"
+        data-self-reference
+        data-extra-properties="nodecorator"
+        data-default-template="https://open-science.vliz.be/MIA/test/default_template.json"></script>
+    
+    <!-- Include Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-8 bg-indigo-50">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-indigo-800 mb-6">MIA Advanced Configuration Example</h1>
+        
+        <div class="bg-indigo-100 border-l-4 border-indigo-500 p-4 mb-6">
+            <h3 class="font-semibold text-indigo-800 mb-2">🔧 Advanced Features Enabled</h3>
+            <p class="text-indigo-700">
+                This example demonstrates advanced MIA configuration including proxy settings, 
+                self-reference processing, and custom templates.
+            </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-xl font-semibold mb-4">Link Behavior Control</h2>
+            
+            <div class="space-y-4">
+                <div class="p-4 border border-gray-200 rounded">
+                    <h3 class="font-semibold mb-2">Standard MIA Processing</h3>
+                    <p>
+                        Regular link: <a href="https://marineinfo.org/id/person/38476" class="text-indigo-600 hover:underline">Marine Researcher</a>
+                    </p>
+                </div>
+
+                <div class="p-4 border border-gray-200 rounded">
+                    <h3 class="font-semibold mb-2">No Update (MIA Disabled)</h3>
+                    <p>
+                        Link without MIA: <a href="https://marineinfo.org/id/person/48" mia-extra-properties="noupdate" class="text-gray-600 hover:underline">Jan Mees (No MIA)</a>
+                    </p>
+                </div>
+
+                <div class="p-4 border border-gray-200 rounded">
+                    <h3 class="font-semibold mb-2">No Decorator Elements</h3>
+                    <p>
+                        Clean link: <a href="https://marineinfo.org/id/institute/36" mia-extra-properties="nodecorator" class="text-indigo-600 hover:underline">VLIZ Institute (Clean)</a>
+                    </p>
+                </div>
+
+                <div class="p-4 border border-gray-200 rounded">
+                    <h3 class="font-semibold mb-2">No Text Ellipsis</h3>
+                    <p>
+                        Full text: <a href="https://marineinfo.org/id/project/5240" mia-extra-properties="noellipsis" class="text-indigo-600 hover:underline">Long Marine Research Project Title Without Truncation</a>
+                    </p>
+                </div>
+
+                <div class="p-4 border border-gray-200 rounded">
+                    <h3 class="font-semibold mb-2">Force Update</h3>
+                    <p>
+                        Updated link: <a href="https://marineregions.org/mrgid/3293" mia-extra-properties="update" class="text-indigo-600 hover:underline">Belgian EEZ (Force Update)</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-xl font-semibold mb-4">Geographic and Dataset Examples</h2>
+            <p class="mb-4">
+                Explore marine regions with enhanced mapping: 
+                <a href="https://marineregions.org/mrgid/2350" class="text-indigo-600 hover:underline">North Sea</a> and 
+                <a href="https://marineregions.org/mrgid/61473" class="text-indigo-600 hover:underline">Specific Marine Area</a>.
+            </p>
+            
+            <p class="mb-4">
+                Access research datasets: 
+                <a href="https://marineinfo.org/id/dataset/8135" class="text-indigo-600 hover:underline">Multi-URL Dataset</a> and 
+                <a href="https://marineinfo.org/id/collection/619" class="text-indigo-600 hover:underline">EurOBIS Collection</a>.
+            </p>
+
+            <p>
+                Scientific publications: 
+                <a href="https://marineinfo.org/id/publication/355430" class="text-indigo-600 hover:underline">Marine Research Paper</a> and 
+                <a href="https://marineinfo.org/id/publication/225534" class="text-indigo-600 hover:underline">Multimedia Publication</a>.
+            </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold mb-4">Configuration Details</h2>
+            <div class="bg-gray-100 p-4 rounded text-sm">
+                <h3 class="font-semibold mb-2">Current Settings:</h3>
+                <ul class="space-y-1">
+                    <li><strong>data-deref-config:</strong> Default configuration file with all supported data types</li>
+                    <li><strong>data-proxy:</strong> CORS proxy for fetching RDF data</li>
+                    <li><strong>data-self-reference:</strong> Process links that reference the current domain</li>
+                    <li><strong>data-extra-properties:</strong> Include additional decorative elements</li>
+                    <li><strong>data-default-template:</strong> Fallback template for unknown data types</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="mt-8 p-4 bg-blue-100 rounded-lg">
+            <h3 class="font-semibold text-blue-800 mb-2">Testing Instructions:</h3>
+            <ol class="list-decimal list-inside text-blue-700 space-y-1">
+                <li>Hover over different types of links to see various card styles</li>
+                <li>Notice how links with special properties behave differently</li>
+                <li>Check browser console for any debug information</li>
+                <li>Try links that show maps, images, and different data types</li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>
