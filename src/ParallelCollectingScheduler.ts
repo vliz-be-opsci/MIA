@@ -13,14 +13,14 @@ export default class ParallelCollectingScheduler implements ICollectingScheduler
   private activeRequests: Set<Promise<void>> = new Set();
 
   constructor(maxConcurrency: number = 3) {
-    console.log(`Parallel Collecting Scheduler initialized with max concurrency: ${maxConcurrency}`);
+    console.debug(`Parallel Collecting Scheduler initialized with max concurrency: ${maxConcurrency}`);
     this.maxConcurrency = Math.max(1, Math.min(maxConcurrency, 8)); // Limit between 1-8
     this.performanceMonitor = new PerformanceMonitor();
   }
 
   async queueAffordance(affordance: AffordanceEntity): Promise<void> {
     this.queue.push(affordance);
-    console.log(`Affordance queued: ${affordance.getLink()} (queue size: ${this.queue.length})`);
+    console.debug(`Affordance queued: ${affordance.getLink()} (queue size: ${this.queue.length})`);
     
     if (!this.isProcessing) {
       this.startProcessing();
@@ -33,7 +33,7 @@ export default class ParallelCollectingScheduler implements ICollectingScheduler
     }
 
     this.isProcessing = true;
-    console.log("Starting parallel processing");
+    console.debug("Starting parallel processing");
 
     try {
       while (this.queue.length > 0 || this.activeRequests.size > 0) {
@@ -65,7 +65,7 @@ export default class ParallelCollectingScheduler implements ICollectingScheduler
       }
     } finally {
       this.isProcessing = false;
-      console.log("Parallel processing completed");
+      console.debug("Parallel processing completed");
     }
   }
 
@@ -118,7 +118,7 @@ export default class ParallelCollectingScheduler implements ICollectingScheduler
         
         if (retryCount < maxRetries) {
           const retryDelay = this.performanceMonitor.getRetryDelay(retryCount);
-          console.log(`Retrying affordance ${affordance.getLink()} (${retryCount + 1}/${maxRetries}) after ${retryDelay.toFixed(0)}ms delay`);
+          console.debug(`Retrying affordance ${affordance.getLink()} (${retryCount + 1}/${maxRetries}) after ${retryDelay.toFixed(0)}ms delay`);
           await this.delay(retryDelay);
           retryCount++;
         } else {
@@ -170,7 +170,7 @@ export default class ParallelCollectingScheduler implements ICollectingScheduler
    */
   setMaxConcurrency(maxConcurrency: number): void {
     this.maxConcurrency = Math.max(1, Math.min(maxConcurrency, 8));
-    console.log(`Max concurrency updated to: ${this.maxConcurrency}`);
+    console.debug(`Max concurrency updated to: ${this.maxConcurrency}`);
   }
 
   /**

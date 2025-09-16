@@ -21,6 +21,226 @@
 </head>
 
 <body>
+<!-- File Upload for deref_config.json -->
+<!-- Text Editor for deref_config.json -->
+<!-- Save Changes to File -->
+<script>
+    // Ensure proper validation of the JSON structure before applying changes
+    function validateConfigSchema(config) {
+        if (typeof config !== 'object' || config === null) {
+            console.error('Invalid configuration: Not an object.');
+            return false;
+        }
+        // Example schema validation: Ensure required keys exist
+        const requiredKeys = ['key1', 'key2']; // Replace with actual keys
+        for (const key of requiredKeys) {
+            if (!(key in config)) {
+                console.error(`Invalid configuration: Missing required key "${key}".`);
+                return false;
+            }
+        }
+        return true;
+    }
+</script>
+<br>
+<br>
+<br>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <button id="save-config-to-file" class="btn btn-success">Save Config to File</button>
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById('save-config-to-file').addEventListener('click', function () {
+        if (window.deref_config) {
+            const blob = new Blob([JSON.stringify(window.deref_config, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'deref_config.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            alert('Configuration saved to file.');
+        } else {
+            alert('No configuration loaded to save.');
+        }
+    });
+</script>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <label for="deref-config-editor" class="form-label">Edit deref_config.json:</label>
+            <textarea id="deref-config-editor" class="form-control" rows="10" placeholder="JSON content will appear here..."></textarea>
+            <button id="apply-config-changes" class="btn btn-primary mt-2">Apply Changes</button>
+        </div>
+    </div>
+</div>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <label for="default-template-editor" class="form-label">Edit default_template.json:</label>
+            <textarea id="default-template-editor" class="form-control" rows="10" placeholder="JSON content will appear here..."></textarea>
+            <button id="apply-default-template-changes" class="btn btn-primary mt-2">Apply Changes</button>
+            <button id="save-default-template-to-file" class="btn btn-success mt-2">Save to File</button>
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById('save-default-template-to-file').addEventListener('click', function () {
+        if (window.default_template_config) {
+            const blob = new Blob([JSON.stringify(window.default_template_config, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'default_template.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            alert('default_template.json saved to file.');
+        } else {
+            alert('No configuration loaded to save.');
+        }
+    });
+</script>
+<script>
+    document.getElementById('apply-default-template-changes').addEventListener('click', function () {
+        const editorContent = document.getElementById('default-template-editor').value;
+        try {
+            const parsedConfig = JSON.parse(editorContent);
+            if (validateConfigSchema(parsedConfig)) {
+                window.default_template_config = parsedConfig;
+                alert('Changes applied successfully!');
+                console.debug('Updated default_template configuration:', parsedConfig);
+            } else {
+                alert('Invalid JSON structure. Please check the content.');
+            }
+        } catch (error) {
+            console.error('Error parsing JSON:', error);
+            alert('Failed to apply changes. Ensure the content is valid JSON.');
+        }
+    });
+
+    // Populate the editor with the current default_template.json content
+    function populateDefaultTemplateEditor() {
+        const editor = document.getElementById('default-template-editor');
+        if (window.default_template_config) {
+            editor.value = JSON.stringify(window.default_template_config, null, 2);
+        } else {
+            editor.value = 'No configuration loaded.';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', populateDefaultTemplateEditor);
+</script>
+<script>
+    document.getElementById('apply-config-changes').addEventListener('click', function () {
+        const editorContent = document.getElementById('deref-config-editor').value;
+        try {
+            const parsedConfig = JSON.parse(editorContent);
+            if (validateConfigSchema(parsedConfig)) {
+                window.deref_config = parsedConfig;
+                alert('Changes applied successfully!');
+                console.debug('Updated configuration:', parsedConfig);
+            } else {
+                alert('Invalid JSON structure. Please check the content.');
+            }
+        } catch (error) {
+            console.error('Error parsing JSON:', error);
+            alert('Failed to apply changes. Ensure the content is valid JSON.');
+        }
+    });
+
+    // Populate the editor with the current deref_config.json content
+    function populateEditorWithConfig() {
+        const editor = document.getElementById('deref-config-editor');
+        if (window.deref_config) {
+            editor.value = JSON.stringify(window.deref_config, null, 2);
+            populateRdfTypeOptions(window.deref_config);
+        } else {
+            editor.value = 'No configuration loaded.';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', populateEditorWithConfig);
+</script>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <label for="deref-config-upload" class="form-label">Upload deref_config.json:</label>
+            <input type="file" id="deref-config-upload" class="form-control" accept=".json">
+        </div>
+    </div>
+</div>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <label for="default-template-upload" class="form-label">Upload default_template.json:</label>
+            <input type="file" id="default-template-upload" class="form-control" accept=".json">
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById('default-template-upload').addEventListener('change', async function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            try {
+                const text = await file.text();
+                const config = JSON.parse(text);
+                if (validateConfigSchema(config)) {
+                    window.default_template_config = config;
+                    alert('default_template.json loaded successfully!');
+                    console.debug('Loaded default_template configuration:', config);
+                } else {
+                    alert('Invalid JSON structure. Please check the file.');
+                }
+            } catch (error) {
+                console.error('Error reading file:', error);
+                alert('Failed to load the file. Ensure it is a valid JSON.');
+            }
+        }
+    });
+</script>
+<script>
+    document.getElementById('deref-config-upload').addEventListener('change', async function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            try {
+                const text = await file.text();
+                const config = JSON.parse(text);
+                if (validateConfigSchema(config)) {
+                    window.deref_config = config;
+                    alert('deref_config.json loaded successfully!');
+                    console.debug('Loaded configuration:', config);
+                } else {
+                    alert('Invalid JSON structure. Please check the file.');
+                }
+            } catch (error) {
+                console.error('Error reading file:', error);
+                alert('Failed to load the file. Ensure it is a valid JSON.');
+            }
+        }
+    });
+
+    // Function to validate the JSON schema
+    function validateConfigSchema(config) {
+        if (typeof config !== 'object' || config === null) {
+            console.error('Invalid configuration: Not an object.');
+            return false;
+        }
+        // Example schema validation: Ensure required keys exist
+        /*
+        const requiredKeys = ['key1', 'key2']; // Replace with actual keys
+        for (const key of requiredKeys) {
+            if (!(key in config)) {
+                console.error(`Invalid configuration: Missing required key "${key}".`);
+                return false;
+            }
+        }
+        */
+        return true;
+    }
+</script>
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <a class="navbar-brand" href="#">MIA Default config builder</a>
@@ -171,7 +391,7 @@
         document.getElementById('submit-proxy-url').addEventListener('click', function () {
             const proxyUrl = document.getElementById('proxy-url').value;
             window.proxy_url = proxyUrl;
-            console.log('Proxy URL updated to:', proxyUrl);
+            console.debug('Proxy URL updated to:', proxyUrl);
         });
 
         //on document load, check get the default template from the window object
@@ -208,7 +428,7 @@
             }
 
             window.default_template_config.MODAL[key] = valueArray;
-            console.log(`Updated key "${key}" with value:`, valueArray);
+            console.debug(`Updated key "${key}" with value:`, valueArray);
 
             //pretty alert the updated config
             alert(JSON.stringify(window.default_template_config, null, 2));
@@ -399,7 +619,7 @@
         });
         // Custom event system to capture console logs
         (function () {
-            const originalLog = console.log;
+            const originalLog = console.debug;
             const originalInfo = console.info;
             const originalWarn = console.warn;
             const originalError = console.error;
@@ -420,7 +640,7 @@
                 return escapeHtml(message);
             }
 
-            console.log = function (...args) {
+            console.debug = function (...args) {
                 originalLog.apply(console, args);
                 document.dispatchEvent(new CustomEvent('logEvent', { detail: truncateAndEscape(args.join(' ')) }));
             };
@@ -579,3 +799,57 @@
 </body>
 
 </html>
+<script>
+    document.addEventListener('DOMContentLoaded', async function () {
+        const scriptTag = document.getElementById('mia_script');
+        const derefConfigUrl = scriptTag.getAttribute('data-deref-config');
+        const defaultTemplateUrl = scriptTag.getAttribute('data-default-template');
+
+        // Global variables to store validated configurations
+        window.deref_config = null;
+        window.default_template_config = null;
+
+        // Function to validate the JSON schema
+        function validateConfigSchema(config) {
+            if (typeof config !== 'object' || config === null) {
+                console.error('Invalid configuration: Not an object.');
+                return false;
+            }
+            return true; // Adjust schema validation as needed
+        }
+
+        // Function to fetch and validate a JSON file
+        async function fetchAndValidateConfig(url, globalVarName) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch ${globalVarName}: ${response.statusText}`);
+                }
+                const config = await response.json();
+                if (validateConfigSchema(config)) {
+                    window[globalVarName] = config;
+                    console.debug(`${globalVarName} loaded and validated:`, config);
+                } else {
+                    alert(`${globalVarName} validation failed. Check console for details.`);
+                }
+            } catch (error) {
+                console.error(`Error loading ${globalVarName}:`, error);
+                alert(`Failed to load ${globalVarName}. Check console for details.`);
+            }
+        }
+
+        // Fetch both configurations
+        await Promise.all([
+            fetchAndValidateConfig(derefConfigUrl, 'deref_config'),
+            fetchAndValidateConfig(defaultTemplateUrl, 'default_template_config')
+        ]);
+
+        // Populate the editors with the loaded configurations
+        if (window.deref_config) {
+            document.getElementById('deref-config-editor').value = JSON.stringify(window.deref_config, null, 2);
+        }
+        if (window.default_template_config) {
+            document.getElementById('default-template-editor').value = JSON.stringify(window.default_template_config, null, 2);
+        }
+    });
+</script>

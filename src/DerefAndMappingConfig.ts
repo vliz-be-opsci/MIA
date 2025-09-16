@@ -9,7 +9,7 @@ export default async function fetchderefconfig(path: string | null) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const json = await response.json();
-    //console.log(json);
+    //console.debug(json);
     return json;
   } catch (error) {
     console.error("Error:", error);

@@ -102,9 +102,9 @@ import('./src/PerformanceBenchmark.js').then(module => {
   const benchmark = new module.default();
   return benchmark.runComparison();
 }).then(results => {
-  console.log("Sequential:", results.sequential);
-  console.log("Parallel:", results.parallel);
-  console.log("Improvement:", results.improvement);
+  console.debug("Sequential:", results.sequential);
+  console.debug("Parallel:", results.parallel);
+  console.debug("Improvement:", results.improvement);
 });
 ```
 

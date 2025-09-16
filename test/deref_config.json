@@ -539,7 +539,7 @@
             },
             {
                 "prefix": "dwc",
-                "uri": "https://rs.tdwg.org/dwc/terms/"
+                "uri": "http://rs.tdwg.org/dwc/terms/"
             },
             {
                 "prefix": "aphia",
@@ -567,11 +567,19 @@
                 "type": "single"
             },
             "taxon_status": {
-                "query": "taxon-name:hasStatus",
+                "query": "taxon-name:hasStatus/skos:prefLabel",
                 "type": "single"
             },
             "image": {
                 "query": "foaf:depiction",
+                "type": "single"
+            },
+            "citation": {
+                "query": "dcterms:bilbioGraphicCitation",
+                "type": "single"
+            },
+            "rank": {
+                "query": "dwc:taxonRank/skos:prefLabel",
                 "type": "single"
             }
         }

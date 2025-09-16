@@ -24,7 +24,7 @@ export default class DerefInfoCollector {
 
   async collectInfo(url: string) {
     if (this.cashedInfo[url] !== undefined) {
-      // console.log("info already collected");
+      // console.debug("info already collected");
       return this.cashedInfo[url];
     }
     // colect info
@@ -48,7 +48,7 @@ export default class DerefInfoCollector {
     console.info("types: ", types);
     console.info("derefconfig: ", this.derefconfig);
     const config_type_info = get_config_for_rdf_type(types, this.derefconfig);
-    // console.log(config_type_info);
+    // console.debug(config_type_info);
     if (config_type_info === null) {
       console.info("No config found for: ", url);
       let info_keys: any = {};
@@ -76,10 +76,10 @@ export default class DerefInfoCollector {
     for (const key in mapping) {
       // new function here specifically to collect info
       /*
-      // console.log(mapping);
-      // console.log("key: ", key);
-      // console.log(config_type_info.MAPPING[mapping[key]]);
-      // console.log(ppaths);
+      // console.debug(mapping);
+      // console.debug("key: ", key);
+      // console.debug(config_type_info.MAPPING[mapping[key]]);
+      // console.debug(ppaths);
       */
       const value_path = await collectInfoMappingKey(
         mapping[key],
@@ -206,8 +206,8 @@ function get_config_for_rdf_type(
 ): DerefConfigType | null {
   for (const rtype of rdf_type) {
     for (const key in derefconfig) {
-      //console.log("key: ", key);
-      //console.log("rtype: ", rtype);
+      //console.debug("key: ", key);
+      //console.debug("rtype: ", rtype);
       const config = derefconfig[key];
       if (config.RDF_TYPE === rtype) {
         return config;

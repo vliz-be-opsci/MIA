@@ -46,7 +46,7 @@ export default class PerformanceBenchmark {
       throughputIncrease: number;
     };
   }> {
-    console.log("Starting performance benchmark comparison...");
+    console.debug("Starting performance benchmark comparison...");
 
     // Run benchmarks
     const sequentialResult = await this.benchmarkScheduler(
@@ -77,14 +77,14 @@ export default class PerformanceBenchmark {
   }
 
   private async benchmarkScheduler(scheduler: any, schedulerType: string): Promise<BenchmarkResult> {
-    console.log(`Benchmarking ${schedulerType} scheduler...`);
+    console.debug(`Benchmarking ${schedulerType} scheduler...`);
     
     const iterations = this.config?.iterations ?? 3;
     const warmupRuns = this.config?.warmupRuns ?? 1;
     
     // Warm up runs (not counted in results)
     for (let i = 0; i < warmupRuns; i++) {
-      console.log(`Warmup run ${i + 1}/${warmupRuns} for ${schedulerType}`);
+      console.debug(`Warmup run ${i + 1}/${warmupRuns} for ${schedulerType}`);
       await this.runSingleBenchmark(scheduler, false);
       await this.delay(1000); // Wait between runs
     }
@@ -92,7 +92,7 @@ export default class PerformanceBenchmark {
     // Actual benchmark runs
     const results: BenchmarkResult[] = [];
     for (let i = 0; i < iterations; i++) {
-      console.log(`Benchmark run ${i + 1}/${iterations} for ${schedulerType}`);
+      console.debug(`Benchmark run ${i + 1}/${iterations} for ${schedulerType}`);
       const result = await this.runSingleBenchmark(scheduler, true);
       results.push(result);
       
@@ -221,27 +221,27 @@ export default class PerformanceBenchmark {
   }
 
   private logResults(results: any): void {
-    console.log("\n" + "=".repeat(60));
-    console.log("PERFORMANCE BENCHMARK RESULTS");
-    console.log("=".repeat(60));
+    console.debug("\n" + "=".repeat(60));
+    console.debug("PERFORMANCE BENCHMARK RESULTS");
+    console.debug("=".repeat(60));
     
-    console.log("\nSequential Scheduler:");
-    console.log(`  Total Time: ${results.sequential.totalTime.toFixed(2)}ms`);
-    console.log(`  Success Rate: ${(results.sequential.successRate * 100).toFixed(1)}%`);
-    console.log(`  Throughput: ${results.sequential.throughput.toFixed(2)} req/s`);
-    console.log(`  Avg Response Time: ${results.sequential.averageResponseTime.toFixed(2)}ms`);
+    console.debug("\nSequential Scheduler:");
+    console.debug(`  Total Time: ${results.sequential.totalTime.toFixed(2)}ms`);
+    console.debug(`  Success Rate: ${(results.sequential.successRate * 100).toFixed(1)}%`);
+    console.debug(`  Throughput: ${results.sequential.throughput.toFixed(2)} req/s`);
+    console.debug(`  Avg Response Time: ${results.sequential.averageResponseTime.toFixed(2)}ms`);
     
-    console.log("\nParallel Scheduler:");
-    console.log(`  Total Time: ${results.parallel.totalTime.toFixed(2)}ms`);
-    console.log(`  Success Rate: ${(results.parallel.successRate * 100).toFixed(1)}%`);
-    console.log(`  Throughput: ${results.parallel.throughput.toFixed(2)} req/s`);
-    console.log(`  Avg Response Time: ${results.parallel.averageResponseTime.toFixed(2)}ms`);
+    console.debug("\nParallel Scheduler:");
+    console.debug(`  Total Time: ${results.parallel.totalTime.toFixed(2)}ms`);
+    console.debug(`  Success Rate: ${(results.parallel.successRate * 100).toFixed(1)}%`);
+    console.debug(`  Throughput: ${results.parallel.throughput.toFixed(2)} req/s`);
+    console.debug(`  Avg Response Time: ${results.parallel.averageResponseTime.toFixed(2)}ms`);
     
-    console.log("\nPerformance Improvement:");
-    console.log(`  Time Reduction: ${results.improvement.timeReduction.toFixed(1)}%`);
-    console.log(`  Throughput Increase: ${results.improvement.throughputIncrease.toFixed(1)}%`);
+    console.debug("\nPerformance Improvement:");
+    console.debug(`  Time Reduction: ${results.improvement.timeReduction.toFixed(1)}%`);
+    console.debug(`  Throughput Increase: ${results.improvement.throughputIncrease.toFixed(1)}%`);
     
-    console.log("\n" + "=".repeat(60));
+    console.debug("\n" + "=".repeat(60));
   }
 
   private delay(ms: number): Promise<void> {

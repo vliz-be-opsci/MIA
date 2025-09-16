@@ -41,8 +41,8 @@ export default class AffordanceEntity {
   };
 
   constructor(affordance: any, derefinfocollector: DerefInfoCollector) {
-    // console.log(typeof affordance);
-    // console.log("Affordance Entity initialised");
+    // console.debug(typeof affordance);
+    // console.debug("Affordance Entity initialised");
     this.element = affordance;
     this.link = affordance.href;
     this.collected_info = new Entity();
@@ -66,19 +66,19 @@ export default class AffordanceEntity {
       this.isCancelled = false;
 
       if (this.incardview(event)) {
-        // console.log("card already in view");
+        // console.debug("card already in view");
         return;
       }
       //remove all other cards
       this._remove_card();
-      // console.log(this.collected_info);
-      // console.log(this.collected_info.content);
+      // console.debug(this.collected_info);
+      // console.debug(this.collected_info.content);
       this.produce_HTML_loader();
       if (
         this.collected_info.content === undefined ||
         Object.keys(this.collected_info.content).length === 0
       ) {
-        // console.log("no info collected yet");
+        // console.debug("no info collected yet");
 
         try {
           await this.collectInfo();
@@ -88,7 +88,7 @@ export default class AffordanceEntity {
           this.produce_HTML_view(event);
         } catch (error) {
           if (this.isCancelled) return;
-          console.log(error);
+          console.debug(error);
           this.removeLoader();
           // on error also remove the conflunce_box class from the element
           if (this.miaproperites.decorator) {
@@ -129,7 +129,7 @@ export default class AffordanceEntity {
     // Implement the logic to cancel the hover effect
     this._remove_card();
     this.removeLoader();
-    // console.log("Hover effect cancelled for", this.link);
+    // console.debug("Hover effect cancelled for", this.link);
   }
 
   incardview(event: MouseEvent): boolean {
@@ -180,14 +180,14 @@ export default class AffordanceEntity {
   async collectInfo() {
     try {
       //function to collect info
-      console.log("collecting info for " + this.link);
+      console.debug("collecting info for " + this.link);
 
       // there is a special case where the this.link is a doc version of marineinfo
       if (this.link.includes("marineinfo.org/doc/")) {
         console.warn("Special case for marineinfo document version");
         //make the this.link into a id one by replaceing marineinfo.org/doc/ with marineinfo.org/id/
         this.link = this.link.replace("marineinfo.org/doc/", "marineinfo.org/id/");
-        console.log("new link: ", this.link);
+        console.debug("new link: ", this.link);
       }
 
       //this one is also needed since there are 2 ways to trigger this
@@ -204,7 +204,7 @@ export default class AffordanceEntity {
         return;
       }
       if (Object.keys(this.collected_info.content).length !== 0) {
-        // console.log("info already collected");
+        // console.debug("info already collected");
         return;
       }
     } catch (error) {
@@ -228,7 +228,7 @@ export default class AffordanceEntity {
     //add class confluence_box to element if not already there
 
     // if the element has a class named retrieveMIA then add it
-
+    // Special case for marinespecies.org taxdetails links
     if (
       this.element.classList.contains("retrieveMIA") ||
       this.link.includes("marineinfo.org") ||
@@ -278,7 +278,7 @@ export default class AffordanceEntity {
             Object.keys(this.derefinfocollector.cashedInfo[this.link])
               .length !== 0
           ) {
-            // console.log("updating dom");
+            // console.debug("updating dom");
             let collected_info = this.derefinfocollector.cashedInfo[this.link];
             //change the inner html of the element
             //this should be either the title or name key of the collected info
@@ -300,7 +300,7 @@ export default class AffordanceEntity {
                     ]
                   );
                 } catch (error) {
-                  // console.log("key not found");
+                  // console.debug("key not found");
                   continue;
                 }
               }
@@ -362,7 +362,7 @@ export default class AffordanceEntity {
     };
     let toreturn = mapping[name];
     if (toreturn === undefined) {
-      // console.log("template not found");
+      // console.debug("template not found");
       return generateDefaultCardTemplate;
     }
     return mapping[name];
@@ -476,9 +476,9 @@ export default class AffordanceEntity {
   }
 
   produce_HTML_view(event: MouseEvent) {
-    // console.log("producing HTML view");
+    // console.debug("producing HTML view");
     this.removeLoader();
-    console.log(this.collected_info);
+    console.debug(this.collected_info);
 
     let affordance_link = this.link;
 
@@ -486,13 +486,13 @@ export default class AffordanceEntity {
     let card_id = this.link.replace(/\//g, "-");
     //check if modal already exists
     if (document.getElementById(card_id) !== null) {
-      // console.log("card already exists");
+      // console.debug("card already exists");
       return;
     }
 
     //get card type for right template
     let template_name = Object.keys(this.collected_info.content)[0];
-    // console.log(template_name);
+    // console.debug(template_name);
 
     //create card
     let card = document.createElement("div");
@@ -571,7 +571,7 @@ export default class AffordanceEntity {
   }
 
   produce_HTML_loader() {
-    // console.log("producing HTML loader");
+    // console.debug("producing HTML loader");
     //check if the link already has a loader
     // by checking for the confluence_box_loading class
 

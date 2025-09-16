@@ -169,9 +169,9 @@
             log(`Scheduler Type: ${schedulerType}`);
             log(`Max Concurrency: ${maxConcurrency}`);
             
-            // Override console.log to capture MIA logs
-            const originalLog = console.log;
-            console.log = function(...args) {
+            // Override console.debug to capture MIA logs
+            const originalLog = console.debug;
+            console.debug = function(...args) {
                 originalLog.apply(console, args);
                 if (args.length > 0 && typeof args[0] === 'string') {
                     const message = args.join(' ');

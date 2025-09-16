@@ -59,16 +59,16 @@ export async function defaultTemplateInfoCollector(
   store:N3.Store,
   url: string,
 ): Promise<any> {
-  console.log(store);
+  console.debug(store);
   const default_template_config:DefaultTemplateConfig = (window as any).default_template_config;
-  console.log(default_template_config);
+  console.debug(default_template_config);
 
   //get modal prefixes
   const modal_prefixes = default_template_config.PREFIXES;
 
   //get all property paths from config
   const all_property_paths = _getAllPropertyPathsFromConfig(default_template_config);
-  console.log(all_property_paths);
+  console.debug(all_property_paths);
 
   //for each pp in all property paths traverse the store
   for (const pp in all_property_paths) {
@@ -78,7 +78,7 @@ export async function defaultTemplateInfoCollector(
       store,
       "list"
     );
-    console.log(value_path);
+    console.debug(value_path);
   }
   let info_keys: any = {};
   //collect info for the template from the store
@@ -92,7 +92,7 @@ export async function defaultTemplateInfoCollector(
       // for each value in the array of the properties array 
       // try and get the proerty value from the store 
       for (const property in default_template_config.MODAL[key as keyof typeof default_template_config.MODAL][properties_arrays]) {
-        console.log(default_template_config.MODAL[key as keyof typeof default_template_config.MODAL][properties_arrays][property]);
+        console.debug(default_template_config.MODAL[key as keyof typeof default_template_config.MODAL][properties_arrays][property]);
         let value = await _queryStoreForValue(
           url,
           default_template_config.MODAL[key as keyof typeof default_template_config.MODAL][properties_arrays][property],
@@ -143,7 +143,7 @@ async function _queryStoreForValue(
       "list"
     );
     if (value == "") {
-      // console.log("no value found for query: " + mapping_key);
+      // console.debug("no value found for query: " + mapping_key);
       // try and get value with trajectory path
       const trajectory_path = _extractPropertyPathsFromString(
         query_value,
@@ -159,7 +159,7 @@ async function _queryStoreForValue(
     }
     return value;
   } catch (error) {
-    // console.log("error in query", error);
+    // console.debug("error in query", error);
     // try and get value with trajectory path
     const trajectory_path = _extractPropertyPathsFromString(
       query_value,
@@ -194,7 +194,7 @@ function _getAllPropertyPathsFromConfig(config: DefaultTemplateConfig): string[]
     }
   }
 
-  console.log(to_extract_ppaths);
+  console.debug(to_extract_ppaths);
   // for each property path in the extracted ppaths
   for (const property_path in to_extract_ppaths) {
     let extracted_paths = _extractPropertyPathsFromString(
@@ -242,9 +242,9 @@ export function generateDefaultCardTemplate(
   html_element: HTMLElement,
   affordance_link: string
 ): HTMLElement {
-  console.log(data);
-  console.log(html_element);
-  console.log(affordance_link);
+  console.debug(data);
+  console.debug(html_element);
+  console.debug(affordance_link);
 
   let _link = affordance_link;
 

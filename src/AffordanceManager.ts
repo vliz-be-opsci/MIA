@@ -55,7 +55,7 @@ export default class AffordanceManager {
   private documentWatcher: DocumentWatcher;
   
   constructor(derefconfig: DerefConfig, schedulerConfig?: SchedulerConfig) {
-    // console.log("Affordance Manager initialised");
+    // console.debug("Affordance Manager initialised");
     this.affordances = [];
     
     // Create scheduler based on config or use optimal defaults
@@ -72,16 +72,16 @@ export default class AffordanceManager {
     const links = document.querySelectorAll("a");
     links.forEach((link) => {
       if (link.href !== "") {
-        // console.log("link added: " + link.href);
+        // console.debug("link added: " + link.href);
         this.addAffordance(link, derefinfocollector);
       }
     });
-    // console.log("Ammount of affordances: " + this.affordances.length);
+    // console.debug("Ammount of affordances: " + this.affordances.length);
   }
 
   addAffordance(affordance: any, derefinfocollector: DerefInfoCollector) {
     //log the type of node and the inner html of the node
-    //console.log(affordance.parentNode.nodeName + ' ' + affordance.parentNode.innerHTML);
+    //console.debug(affordance.parentNode.nodeName + ' ' + affordance.parentNode.innerHTML);
     let new_ae = new AffordanceEntity(affordance, derefinfocollector);
     this.affordances.push(new_ae);
     this.collectingScheduler.queueAffordance(new_ae);
@@ -91,7 +91,7 @@ export default class AffordanceManager {
     const index = this.affordances.indexOf(affordance);
     if (index > -1) {
       this.affordances.splice(index, 1);
-      // console.log("Affordance removed: " + affordance);
+      // console.debug("Affordance removed: " + affordance);
     }
   }
 
@@ -141,7 +141,7 @@ class DocumentWatcher {
     links.forEach((link) => {
       // if the link is in the profiles corner then don't add it
       if (link.href !== "") {
-        // console.log("link added: " + link.href);
+        // console.debug("link added: " + link.href);
         this.affordanceManager.addAffordance(
           link,
           this.affordanceManager.derefInfoCollector

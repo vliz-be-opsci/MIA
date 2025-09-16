@@ -29,8 +29,8 @@ export function generatePersonCardTemplate(
   html_element: HTMLElement,
   affordance_link: string
 ): HTMLElement {
-  console.log(data);
-  console.log(html_element);
+  console.debug(data);
+  console.debug(html_element);
 
   //for each undefined value, replace with a default value
   let surname = data.name || "";
@@ -91,7 +91,7 @@ export function generatePersonCardTemplate(
   clipboardButton?.addEventListener("click", () => {
     //copy the _link to the clipboard
     navigator.clipboard.writeText(_link);
-    console.log("Copied to clipboard");
+    console.debug("Copied to clipboard");
   });
 
   const marineinfoLogo = document.getElementById("marineinfo_logo");
@@ -107,8 +107,8 @@ export function generateDatasetCardTemplate(
   html_element: HTMLElement,
   affordance_link: string
 ): HTMLElement {
-  // console.log(data);
-  // console.log(html_element);
+  // console.debug(data);
+  // console.debug(html_element);
 
   let _link = affordance_link || "";
 
@@ -142,9 +142,9 @@ export function generateDatasetCardTemplate(
                 </a>`;
   }
 
-  console.log(urls);
-  console.log(urls.length);
-  console.log(typeof urls);
+  console.debug(urls);
+  console.debug(urls.length);
+  console.debug(typeof urls);
   let urls_html = "";
   if (typeof urls === "string") {
     urls_html = `<a href="${urls}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
@@ -286,8 +286,8 @@ export function generateInfoCardTemplate(
   html_element: HTMLElement,
   affordance_link: string
 ): HTMLElement {
-  // console.log(data);
-  // // console.log(html_element);
+  // console.debug(data);
+  // // console.debug(html_element);
 
   // This is the default card generated
 
@@ -414,7 +414,7 @@ export function generateCollectionCardTemplate(
   html_element: HTMLElement,
   affordance_link: string
 ): HTMLElement {
-  // console.log(data);
+  // console.debug(data);
   //for each undefined value, replace with a default value
   let title = data.title || "";
   let resources = data.resources || [];
@@ -536,7 +536,7 @@ export function generateBibliographicResourceCardTemplate(
 ): HTMLElement {
   let _link = affordance_link || "";
 
-  // console.log(data);
+  // console.debug(data);
   //for each undefined value, replace with a default value
   let title = data.title || "";
   let type = data.type || "";
@@ -611,7 +611,7 @@ export function generateEventCardTemplate(
   html_element: HTMLElement,
   affordance_link: string
 ): HTMLElement {
-  // console.log(data);
+  // console.debug(data);
   //for each undefined value, replace with a default value
   let title = data.title || "";
   let location = data.location || "";
@@ -680,10 +680,12 @@ export function generateAphiaCardTemplate(
   html_element: HTMLElement,
   affordance_link: string
 ): HTMLElement {
-  // console.log(data);
+  // console.debug(data);
   //for each undefined value, replace with a default value
   let title = data.title || "";
   let status = data.taxon_status || "";
+  let rank = data.rank || "";
+  let citation = data.citation || "";
   let _link = affordance_link || "";
   let image = data.image || "";
 
@@ -704,14 +706,30 @@ export function generateAphiaCardTemplate(
               <img id="marineinfo_logo" class="h-5 w-5 mr-1" src="${link}">
               ${stringlengthshortener(title, 20)}
             </h2>
-            <div class="mt-2 flex space-x-4">
+            <div class="flex items-center space-x-2 mb-1">
+              <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 mr-2">${status}</span>
+              <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">${rank}</span>
+            </div>
+            <div class="mt-2 flex space-x-4 items-center">
                 <a href="${_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
                      <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
                 </a>
+                <button id="aphia-clipboard" class="flex items-center px-2 py-1 bg-gray-100 rounded hover:bg-gray-200 transition ml-2" title="Copy citation">
+                  <img class="h-5 w-5 icon_svg mr-1" src="${clipboard}" alt="Copy citation">
+                </button>
             </div>
         </div>
     </div>
   `;
+
+  // Add clipboard copy functionality for citation
+  setTimeout(() => {
+    const clipboardBtn = document.getElementById("aphia-clipboard");
+    clipboardBtn?.addEventListener("click", () => {
+      navigator.clipboard.writeText(citation);
+      alert("Citation copied to clipboard");
+    });
+  }, 0);
   html_element.innerHTML = innerHTML;
   //adapt the width of the card to the content after the image has loaded
   const image_card = html_element.querySelector("img[alt='Card Image']");
@@ -731,7 +749,7 @@ export function generateMapCardTemplate(
   affordance_link: string
 ): HTMLElement {
   let _link = affordance_link || "";
-  // console.log(data);
+  // console.debug(data);
   const name = data.name || "";
   const mapwkt = data.mapwkt || null; // Default to 0 if not provided
   const centroid = data.centroid || null; // Default to 0 if not provided

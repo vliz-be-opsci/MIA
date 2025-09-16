@@ -8,14 +8,14 @@ export default class CollectingScheduler implements ICollectingScheduler {
   private isProcessing: boolean = false;
 
   constructor() {
-    // console.log("Collecting Scheduler initialised");
+    // console.debug("Collecting Scheduler initialised");
     this.schedule = [];
     this.performanceMonitor = new PerformanceMonitor();
   }
 
   async queueAffordance(affordance: AffordanceEntity) {
     this.schedule.push(affordance);
-    // console.log("Affordance queued: ", affordance);
+    // console.debug("Affordance queued: ", affordance);
     if (!this.isProcessing) {
       // only restart scheduler if it's not already processing
       this.processNextInSchedule();
@@ -24,7 +24,7 @@ export default class CollectingScheduler implements ICollectingScheduler {
 
   private async processNextInSchedule() {
     if (this.isProcessing || this.schedule.length === 0) {
-      // console.log("scheduler already processing or no affordances left");
+      // console.debug("scheduler already processing or no affordances left");
       return;
     }
 
@@ -81,7 +81,7 @@ export default class CollectingScheduler implements ICollectingScheduler {
         
         if (retryCount < maxRetries) {
           const retryDelay = this.performanceMonitor.getRetryDelay(retryCount);
-          console.log(`Retrying affordance (${retryCount + 1}/${maxRetries}) after ${retryDelay.toFixed(0)}ms delay`);
+          console.debug(`Retrying affordance (${retryCount + 1}/${maxRetries}) after ${retryDelay.toFixed(0)}ms delay`);
           await this.delay(retryDelay);
           retryCount++;
         } else {

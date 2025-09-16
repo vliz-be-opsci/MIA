@@ -25,7 +25,7 @@ export default class PerformanceMonitor {
   private readonly recentFailureWindow = 10; // Consider last 10 requests for failure rate
 
   constructor() {
-    console.log("Performance Monitor initialized");
+    console.debug("Performance Monitor initialized");
   }
 
   startRequest(url: string, retryCount: number = 0): RequestMetrics {
@@ -51,7 +51,7 @@ export default class PerformanceMonitor {
       this.metrics.shift();
     }
 
-    console.log(`Request completed: ${metric.url} in ${metric.duration?.toFixed(2)}ms, success: ${success}`);
+    console.debug(`Request completed: ${metric.url} in ${metric.duration?.toFixed(2)}ms, success: ${success}`);
   }
 
   getPerformanceStats(): PerformanceStats {
@@ -120,7 +120,7 @@ export default class PerformanceMonitor {
     // Ensure delay is within reasonable bounds
     adaptiveDelay = Math.max(baseDelay, Math.min(adaptiveDelay, maxDelay));
 
-    console.log(`Adaptive delay calculated: ${adaptiveDelay.toFixed(0)}ms (avg response: ${stats.averageResponseTime.toFixed(0)}ms, recent failures: ${stats.recentFailures}, success rate: ${(stats.successRate * 100).toFixed(1)}%)`);
+    console.debug(`Adaptive delay calculated: ${adaptiveDelay.toFixed(0)}ms (avg response: ${stats.averageResponseTime.toFixed(0)}ms, recent failures: ${stats.recentFailures}, success rate: ${(stats.successRate * 100).toFixed(1)}%)`);
 
     return adaptiveDelay;
   }
@@ -167,6 +167,6 @@ export default class PerformanceMonitor {
    */
   reset(): void {
     this.metrics = [];
-    console.log("Performance Monitor reset");
+    console.debug("Performance Monitor reset");
   }
 }

@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (script_tag.hasAttribute("data-proxy")) {
     proxy_url = script_tag.getAttribute("data-proxy");
   }
-  console.log("proxy_url", proxy_url);
+  console.debug("proxy_url", proxy_url);
 
   if (default_template !== null) {
     default_template_url = default_template;
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   fetchderefconfig(default_template_url).then((default_template_config) => {
-    console.log(default_template_config);
+    console.debug(default_template_config);
     // Set default template config in the window object
     (window as any).default_template_config = default_template_config;
   });
@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   //fetch the deref config file then initialise the Affordance Manager
   fetchderefconfig(deref_config_path).then((derefconfig) => {
-    console.log(derefconfig);
+    console.debug(derefconfig);
     
     // Create scheduler configuration
     let schedulerConfig: SchedulerConfig | undefined;
@@ -71,9 +71,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
       
-      console.log("Using custom scheduler configuration:", schedulerConfig);
+      console.debug("Using custom scheduler configuration:", schedulerConfig);
     } else {
-      console.log("Using optimal scheduler configuration (auto-detect)");
+      console.debug("Using optimal scheduler configuration (auto-detect)");
     }
     
     // Create AffordanceManager with scheduler configuration

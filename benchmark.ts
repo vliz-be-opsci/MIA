@@ -10,4 +10,4 @@ import PerformanceBenchmark from "./src/PerformanceBenchmark";
   return await benchmark.runComparison();
 };
 
-console.log("MIA Performance Benchmark utilities loaded. Use window.runPerformanceBenchmark() to test.");
+console.debug("MIA Performance Benchmark utilities loaded. Use window.runPerformanceBenchmark() to test.");

@@ -34,7 +34,7 @@ export default class SchedulerFactory {
       ...config
     };
 
-    console.log(`Creating ${config.type} scheduler with config:`, defaultConfig);
+    console.debug(`Creating ${config.type} scheduler with config:`, defaultConfig);
 
     switch (config.type) {
       case 'parallel':
@@ -55,14 +55,14 @@ export default class SchedulerFactory {
     const connectionType = this.detectConnectionType();
     
     if (canUseParallel && connectionType !== 'slow') {
-      console.log("Creating parallel scheduler for optimal performance");
+      console.debug("Creating parallel scheduler for optimal performance");
       return this.createScheduler({
         type: 'parallel',
         maxConcurrency: this.getOptimalConcurrency(connectionType),
         enablePerformanceMonitoring: true
       });
     } else {
-      console.log("Creating sequential scheduler for compatibility/performance");
+      console.debug("Creating sequential scheduler for compatibility/performance");
       return this.createScheduler({
         type: 'sequential',
         enablePerformanceMonitoring: true

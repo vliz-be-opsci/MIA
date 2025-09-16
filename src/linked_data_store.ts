@@ -25,7 +25,7 @@ export const traverseURI = async (
   let N3store: N3.Store = store;
   let typeR = type_result;
   let urls = [og_uri];
-  // console.log("trajectory path: ", trajectory_path);
+  // console.debug("trajectory path: ", trajectory_path);
   if (og_uri.startsWith("https:")) {
     urls.push(og_uri.replace("https://", "http://"));
   } else if (og_uri.startsWith("http:")) {
@@ -34,11 +34,11 @@ export const traverseURI = async (
   for (const url of urls) {
     for (let index = 0; index < trajectory_path.length; index++) {
       //console log store length
-      console.log(storeSize(store));
+      console.debug(storeSize(store));
       //change the current trajectory path to the slice of the path
       let current_trajectory = trajectory_path.slice(0, index + 1).join("/");
       let query = `SELECT ?value WHERE {<${url}> ${current_trajectory} ?value . }`;
-      console.log(query);
+      console.debug(query);
       try {
         const results = await linkengine.queryBindings(query, {
           sources: [N3store],
@@ -46,9 +46,9 @@ export const traverseURI = async (
 
 
         const bindings = await results.toArray();
-        console.log(bindings);
+        console.debug(bindings);
         if (bindings.length === 0) {
-          // console.log("no value found for query: " + query);
+          // console.debug("no value found for query: " + query);
           //continue to next in forloop
           continue;
         }
@@ -56,7 +56,7 @@ export const traverseURI = async (
         const binding: Bindings = bindings[0];
 
         if (!binding) {
-          // console.log("no value found for query: " + query);
+          // console.debug("no value found for query: " + query);
           //continue to next in forloop
           continue;
         }
@@ -65,8 +65,8 @@ export const traverseURI = async (
         //check if bindings value is uri , if so get the linked data
         //if not then add the whole binding to the store
         let term = binding.get("value") as N3.Term;
-        //console.log("term value: ", term.value);
-        //console.log("term type: ", term.termType);
+        //console.debug("term value: ", term.value);
+        //console.debug("term type: ", term.termType);
 
         if (term.value.includes("doi.org")) {
           return term.value;
@@ -98,13 +98,13 @@ export const traverseURI = async (
           return term.value;
         }
       } catch (error) {
-        console.log("error in query", error);
+        console.debug("error in query", error);
         // assume that the query is invalid and continue to next in forloop
         continue;
       }
     }
   }
-  console.log("end store size: " + storeSize(store));
+  console.debug("end store size: " + storeSize(store));
   return "";
 };
 
@@ -123,7 +123,7 @@ export const collectInfoMappingKey = async (
       config.MAPPING[mapping_key]["type"]
     );
     if (value == "") {
-      // console.log("no value found for query: " + mapping_key);
+      // console.debug("no value found for query: " + mapping_key);
       // try and get value with trajectory path
       const trajectory_path = _ppath_parts_for_ppath(
         config.MAPPING[mapping_key]["query"],
@@ -139,7 +139,7 @@ export const collectInfoMappingKey = async (
     }
     return value;
   } catch (error) {
-    // console.log("error in query", error);
+    // console.debug("error in query", error);
     // try and get value with trajectory path
     const trajectory_path = _ppath_parts_for_ppath(
       config.MAPPING[mapping_key]["query"],
@@ -180,7 +180,7 @@ export const comunicaQueryString = async (
 ): Promise<string | string[]> => {
   let N3store: N3.Store = store;
   let query_prefixed = _prefixed_query(query, prefixes);
-  // console.info("query prefixed: ", query_prefixed);
+  console.info("query prefixed: ", query_prefixed);
   //try accept here to make sure that the query is valid
   try {
     const results = await engine.queryBindings(query_prefixed, {
@@ -189,7 +189,7 @@ export const comunicaQueryString = async (
 
     const bindings = await results.toArray();
     if (bindings.length === 0) {
-      // console.log("no value found for query: " + query);
+      // console.debug("no value found for query: " + query);
       //continue to next in forloop
       return "";
     }
@@ -206,7 +206,7 @@ export const comunicaQueryString = async (
     const binding: Bindings = bindings[0];
 
     if (!binding) {
-      // console.log("no value found for query: " + query);
+      // console.debug("no value found for query: " + query);
       //continue to next in forloop
       return "";
     }
@@ -215,8 +215,8 @@ export const comunicaQueryString = async (
     //check if bindings value is uri , if so get the linked data
     //if not then add the whole binding to the store
     let term = binding.get("value") as N3.Term;
-    //console.log("term value: ", term.value);
-    //console.log("term type: ", term.termType);
+    console.debug("term value: ", term.value);
+    console.debug("term type: ", term.termType);
     if (term.termType === "NamedNode") {
       //try catch here for named nodes that were not meant to be retrieved
       //eg: images
@@ -254,14 +254,14 @@ export const comunicaQueryString = async (
     // this will never be reached
     return "";
   } catch (error) {
-    console.log("query error", error);
+    console.debug("query error", error);
     return "";
   }
 };
 
 export function createEmptyStore() {
   var storeN3 = new Store();
-  //console.log("store", storeN3); //N3 works
+  //console.debug("store", storeN3); //N3 works
   return storeN3;
 }
 
@@ -287,7 +287,7 @@ export async function getLinkedDataNQuads(
   let filteredFormats = return_formats;
 
   const to_get = filteredFormats.length > 0 ? filteredFormats : return_formats;
-  console.log("To get:", to_get);
+  console.debug("To get:", to_get);
 
   const data = await getData(uri, to_get);
   let text = await data.response.text();
@@ -338,7 +338,7 @@ export async function getLinkedDataNQuads(
     try {
       quads = parser.parse(text);
     } catch (error) {
-      console.log("parsing error", error);
+      console.debug("parsing error", error);
       throw error;
     }
   }
@@ -353,21 +353,21 @@ export async function getLinkedDataNQuads(
 async function getData(uri: string, formats: string[]) {
   const proxy_url = (window as any).proxy_url;
 
-  console.log("Proxy URL:", proxy_url);
+  console.debug("Proxy URL:", proxy_url);
 
   for (const format of formats) {
     try {
       const response = await fetch(uri, { headers: { Accept: format } });
       const contentType = response.headers.get("Content-Type");
 
-      console.log("Response:", response);
-      console.log("Content Type:", contentType);
+      console.debug("Response:", response);
+      console.debug("Content Type:", contentType);
 
       if (response.ok && contentType?.includes(format)) {
         return { format, response };
       }
     } catch (error) {
-      console.log(error);
+      console.debug(error);
     }
   }
 
@@ -382,7 +382,7 @@ async function getData(uri: string, formats: string[]) {
           return { format, response };
         }
       } catch (error) {
-        console.log(error);
+        console.debug(error);
       }
     }
   }
@@ -394,7 +394,7 @@ export async function getSignpostedDataFromHtml(
   html: string
 ): Promise<{ format: string; content: string } | null> {
   try {
-    console.log("Parsing signposted data from HTML");
+    console.debug("Parsing signposted data from HTML");
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, "text/html");
 
@@ -428,7 +428,7 @@ function _ppath_parts_for_ppath(ppath: string, config: any): string[] {
   let REGEXP = /\s*\/\s*(?![^<]*>)/;
   // split up in parts
   let parts = ppath.split(REGEXP);
-  //console.log(parts);
+  //console.debug(parts);
   let new_parts = [];
   //check if part is uri
   for (const part of parts) {
