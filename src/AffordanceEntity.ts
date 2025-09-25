@@ -1,6 +1,7 @@
 //contains the code for the entity of the affordance
 import Entity from "./Entity";
 import DerefInfoCollector from "./DerefInfoCollector";
+import { ICollectingScheduler } from "./SchedulerFactory";
 import link from "./css/link.svg";
 import {
   generateInfoCardTemplate,
@@ -31,6 +32,7 @@ export default class AffordanceEntity {
   private link: string;
   private collected_info: Entity;
   private derefinfocollector: DerefInfoCollector;
+  private scheduler?: ICollectingScheduler;
   private initial_updated: boolean = false;
   private isCancelled: boolean = false;
   private miaproperites: MIAProperties = {
@@ -40,13 +42,14 @@ export default class AffordanceEntity {
     ellipsis: false,
   };
 
-  constructor(affordance: any, derefinfocollector: DerefInfoCollector) {
+  constructor(affordance: any, derefinfocollector: DerefInfoCollector, scheduler?: ICollectingScheduler) {
     // console.debug(typeof affordance);
     // console.debug("Affordance Entity initialised");
     this.element = affordance;
     this.link = affordance.href;
     this.collected_info = new Entity();
     this.derefinfocollector = derefinfocollector;
+    this.scheduler = scheduler;
     this.miaproperites = GetMIAOptionsHTMLElement(this.element);
     this._update_dom_uri();
   }
@@ -69,27 +72,40 @@ export default class AffordanceEntity {
         // console.debug("card already in view");
         return;
       }
-      //remove all other cards
+
+      // Remove all other cards
       this._remove_card();
-      // console.debug(this.collected_info);
-      // console.debug(this.collected_info.content);
+      
+      // Show skeleton card immediately for better user experience
+      this.produce_HTML_skeleton_card(event);
+      
+      // Also show link loader for backward compatibility
       this.produce_HTML_loader();
+      
       if (
         this.collected_info.content === undefined ||
-        Object.keys(this.collected_info.content).length === 0
+        this.collected_info.content === null ||
+        Object.keys(this.collected_info.content || {}).length === 0
       ) {
         // console.debug("no info collected yet");
 
         try {
-          await this.collectInfo();
+          // Use prioritized scheduling if available, otherwise fallback to direct collection
+          if (this.scheduler && this.scheduler.prioritizeAffordance) {
+            await this.scheduler.prioritizeAffordance(this);
+          } else {
+            await this.collectInfo();
+          }
+          
           if (this.isCancelled) return;
           this.collected_info.content =
             this.derefinfocollector.cashedInfo[this.link];
-          this.produce_HTML_view(event);
+          this.replace_skeleton_with_content(event);
         } catch (error) {
           if (this.isCancelled) return;
           console.debug(error);
           this.removeLoader();
+          this._remove_card(); // Remove skeleton card on error
           // on error also remove the conflunce_box class from the element
           if (this.miaproperites.decorator) {
             this.element.classList.remove("confluence_box");
@@ -98,7 +114,7 @@ export default class AffordanceEntity {
         }
         return;
       }
-      this.produce_HTML_view(event);
+      this.replace_skeleton_with_content(event);
     });
   }
 
@@ -124,6 +140,7 @@ export default class AffordanceEntity {
   }
 
   cancelHoverEffect() {
+    console.debug("cancelHoverEffect called for", this.link);
     // Implement the logic to cancel the hover effect
     this.isCancelled = true;
     // Implement the logic to cancel the hover effect
@@ -163,6 +180,7 @@ export default class AffordanceEntity {
   }
 
   removeLoader() {
+    console.debug("removeLoader called for", this.link);
     // remove the confleunce_box_loading class from the element
     this.element.classList.remove("confluence_box_loading");
     // check if the closest parent element has the mia-extra-properties attribute set to noupdate
@@ -171,16 +189,19 @@ export default class AffordanceEntity {
       this.miaproperites.update === false ||
       this.miaproperites.decorator === false
     ) {
+      console.debug("removing no-decorator-loader class");
       this.element.classList.remove("no-decorator-loader");
       return;
     }
+    console.debug("adding confluence_box class");
     this.element.classList.add("confluence_box");
+    console.debug("final element classes after removeLoader:", this.element.className);
   }
 
   async collectInfo() {
     try {
       //function to collect info
-      console.debug("collecting info for " + this.link);
+      // console.debug("collecting info for " + this.link);
 
       // there is a special case where the this.link is a doc version of marineinfo
       if (this.link.includes("marineinfo.org/doc/")) {
@@ -203,7 +224,7 @@ export default class AffordanceEntity {
           this.derefinfocollector.cashedInfo[this.link];
         return;
       }
-      if (Object.keys(this.collected_info.content).length !== 0) {
+      if (Object.keys(this.collected_info.content || {}).length !== 0) {
         // console.debug("info already collected");
         return;
       }
@@ -239,7 +260,7 @@ export default class AffordanceEntity {
       this.link.includes("doi.org") ||
       this.link.includes("orcid.org")
     ) {
-      console.info("starting to update dom for uri: ", this.link);
+      // console.info("starting to update dom for uri: ", this.link);
       // check if any parent element has the mia-extra-properties attribute set to nochange
       // nochange can be set on any parent element to prevent the element from being changed
       // eg: <div mia-extra-properties="nochange"><a>text</a></div>
@@ -283,7 +304,7 @@ export default class AffordanceEntity {
             //change the inner html of the element
             //this should be either the title or name key of the collected info
             let content = collected_info[Object.keys(collected_info)[0]];
-            console.info("content for updating uri: ", collected_info);
+            // console.info("content for updating uri: ", collected_info);
             //first check if there are special keys for the type
             if (
               this.type_to_keys[Object.keys(collected_info)[0]] !== undefined
@@ -323,10 +344,10 @@ export default class AffordanceEntity {
   private _update_inner_html(content: any, element: HTMLElement) {
     //get the length of the inner html
     let inner_html_length = element.innerHTML.length;
-    console.debug("innerHTML: ", element.innerHTML);
-    console.debug("inner_html_length:", inner_html_length);
-    console.debug("content: ", content);
-    console.debug("content length: ", content.length);
+    // console.debug("innerHTML: ", element.innerHTML);
+    // console.debug("inner_html_length:", inner_html_length);
+    // console.debug("content: ", content);
+    // console.debug("content length: ", content.length);
 
     //if ellipse is true then check if the new content is longer than the inner html
     //if it is then add ellipse to the inner html
@@ -478,7 +499,7 @@ export default class AffordanceEntity {
   produce_HTML_view(event: MouseEvent) {
     // console.debug("producing HTML view");
     this.removeLoader();
-    console.debug(this.collected_info);
+    // console.debug(this.collected_info);
 
     let affordance_link = this.link;
 
@@ -491,8 +512,15 @@ export default class AffordanceEntity {
     }
 
     //get card type for right template
-    let template_name = Object.keys(this.collected_info.content)[0];
+    let template_name = Object.keys(this.collected_info.content || {})[0];
     // console.debug(template_name);
+
+    // Safety check: if no template_name, we can't generate the card
+    if (!template_name) {
+      console.debug("No template found for content, cannot generate card");
+      this.removeLoader();
+      return;
+    }
 
     //create card
     let card = document.createElement("div");
@@ -516,23 +544,29 @@ export default class AffordanceEntity {
     );
     card = this._generate_card_placement(card, event);
 
-    document.body.addEventListener("mousemove", (event) => {
-      //check if mouse is on triangle
-      let rect = card.getBoundingClientRect();
-    });
+    // Add common event listeners
+    this._add_card_event_listeners(card, event);
 
-    //add event listener to remove face-in for fade-in-done animation when animation is done
+    // Add card to body
+    document.body.appendChild(card);
+
+    //check all the links in the card and replace them with favicons
+    this._replace_urls_with_favicons_card(this.collected_info, card);
+  }
+
+  /**
+   * Add common event listeners to popup cards
+   */
+  private _add_card_event_listeners(card: HTMLDivElement, event: MouseEvent) {
+    // Add animation end listener
     card.addEventListener("animationend", () => {
       card.classList.remove("fade-in");
       card.classList.add("fade-in-done");
     });
 
+    // Add mouse leave listener
     card.addEventListener("mouseleave", () => {
-      //wait 1 second before removing the card
       setTimeout(() => {
-        // check if the mouse is not over the card
-        // and the mouse is not over the element that triggered the card
-        // and the link is not the current page
         if (
           document.querySelector(".marine_info_affordances:hover") === null &&
           this.link !== window.location.href
@@ -542,22 +576,22 @@ export default class AffordanceEntity {
       }, 1000);
     });
 
-    document.addEventListener("click", (event) => {
-      //if the click is not in the card, remove the card
-      if (document.querySelector(".marine_info_affordances:hover") === null) {
-        this._remove_card();
-      }
-    });
-
-    //add card to body
+    // Add click listener for triangle close
     card.addEventListener("click", function (e) {
       var rect = card.getBoundingClientRect();
       var isInTriangle =
-        e.clientX > rect.right - 20 && e.clientY < rect.top + 20; // Adjust the 30px based on the triangle size
+        e.clientX > rect.right - 20 && e.clientY < rect.top + 20;
+      // Could add close functionality here if needed
     });
 
-    //check all the links in the card and replace them with favicons
-    this._replace_urls_with_favicons_card(this.collected_info, card);
+    // Add global click listener to close card when clicking outside
+    const globalClickHandler = (event: Event) => {
+      if (document.querySelector(".marine_info_affordances:hover") === null) {
+        this._remove_card();
+        document.removeEventListener("click", globalClickHandler);
+      }
+    };
+    document.addEventListener("click", globalClickHandler);
   }
 
   private _remove_card() {
@@ -571,28 +605,120 @@ export default class AffordanceEntity {
   }
 
   produce_HTML_loader() {
-    // console.debug("producing HTML loader");
-    //check if the link already has a loader
-    // by checking for the confluence_box_loading class
+    console.debug("producing HTML loader for", this.link);
+    //check if this specific element already has a loader
 
     if (this.miaproperites.card === false) {
+      console.debug("card disabled, skipping loader");
       return;
     }
 
-    let loader = document.querySelector(".confluence_box_loading");
-    if (loader !== null) {
+    // Check if THIS element already has a loader, not any element in the document
+    if (this.element.classList.contains("confluence_box_loading") || 
+        this.element.classList.contains("no-decorator-loader")) {
+      console.debug("element already has loader");
       return;
     }
+    
+    console.debug("adding loader classes to element");
     //create loader by adding confluence_box_loading class to this.element
     this.element.classList.remove("confluence_box");
 
     if (this.miaproperites.decorator === false) {
       //produce a different loader
+      console.debug("adding no-decorator-loader class");
       this.element.classList.add("no-decorator-loader");
       return;
     }
 
+    console.debug("adding confluence_box_loading class");
     this.element.classList.add("confluence_box_loading");
+    
+    // Log the final state
+    console.debug("final element classes:", this.element.className);
+  }
+
+  /**
+   * Create a skeleton popup card with loading spinner immediately on hover
+   */
+  produce_HTML_skeleton_card(event: MouseEvent) {
+    console.debug("producing HTML skeleton card");
+    
+    let affordance_link = this.link;
+    let card_id = this.link.replace(/\//g, "-") + "-skeleton";
+    
+    // Check if skeleton card already exists
+    if (document.getElementById(card_id) !== null) {
+      return;
+    }
+
+    // Remove any existing cards first
+    this._remove_card();
+
+    // Create skeleton card
+    let card = document.createElement("div");
+    card.className = "marine_info_affordances fade-in";
+    card.id = card_id;
+    card.classList.add("card", "skeleton-card");
+    card.style.position = "absolute";
+
+    // Create skeleton content with spinner
+    let skeletonContent = `
+      <div class="marine_info_affordances-skeleton" style="max-width: 312.85px; max-height: 150px; min-width: 312.85px; min-height: 150px; overflow: hidden;">
+      <div class="marine_info_affordances-skeleton-header" style="margin-bottom: 12px;">
+        <div class="skeleton-line skeleton-title" style="height: 12px; width: 70%; margin: 0 auto 3px auto; border-radius: 6px;"></div>
+      </div>
+      <div class="marine_info_affordances-skeleton-body" style="margin-bottom: 12px;">
+        <div class="skeleton-line skeleton-text" style="height: 6px; width: 90%; margin-bottom: 3px; border-radius: 2px;"></div>
+        <div class="skeleton-line skeleton-text" style="height: 6px; width: 70%; margin-bottom: 3px; border-radius: 2px;"></div>
+        <div class="skeleton-line skeleton-text short" style="height: 6px; width: 50%; margin-bottom: 3px; border-radius: 2px;"></div>
+      </div>
+      <div class="marine_info_affordances-skeleton-footer" style="display: flex; justify-content: center; gap: 8px; margin-top: 5px;">
+        <div class="skeleton-circle" style="width: 10px; height: 10px; border-radius: 50%; background: #e0e0e0;"></div>
+        <div class="skeleton-circle" style="width: 10px; height: 10px; border-radius: 50%; background: #e0e0e0;"></div>
+        <div class="skeleton-circle" style="width: 10px; height: 10px; border-radius: 50%; background: #e0e0e0;"></div>
+      </div>
+      </div>
+    `;
+    
+    card.innerHTML = skeletonContent;
+
+    // Temporarily append to DOM to get dimensions, but make it invisible
+    card.style.visibility = "hidden";
+    card.style.opacity = "0";
+    document.body.appendChild(card);
+
+    // Now that it has content and is in DOM, we can calculate position
+    card = this._generate_card_placement(card, event);
+
+    // Make it visible with animation
+    card.style.visibility = "visible";
+    card.style.opacity = "1";
+
+    // Add event listeners for card behavior
+    this._add_card_event_listeners(card, event);
+  }
+
+  /**
+   * Replace skeleton card with actual content
+   */
+  replace_skeleton_with_content(event: MouseEvent) {
+    let card_id = this.link.replace(/\//g, "-") + "-skeleton";
+    let skeletonCard = document.getElementById(card_id);
+
+    if (skeletonCard) {
+      const intervalId = setInterval(() => {
+        const hasContent =
+          this.collected_info.content &&
+          Object.keys(this.collected_info.content).length > 0;
+        if (hasContent) {
+          skeletonCard.remove();
+          this.produce_HTML_view(event);
+          clearInterval(intervalId);
+        }
+      }, 500);
+      return;
+    }
   }
 }
 

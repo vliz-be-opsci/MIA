@@ -29,8 +29,8 @@ export function generatePersonCardTemplate(
   html_element: HTMLElement,
   affordance_link: string
 ): HTMLElement {
-  console.debug(data);
-  console.debug(html_element);
+  // console.debug(data);
+  // console.debug(html_element);
 
   //for each undefined value, replace with a default value
   let surname = data.name || "";
@@ -142,9 +142,9 @@ export function generateDatasetCardTemplate(
                 </a>`;
   }
 
-  console.debug(urls);
-  console.debug(urls.length);
-  console.debug(typeof urls);
+  // console.debug(urls);
+  // console.debug(urls.length);
+  // console.debug(typeof urls);
   let urls_html = "";
   if (typeof urls === "string") {
     urls_html = `<a href="${urls}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">

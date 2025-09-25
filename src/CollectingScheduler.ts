@@ -22,6 +22,25 @@ export default class CollectingScheduler implements ICollectingScheduler {
     }
   }
 
+  /**
+   * Queue affordance with high priority, moving it to front of queue
+   * and cancelling any existing requests for the same link
+   */
+  async prioritizeAffordance(affordance: AffordanceEntity) {
+    const link = affordance.getLink();
+    
+    // Remove any existing entries for the same link
+    this.schedule = this.schedule.filter(item => item.getLink() !== link);
+    
+    // Add to front of queue for immediate processing
+    this.schedule.unshift(affordance);
+    
+    // console.debug("Affordance prioritized: ", affordance);
+    if (!this.isProcessing) {
+      this.processNextInSchedule();
+    }
+  }
+
   private async processNextInSchedule() {
     if (this.isProcessing || this.schedule.length === 0) {
       // console.debug("scheduler already processing or no affordances left");

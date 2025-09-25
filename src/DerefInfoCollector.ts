@@ -45,12 +45,12 @@ export default class DerefInfoCollector {
     this.triplestore = this._combine_triplestores(this.triplestore, emptystore);
     const types = await this.get_type_uri(url);
     // console.info("url: ", url);
-    console.info("types: ", types);
-    console.info("derefconfig: ", this.derefconfig);
+    // console.info("types: ", types);
+    // console.info("derefconfig: ", this.derefconfig);
     const config_type_info = get_config_for_rdf_type(types, this.derefconfig);
     // console.debug(config_type_info);
     if (config_type_info === null) {
-      console.info("No config found for: ", url);
+      // console.info("No config found for: ", url);
       let info_keys: any = {};
       info_keys = await defaultTemplateInfoCollector(emptystore, url);
       const template_name = "default";
@@ -61,7 +61,7 @@ export default class DerefInfoCollector {
       return;
     }
     const ppaths = this.ppath_for_type(config_type_info);
-    console.info("ppaths: ", ppaths);
+    // console.info("ppaths: ", ppaths);
     // first deref all the paths so we have all the triples needed
     for (const ppath in ppaths) {
       const value_path = await traverseURI(

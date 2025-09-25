@@ -34,11 +34,11 @@ export const traverseURI = async (
   for (const url of urls) {
     for (let index = 0; index < trajectory_path.length; index++) {
       //console log store length
-      console.debug(storeSize(store));
+      // console.debug(storeSize(store));
       //change the current trajectory path to the slice of the path
       let current_trajectory = trajectory_path.slice(0, index + 1).join("/");
       let query = `SELECT ?value WHERE {<${url}> ${current_trajectory} ?value . }`;
-      console.debug(query);
+      // console.debug(query);
       try {
         const results = await linkengine.queryBindings(query, {
           sources: [N3store],
@@ -46,7 +46,7 @@ export const traverseURI = async (
 
 
         const bindings = await results.toArray();
-        console.debug(bindings);
+        // console.debug(bindings);
         if (bindings.length === 0) {
           // console.debug("no value found for query: " + query);
           //continue to next in forloop
@@ -98,13 +98,13 @@ export const traverseURI = async (
           return term.value;
         }
       } catch (error) {
-        console.debug("error in query", error);
+        // console.debug("error in query", error);
         // assume that the query is invalid and continue to next in forloop
         continue;
       }
     }
   }
-  console.debug("end store size: " + storeSize(store));
+  // console.debug("end store size: " + storeSize(store));
   return "";
 };
 
@@ -180,7 +180,7 @@ export const comunicaQueryString = async (
 ): Promise<string | string[]> => {
   let N3store: N3.Store = store;
   let query_prefixed = _prefixed_query(query, prefixes);
-  console.info("query prefixed: ", query_prefixed);
+  // console.info("query prefixed: ", query_prefixed);
   //try accept here to make sure that the query is valid
   try {
     const results = await engine.queryBindings(query_prefixed, {
@@ -215,8 +215,8 @@ export const comunicaQueryString = async (
     //check if bindings value is uri , if so get the linked data
     //if not then add the whole binding to the store
     let term = binding.get("value") as N3.Term;
-    console.debug("term value: ", term.value);
-    console.debug("term type: ", term.termType);
+    // console.debug("term value: ", term.value);
+    // console.debug("term type: ", term.termType);
     if (term.termType === "NamedNode") {
       //try catch here for named nodes that were not meant to be retrieved
       //eg: images
@@ -287,12 +287,12 @@ export async function getLinkedDataNQuads(
   let filteredFormats = return_formats;
 
   const to_get = filteredFormats.length > 0 ? filteredFormats : return_formats;
-  console.debug("To get:", to_get);
+  // console.debug("To get:", to_get);
 
   const data = await getData(uri, to_get);
   let text = await data.response.text();
-  console.warn(text);
-  console.warn(data.format);
+  // console.warn(text);
+  // console.warn(data.format);
 
   if (data.format.includes("text/html")) {
     const signpostedData = await getSignpostedDataFromHtml(text);
@@ -302,8 +302,8 @@ export async function getLinkedDataNQuads(
     }
   }
 
-  console.info("data format: ", data.format);
-  console.info("data text: ", text);
+  // console.info("data format: ", data.format);
+  // console.info("data text: ", text);
 
   let quads;
   if (data.format.includes("application/ld+json") || data.format.includes("application/vnd.schemaorg.ld+json")) {
@@ -321,13 +321,13 @@ export async function getLinkedDataNQuads(
         jsonldDoc["@context"] = jsonldDoc["@context"].replace("http://", "https://");
         jsonldDoc["@context"] = await jsonld.compact(jsonldDoc, jsonldDoc["@context"]);
       }
-      
-      console.warn(jsonldDoc);
+
+      // console.warn(jsonldDoc);
       const nquads = await jsonld.toRDF(jsonldDoc, { format: 'application/n-quads' });
-      console.warn(nquads);
+      // console.warn(nquads);
       const parser = new N3.Parser({ format: 'N-Quads' });
       quads = parser.parse(nquads.toString());
-      console.warn(quads);
+      // console.warn(quads);
     } catch (error) {
       console.error("Error parsing JSON-LD:", error);
       throw error;
@@ -353,15 +353,15 @@ export async function getLinkedDataNQuads(
 async function getData(uri: string, formats: string[]) {
   const proxy_url = (window as any).proxy_url;
 
-  console.debug("Proxy URL:", proxy_url);
+  // console.debug("Proxy URL:", proxy_url);
 
   for (const format of formats) {
     try {
       const response = await fetch(uri, { headers: { Accept: format } });
       const contentType = response.headers.get("Content-Type");
 
-      console.debug("Response:", response);
-      console.debug("Content Type:", contentType);
+      // console.debug("Response:", response);
+      // console.debug("Content Type:", contentType);
 
       if (response.ok && contentType?.includes(format)) {
         return { format, response };
@@ -394,7 +394,7 @@ export async function getSignpostedDataFromHtml(
   html: string
 ): Promise<{ format: string; content: string } | null> {
   try {
-    console.debug("Parsing signposted data from HTML");
+    // console.debug("Parsing signposted data from HTML");
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, "text/html");
 

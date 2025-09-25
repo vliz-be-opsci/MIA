@@ -13,15 +13,34 @@ export default class ParallelCollectingScheduler implements ICollectingScheduler
   private activeRequests: Set<Promise<void>> = new Set();
 
   constructor(maxConcurrency: number = 3) {
-    console.debug(`Parallel Collecting Scheduler initialized with max concurrency: ${maxConcurrency}`);
+    // console.debug(`Parallel Collecting Scheduler initialized with max concurrency: ${maxConcurrency}`);
     this.maxConcurrency = Math.max(1, Math.min(maxConcurrency, 8)); // Limit between 1-8
     this.performanceMonitor = new PerformanceMonitor();
   }
 
   async queueAffordance(affordance: AffordanceEntity): Promise<void> {
     this.queue.push(affordance);
-    console.debug(`Affordance queued: ${affordance.getLink()} (queue size: ${this.queue.length})`);
+    // console.debug(`Affordance queued: ${affordance.getLink()} (queue size: ${this.queue.length})`);
     
+    if (!this.isProcessing) {
+      this.startProcessing();
+    }
+  }
+
+  /**
+   * Queue affordance with high priority, moving it to front of queue
+   * and cancelling any existing requests for the same link
+   */
+  async prioritizeAffordance(affordance: AffordanceEntity): Promise<void> {
+    const link = affordance.getLink();
+    
+    // Remove any existing entries for the same link
+    this.queue = this.queue.filter(item => item.getLink() !== link);
+    
+    // Add to front of queue for immediate processing
+    this.queue.unshift(affordance);
+    
+    console.debug(`Affordance prioritized: ${link} (queue size: ${this.queue.length})`);
     if (!this.isProcessing) {
       this.startProcessing();
     }
@@ -33,7 +52,7 @@ export default class ParallelCollectingScheduler implements ICollectingScheduler
     }
 
     this.isProcessing = true;
-    console.debug("Starting parallel processing");
+    // console.debug("Starting parallel processing");
 
     try {
       while (this.queue.length > 0 || this.activeRequests.size > 0) {
