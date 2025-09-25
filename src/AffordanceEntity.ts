@@ -1,6 +1,7 @@
 //contains the code for the entity of the affordance
 import Entity from "./Entity";
 import DerefInfoCollector from "./DerefInfoCollector";
+import { ICollectingScheduler } from "./SchedulerFactory";
 import link from "./css/link.svg";
 import {
   generateInfoCardTemplate,
@@ -31,6 +32,7 @@ export default class AffordanceEntity {
   private link: string;
   private collected_info: Entity;
   private derefinfocollector: DerefInfoCollector;
+  private scheduler?: ICollectingScheduler;
   private initial_updated: boolean = false;
   private isCancelled: boolean = false;
   private miaproperites: MIAProperties = {
@@ -40,13 +42,14 @@ export default class AffordanceEntity {
     ellipsis: false,
   };
 
-  constructor(affordance: any, derefinfocollector: DerefInfoCollector) {
+  constructor(affordance: any, derefinfocollector: DerefInfoCollector, scheduler?: ICollectingScheduler) {
     // console.debug(typeof affordance);
     // console.debug("Affordance Entity initialised");
     this.element = affordance;
     this.link = affordance.href;
     this.collected_info = new Entity();
     this.derefinfocollector = derefinfocollector;
+    this.scheduler = scheduler;
     this.miaproperites = GetMIAOptionsHTMLElement(this.element);
     this._update_dom_uri();
   }
@@ -69,11 +72,16 @@ export default class AffordanceEntity {
         // console.debug("card already in view");
         return;
       }
-      //remove all other cards
+
+      // Remove all other cards
       this._remove_card();
-      // console.debug(this.collected_info);
-      // console.debug(this.collected_info.content);
+      
+      // Show skeleton card immediately for better user experience
+      this.produce_HTML_skeleton_card(event);
+      
+      // Also show link loader for backward compatibility
       this.produce_HTML_loader();
+      
       if (
         this.collected_info.content === undefined ||
         Object.keys(this.collected_info.content).length === 0
@@ -81,15 +89,22 @@ export default class AffordanceEntity {
         // console.debug("no info collected yet");
 
         try {
-          await this.collectInfo();
+          // Use prioritized scheduling if available, otherwise fallback to direct collection
+          if (this.scheduler && this.scheduler.prioritizeAffordance) {
+            await this.scheduler.prioritizeAffordance(this);
+          } else {
+            await this.collectInfo();
+          }
+          
           if (this.isCancelled) return;
           this.collected_info.content =
             this.derefinfocollector.cashedInfo[this.link];
-          this.produce_HTML_view(event);
+          this.replace_skeleton_with_content(event);
         } catch (error) {
           if (this.isCancelled) return;
           console.debug(error);
           this.removeLoader();
+          this._remove_card(); // Remove skeleton card on error
           // on error also remove the conflunce_box class from the element
           if (this.miaproperites.decorator) {
             this.element.classList.remove("confluence_box");
@@ -98,7 +113,7 @@ export default class AffordanceEntity {
         }
         return;
       }
-      this.produce_HTML_view(event);
+      this.replace_skeleton_with_content(event);
     });
   }
 
@@ -516,23 +531,29 @@ export default class AffordanceEntity {
     );
     card = this._generate_card_placement(card, event);
 
-    document.body.addEventListener("mousemove", (event) => {
-      //check if mouse is on triangle
-      let rect = card.getBoundingClientRect();
-    });
+    // Add common event listeners
+    this._add_card_event_listeners(card, event);
 
-    //add event listener to remove face-in for fade-in-done animation when animation is done
+    // Add card to body
+    document.body.appendChild(card);
+
+    //check all the links in the card and replace them with favicons
+    this._replace_urls_with_favicons_card(this.collected_info, card);
+  }
+
+  /**
+   * Add common event listeners to popup cards
+   */
+  private _add_card_event_listeners(card: HTMLDivElement, event: MouseEvent) {
+    // Add animation end listener
     card.addEventListener("animationend", () => {
       card.classList.remove("fade-in");
       card.classList.add("fade-in-done");
     });
 
+    // Add mouse leave listener
     card.addEventListener("mouseleave", () => {
-      //wait 1 second before removing the card
       setTimeout(() => {
-        // check if the mouse is not over the card
-        // and the mouse is not over the element that triggered the card
-        // and the link is not the current page
         if (
           document.querySelector(".marine_info_affordances:hover") === null &&
           this.link !== window.location.href
@@ -542,22 +563,22 @@ export default class AffordanceEntity {
       }, 1000);
     });
 
-    document.addEventListener("click", (event) => {
-      //if the click is not in the card, remove the card
-      if (document.querySelector(".marine_info_affordances:hover") === null) {
-        this._remove_card();
-      }
-    });
-
-    //add card to body
+    // Add click listener for triangle close
     card.addEventListener("click", function (e) {
       var rect = card.getBoundingClientRect();
       var isInTriangle =
-        e.clientX > rect.right - 20 && e.clientY < rect.top + 20; // Adjust the 30px based on the triangle size
+        e.clientX > rect.right - 20 && e.clientY < rect.top + 20;
+      // Could add close functionality here if needed
     });
 
-    //check all the links in the card and replace them with favicons
-    this._replace_urls_with_favicons_card(this.collected_info, card);
+    // Add global click listener to close card when clicking outside
+    const globalClickHandler = (event: Event) => {
+      if (document.querySelector(".marine_info_affordances:hover") === null) {
+        this._remove_card();
+        document.removeEventListener("click", globalClickHandler);
+      }
+    };
+    document.addEventListener("click", globalClickHandler);
   }
 
   private _remove_card() {
@@ -593,6 +614,78 @@ export default class AffordanceEntity {
     }
 
     this.element.classList.add("confluence_box_loading");
+  }
+
+  /**
+   * Create a skeleton popup card with loading spinner immediately on hover
+   */
+  produce_HTML_skeleton_card(event: MouseEvent) {
+    // console.debug("producing HTML skeleton card");
+    
+    let affordance_link = this.link;
+    let card_id = this.link.replace(/\//g, "-") + "-skeleton";
+    
+    // Check if skeleton card already exists
+    if (document.getElementById(card_id) !== null) {
+      return;
+    }
+
+    // Remove any existing cards first
+    this._remove_card();
+
+    // Create skeleton card
+    let card = document.createElement("div");
+    card.className = "marine_info_affordances fade-in";
+    card.id = card_id;
+    card.classList.add("card", "skeleton-card");
+    
+    // Generate card placement
+    card = this._generate_card_placement(card, event);
+    card.style.position = "absolute";
+
+    // Create skeleton content with spinner
+    let skeletonContent = `
+      <div class="marine_info_affordances-skeleton">
+        <div class="marine_info_affordances-spinner">
+          <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+        <div class="marine_info_affordances-skeleton-header">
+          <div class="skeleton-line skeleton-title"></div>
+          <div class="skeleton-line skeleton-subtitle"></div>
+        </div>
+        <div class="marine_info_affordances-skeleton-body">
+          <div class="skeleton-line skeleton-text"></div>
+          <div class="skeleton-line skeleton-text"></div>
+          <div class="skeleton-line skeleton-text short"></div>
+        </div>
+      </div>
+    `;
+    
+    card.innerHTML = skeletonContent;
+
+    // Add event listeners for card behavior
+    this._add_card_event_listeners(card, event);
+
+    // Add card to body
+    document.body.appendChild(card);
+  }
+
+  /**
+   * Replace skeleton card with actual content
+   */
+  replace_skeleton_with_content(event: MouseEvent) {
+    let card_id = this.link.replace(/\//g, "-") + "-skeleton";
+    let skeletonCard = document.getElementById(card_id);
+    
+    if (skeletonCard) {
+      // Remove skeleton card
+      skeletonCard.remove();
+    }
+    
+    // Create actual content card
+    this.produce_HTML_view(event);
   }
 }
 

@@ -27,6 +27,25 @@ export default class ParallelCollectingScheduler implements ICollectingScheduler
     }
   }
 
+  /**
+   * Queue affordance with high priority, moving it to front of queue
+   * and cancelling any existing requests for the same link
+   */
+  async prioritizeAffordance(affordance: AffordanceEntity): Promise<void> {
+    const link = affordance.getLink();
+    
+    // Remove any existing entries for the same link
+    this.queue = this.queue.filter(item => item.getLink() !== link);
+    
+    // Add to front of queue for immediate processing
+    this.queue.unshift(affordance);
+    
+    console.debug(`Affordance prioritized: ${link} (queue size: ${this.queue.length})`);
+    if (!this.isProcessing) {
+      this.startProcessing();
+    }
+  }
+
   private async startProcessing(): Promise<void> {
     if (this.isProcessing) {
       return;

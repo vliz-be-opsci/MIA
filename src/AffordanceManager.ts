@@ -82,7 +82,7 @@ export default class AffordanceManager {
   addAffordance(affordance: any, derefinfocollector: DerefInfoCollector) {
     //log the type of node and the inner html of the node
     //console.debug(affordance.parentNode.nodeName + ' ' + affordance.parentNode.innerHTML);
-    let new_ae = new AffordanceEntity(affordance, derefinfocollector);
+    let new_ae = new AffordanceEntity(affordance, derefinfocollector, this.collectingScheduler);
     this.affordances.push(new_ae);
     this.collectingScheduler.queueAffordance(new_ae);
   }

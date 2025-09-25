@@ -7,6 +7,7 @@ import ParallelCollectingScheduler from "./ParallelCollectingScheduler";
  */
 export interface ICollectingScheduler {
   queueAffordance(affordance: AffordanceEntity): Promise<void>;
+  prioritizeAffordance?(affordance: AffordanceEntity): Promise<void>;
   getPerformanceStats?(): any;
   resetPerformanceMetrics?(): void;
 }
