@@ -664,21 +664,20 @@ export default class AffordanceEntity {
 
     // Create skeleton content with spinner
     let skeletonContent = `
-      <div class="marine_info_affordances-skeleton">
-        <div class="marine_info_affordances-spinner">
-          <div class="spinner-border" role="status">
-            <span class="sr-only">Loading...</span>
-          </div>
-        </div>
-        <div class="marine_info_affordances-skeleton-header">
-          <div class="skeleton-line skeleton-title"></div>
-          <div class="skeleton-line skeleton-subtitle"></div>
-        </div>
-        <div class="marine_info_affordances-skeleton-body">
-          <div class="skeleton-line skeleton-text"></div>
-          <div class="skeleton-line skeleton-text"></div>
-          <div class="skeleton-line skeleton-text short"></div>
-        </div>
+      <div class="marine_info_affordances-skeleton" style="max-width: 312.85px; max-height: 150px; min-width: 312.85px; min-height: 150px; overflow: hidden;">
+      <div class="marine_info_affordances-skeleton-header" style="margin-bottom: 12px;">
+        <div class="skeleton-line skeleton-title" style="height: 12px; width: 70%; margin: 0 auto 3px auto; border-radius: 6px;"></div>
+      </div>
+      <div class="marine_info_affordances-skeleton-body" style="margin-bottom: 12px;">
+        <div class="skeleton-line skeleton-text" style="height: 6px; width: 90%; margin-bottom: 3px; border-radius: 2px;"></div>
+        <div class="skeleton-line skeleton-text" style="height: 6px; width: 70%; margin-bottom: 3px; border-radius: 2px;"></div>
+        <div class="skeleton-line skeleton-text short" style="height: 6px; width: 50%; margin-bottom: 3px; border-radius: 2px;"></div>
+      </div>
+      <div class="marine_info_affordances-skeleton-footer" style="display: flex; justify-content: center; gap: 8px; margin-top: 5px;">
+        <div class="skeleton-circle" style="width: 10px; height: 10px; border-radius: 50%; background: #e0e0e0;"></div>
+        <div class="skeleton-circle" style="width: 10px; height: 10px; border-radius: 50%; background: #e0e0e0;"></div>
+        <div class="skeleton-circle" style="width: 10px; height: 10px; border-radius: 50%; background: #e0e0e0;"></div>
+      </div>
       </div>
     `;
     
@@ -706,14 +705,20 @@ export default class AffordanceEntity {
   replace_skeleton_with_content(event: MouseEvent) {
     let card_id = this.link.replace(/\//g, "-") + "-skeleton";
     let skeletonCard = document.getElementById(card_id);
-    
+
     if (skeletonCard) {
-      // Remove skeleton card
-      skeletonCard.remove();
+      const intervalId = setInterval(() => {
+        const hasContent =
+          this.collected_info.content &&
+          Object.keys(this.collected_info.content).length > 0;
+        if (hasContent) {
+          skeletonCard.remove();
+          this.produce_HTML_view(event);
+          clearInterval(intervalId);
+        }
+      }, 500);
+      return;
     }
-    
-    // Create actual content card
-    this.produce_HTML_view(event);
   }
 }
 
