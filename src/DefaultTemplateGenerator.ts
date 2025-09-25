@@ -59,16 +59,16 @@ export async function defaultTemplateInfoCollector(
   store:N3.Store,
   url: string,
 ): Promise<any> {
-  console.debug(store);
+  // console.debug(store);
   const default_template_config:DefaultTemplateConfig = (window as any).default_template_config;
-  console.debug(default_template_config);
+  // console.debug(default_template_config);
 
   //get modal prefixes
   const modal_prefixes = default_template_config.PREFIXES;
 
   //get all property paths from config
   const all_property_paths = _getAllPropertyPathsFromConfig(default_template_config);
-  console.debug(all_property_paths);
+  // console.debug(all_property_paths);
 
   //for each pp in all property paths traverse the store
   for (const pp in all_property_paths) {
@@ -78,7 +78,7 @@ export async function defaultTemplateInfoCollector(
       store,
       "list"
     );
-    console.debug(value_path);
+    // console.debug(value_path);
   }
   let info_keys: any = {};
   //collect info for the template from the store
@@ -92,7 +92,7 @@ export async function defaultTemplateInfoCollector(
       // for each value in the array of the properties array 
       // try and get the proerty value from the store 
       for (const property in default_template_config.MODAL[key as keyof typeof default_template_config.MODAL][properties_arrays]) {
-        console.debug(default_template_config.MODAL[key as keyof typeof default_template_config.MODAL][properties_arrays][property]);
+        // console.debug(default_template_config.MODAL[key as keyof typeof default_template_config.MODAL][properties_arrays][property]);
         let value = await _queryStoreForValue(
           url,
           default_template_config.MODAL[key as keyof typeof default_template_config.MODAL][properties_arrays][property],
@@ -123,7 +123,7 @@ export async function defaultTemplateInfoCollector(
     }
     info_keys[key] = current_info_keys;
   }
-  console.info("info_keys: ", info_keys);
+  // console.info("info_keys: ", info_keys);
 
   return info_keys;
 }
@@ -194,7 +194,7 @@ function _getAllPropertyPathsFromConfig(config: DefaultTemplateConfig): string[]
     }
   }
 
-  console.debug(to_extract_ppaths);
+  // console.debug(to_extract_ppaths);
   // for each property path in the extracted ppaths
   for (const property_path in to_extract_ppaths) {
     let extracted_paths = _extractPropertyPathsFromString(
@@ -242,9 +242,9 @@ export function generateDefaultCardTemplate(
   html_element: HTMLElement,
   affordance_link: string
 ): HTMLElement {
-  console.debug(data);
-  console.debug(html_element);
-  console.debug(affordance_link);
+  // console.debug(data);
+  // console.debug(html_element);
+  // console.debug(affordance_link);
 
   let _link = affordance_link;
 

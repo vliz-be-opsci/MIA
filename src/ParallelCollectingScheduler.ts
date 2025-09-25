@@ -13,14 +13,14 @@ export default class ParallelCollectingScheduler implements ICollectingScheduler
   private activeRequests: Set<Promise<void>> = new Set();
 
   constructor(maxConcurrency: number = 3) {
-    console.debug(`Parallel Collecting Scheduler initialized with max concurrency: ${maxConcurrency}`);
+    // console.debug(`Parallel Collecting Scheduler initialized with max concurrency: ${maxConcurrency}`);
     this.maxConcurrency = Math.max(1, Math.min(maxConcurrency, 8)); // Limit between 1-8
     this.performanceMonitor = new PerformanceMonitor();
   }
 
   async queueAffordance(affordance: AffordanceEntity): Promise<void> {
     this.queue.push(affordance);
-    console.debug(`Affordance queued: ${affordance.getLink()} (queue size: ${this.queue.length})`);
+    // console.debug(`Affordance queued: ${affordance.getLink()} (queue size: ${this.queue.length})`);
     
     if (!this.isProcessing) {
       this.startProcessing();
@@ -52,7 +52,7 @@ export default class ParallelCollectingScheduler implements ICollectingScheduler
     }
 
     this.isProcessing = true;
-    console.debug("Starting parallel processing");
+    // console.debug("Starting parallel processing");
 
     try {
       while (this.queue.length > 0 || this.activeRequests.size > 0) {

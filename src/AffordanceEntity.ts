@@ -195,7 +195,7 @@ export default class AffordanceEntity {
   async collectInfo() {
     try {
       //function to collect info
-      console.debug("collecting info for " + this.link);
+      // console.debug("collecting info for " + this.link);
 
       // there is a special case where the this.link is a doc version of marineinfo
       if (this.link.includes("marineinfo.org/doc/")) {
@@ -254,7 +254,7 @@ export default class AffordanceEntity {
       this.link.includes("doi.org") ||
       this.link.includes("orcid.org")
     ) {
-      console.info("starting to update dom for uri: ", this.link);
+      // console.info("starting to update dom for uri: ", this.link);
       // check if any parent element has the mia-extra-properties attribute set to nochange
       // nochange can be set on any parent element to prevent the element from being changed
       // eg: <div mia-extra-properties="nochange"><a>text</a></div>
@@ -298,7 +298,7 @@ export default class AffordanceEntity {
             //change the inner html of the element
             //this should be either the title or name key of the collected info
             let content = collected_info[Object.keys(collected_info)[0]];
-            console.info("content for updating uri: ", collected_info);
+            // console.info("content for updating uri: ", collected_info);
             //first check if there are special keys for the type
             if (
               this.type_to_keys[Object.keys(collected_info)[0]] !== undefined
@@ -338,10 +338,10 @@ export default class AffordanceEntity {
   private _update_inner_html(content: any, element: HTMLElement) {
     //get the length of the inner html
     let inner_html_length = element.innerHTML.length;
-    console.debug("innerHTML: ", element.innerHTML);
-    console.debug("inner_html_length:", inner_html_length);
-    console.debug("content: ", content);
-    console.debug("content length: ", content.length);
+    // console.debug("innerHTML: ", element.innerHTML);
+    // console.debug("inner_html_length:", inner_html_length);
+    // console.debug("content: ", content);
+    // console.debug("content length: ", content.length);
 
     //if ellipse is true then check if the new content is longer than the inner html
     //if it is then add ellipse to the inner html
@@ -493,7 +493,7 @@ export default class AffordanceEntity {
   produce_HTML_view(event: MouseEvent) {
     // console.debug("producing HTML view");
     this.removeLoader();
-    console.debug(this.collected_info);
+    // console.debug(this.collected_info);
 
     let affordance_link = this.link;
 
@@ -620,7 +620,7 @@ export default class AffordanceEntity {
    * Create a skeleton popup card with loading spinner immediately on hover
    */
   produce_HTML_skeleton_card(event: MouseEvent) {
-    // console.debug("producing HTML skeleton card");
+    console.debug("producing HTML skeleton card");
     
     let affordance_link = this.link;
     let card_id = this.link.replace(/\//g, "-") + "-skeleton";
