@@ -638,9 +638,6 @@ export default class AffordanceEntity {
     card.className = "marine_info_affordances fade-in";
     card.id = card_id;
     card.classList.add("card", "skeleton-card");
-    
-    // Generate card placement
-    card = this._generate_card_placement(card, event);
     card.style.position = "absolute";
 
     // Create skeleton content with spinner
@@ -665,11 +662,20 @@ export default class AffordanceEntity {
     
     card.innerHTML = skeletonContent;
 
+    // Temporarily append to DOM to get dimensions, but make it invisible
+    card.style.visibility = "hidden";
+    card.style.opacity = "0";
+    document.body.appendChild(card);
+
+    // Now that it has content and is in DOM, we can calculate position
+    card = this._generate_card_placement(card, event);
+
+    // Make it visible with animation
+    card.style.visibility = "visible";
+    card.style.opacity = "1";
+
     // Add event listeners for card behavior
     this._add_card_event_listeners(card, event);
-
-    // Add card to body
-    document.body.appendChild(card);
   }
 
   /**
