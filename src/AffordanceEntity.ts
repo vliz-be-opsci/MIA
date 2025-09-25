@@ -84,7 +84,8 @@ export default class AffordanceEntity {
       
       if (
         this.collected_info.content === undefined ||
-        Object.keys(this.collected_info.content).length === 0
+        this.collected_info.content === null ||
+        Object.keys(this.collected_info.content || {}).length === 0
       ) {
         // console.debug("no info collected yet");
 
@@ -139,6 +140,7 @@ export default class AffordanceEntity {
   }
 
   cancelHoverEffect() {
+    console.debug("cancelHoverEffect called for", this.link);
     // Implement the logic to cancel the hover effect
     this.isCancelled = true;
     // Implement the logic to cancel the hover effect
@@ -178,6 +180,7 @@ export default class AffordanceEntity {
   }
 
   removeLoader() {
+    console.debug("removeLoader called for", this.link);
     // remove the confleunce_box_loading class from the element
     this.element.classList.remove("confluence_box_loading");
     // check if the closest parent element has the mia-extra-properties attribute set to noupdate
@@ -186,10 +189,13 @@ export default class AffordanceEntity {
       this.miaproperites.update === false ||
       this.miaproperites.decorator === false
     ) {
+      console.debug("removing no-decorator-loader class");
       this.element.classList.remove("no-decorator-loader");
       return;
     }
+    console.debug("adding confluence_box class");
     this.element.classList.add("confluence_box");
+    console.debug("final element classes after removeLoader:", this.element.className);
   }
 
   async collectInfo() {
@@ -218,7 +224,7 @@ export default class AffordanceEntity {
           this.derefinfocollector.cashedInfo[this.link];
         return;
       }
-      if (Object.keys(this.collected_info.content).length !== 0) {
+      if (Object.keys(this.collected_info.content || {}).length !== 0) {
         // console.debug("info already collected");
         return;
       }
@@ -506,8 +512,15 @@ export default class AffordanceEntity {
     }
 
     //get card type for right template
-    let template_name = Object.keys(this.collected_info.content)[0];
+    let template_name = Object.keys(this.collected_info.content || {})[0];
     // console.debug(template_name);
+
+    // Safety check: if no template_name, we can't generate the card
+    if (!template_name) {
+      console.debug("No template found for content, cannot generate card");
+      this.removeLoader();
+      return;
+    }
 
     //create card
     let card = document.createElement("div");
@@ -592,28 +605,37 @@ export default class AffordanceEntity {
   }
 
   produce_HTML_loader() {
-    // console.debug("producing HTML loader");
-    //check if the link already has a loader
-    // by checking for the confluence_box_loading class
+    console.debug("producing HTML loader for", this.link);
+    //check if this specific element already has a loader
 
     if (this.miaproperites.card === false) {
+      console.debug("card disabled, skipping loader");
       return;
     }
 
-    let loader = document.querySelector(".confluence_box_loading");
-    if (loader !== null) {
+    // Check if THIS element already has a loader, not any element in the document
+    if (this.element.classList.contains("confluence_box_loading") || 
+        this.element.classList.contains("no-decorator-loader")) {
+      console.debug("element already has loader");
       return;
     }
+    
+    console.debug("adding loader classes to element");
     //create loader by adding confluence_box_loading class to this.element
     this.element.classList.remove("confluence_box");
 
     if (this.miaproperites.decorator === false) {
       //produce a different loader
+      console.debug("adding no-decorator-loader class");
       this.element.classList.add("no-decorator-loader");
       return;
     }
 
+    console.debug("adding confluence_box_loading class");
     this.element.classList.add("confluence_box_loading");
+    
+    // Log the final state
+    console.debug("final element classes:", this.element.className);
   }
 
   /**
