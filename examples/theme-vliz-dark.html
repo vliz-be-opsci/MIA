@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>MIA VLIZ Dark Theme Example</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Include MIA from local build -->
+    <script src="../dist/mia.bundle.js" id="mia_script"
+        data-deref-config="./deref_config_vliz_dark_theme.json"></script>
+    
+    <!-- Include Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        /* VLIZ dark theme background */
+        body {
+            background: linear-gradient(135deg, #0f1729 0%, #1a2947 100%);
+            min-height: 100vh;
+        }
+        .content-box {
+            background: #1a2947;
+            border-left: 4px solid #31b7bc;
+        }
+        .vliz-blue-light {
+            color: #31b7bc;
+        }
+    </style>
+</head>
+<body class="p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-4xl font-bold vliz-blue-light mb-6">MIA VLIZ Dark Theme Example</h1>
+        
+        <div class="content-box p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-2xl font-semibold vliz-blue-light mb-4">Marine Researchers</h2>
+            <p class="mb-3 text-gray-300">
+                Meet <a href="https://marineinfo.org/id/person/38476" class="vliz-blue-light hover:text-white underline">Dr. Marine Expert</a>, 
+                a leading researcher in marine biodiversity.
+            </p>
+            <p class="text-gray-300">
+                Learn more about <a href="https://marineinfo.org/id/person/48" class="vliz-blue-light hover:text-white underline">Jan Mees</a> 
+                and their work at <a href="https://marineinfo.org/id/institute/36" class="vliz-blue-light hover:text-white underline">VLIZ</a>.
+            </p>
+        </div>
+
+        <div class="content-box p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-2xl font-semibold vliz-blue-light mb-4">Marine Datasets</h2>
+            <p class="mb-3 text-gray-300">
+                Explore the <a href="https://marineinfo.org/id/dataset/6472" class="vliz-blue-light hover:text-white underline">North Sea Dataset</a>.
+            </p>
+        </div>
+        
+        <div class="content-box p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-semibold vliz-blue-light mb-2">Theme Details</h2>
+            <p class="text-gray-300 text-sm">
+                This page demonstrates the <strong>VLIZ Dark theme</strong> with VLIZ brand colors adapted for dark mode.
+                Perfect for dark mode interfaces while maintaining brand identity.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

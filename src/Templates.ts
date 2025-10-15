@@ -111,7 +111,8 @@ export function generatePersonCardTemplate(
 export function generateDatasetCardTemplate(
   data: { [key: string]: any },
   html_element: HTMLElement,
-  affordance_link: string
+  affordance_link: string,
+  theme?: string
 ): HTMLElement {
   // console.debug(data);
   // console.debug(html_element);
@@ -131,20 +132,24 @@ export function generateDatasetCardTemplate(
   let date_html = "";
   let marineinfo_link = doc || _link;
 
+  // Get theme styles
+  const themeStyles = getThemeStyles(theme);
+  const themeInlineStyles = getThemeInlineStyles(theme);
+
   if (date != "") {
     date = new Date(date).toLocaleDateString()
       ? new Date(date).toLocaleDateString()
       : date;
 
-    date_html = `<p class="inline-flex items-center text-sm text-gray-500 mr-5">
-          <img class="h-4 w-4 mr-1 icon_svg" src=" ${calendar}" alt="marineinfo">
+    date_html = `<p class="inline-flex items-center text-sm ${themeStyles.textSecondary} mr-5">
+          <img class="h-4 w-4 mr-1 ${themeStyles.icon}" src=" ${calendar}" alt="marineinfo">
           ${date}
         </p>`;
   }
 
   if (citation != "") {
-    citation_html = `<a href="#" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange" id="clipboard">
-                     <img class="h-6 w-6 icon_svg" src="${clipboard}" alt="marineinfo">
+    citation_html = `<a href="#" class="${themeStyles.link} ${themeStyles.linkHover}" mia-extra-properties="nochange" id="clipboard">
+                     <img class="h-6 w-6 ${themeStyles.icon}" src="${clipboard}" alt="marineinfo">
                 </a>`;
   }
 
@@ -153,13 +158,13 @@ export function generateDatasetCardTemplate(
   // console.debug(typeof urls);
   let urls_html = "";
   if (typeof urls === "string") {
-    urls_html = `<a href="${urls}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
-                   <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
+    urls_html = `<a href="${urls}" class="${themeStyles.link} ${themeStyles.linkHover}" mia-extra-properties="nochange">
+                   <img class="h-6 w-6 ${themeStyles.icon}" src="${link}" alt="external link">
                  </a>`;
   } else {
     for (let i = 0; i < Math.min(urls.length, 5); i++) {
-      urls_html += `<a href="${urls[i]}" class="text-gray-500 hover:text-gray-700 relative" mia-extra-properties="nochange">
-          <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
+      urls_html += `<a href="${urls[i]}" class="${themeStyles.link} ${themeStyles.linkHover} relative" mia-extra-properties="nochange">
+          <img class="h-6 w-6 ${themeStyles.icon}" src="${link}" alt="external link">
         </a>`;
     }
     if (urls.length > 5) {
@@ -172,18 +177,18 @@ export function generateDatasetCardTemplate(
   }
 
   let defaulthtml = `
-     <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;min-height:150px">
+     <div class="flex items-center ${themeStyles.card}" style="width: 312.85px;min-height:150px;${themeInlineStyles}">
         <div class="ml-4">
-            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
-              <img id="marineinfo_logo" class="h-5 w-5 mr-1" src="${archive_box}">
+            <h2 class="inline-flex items-center text-lg font-semibold ${themeStyles.title} mr-5">
+              <img id="marineinfo_logo" class="h-5 w-5 mr-1 ${themeStyles.icon}" src="${archive_box}">
               ${stringlengthshortener(title, 25)}
             </h2>
-            <p class="text-sm text-gray-500 mr-5"><b>contact: </b>${contact}</p>
-            <p class="text-sm text-gray-500 mr-5"><b>license: </b>${license}</p>
+            <p class="text-sm ${themeStyles.textSecondary} mr-5"><b>contact: </b>${contact}</p>
+            <p class="text-sm ${themeStyles.textSecondary} mr-5"><b>license: </b>${license}</p>
             ${date_html}
             <div class="mt-2 flex space-x-4">
-                <a href="${marineinfo_link}" class="text-gray-500 hover:text-gray-700 mb-2" mia-extra-properties="nochange">
-                     <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
+                <a href="${marineinfo_link}" class="${themeStyles.link} ${themeStyles.linkHover} mb-2" mia-extra-properties="nochange">
+                     <img class="h-6 w-6 ${themeStyles.icon}" src="${marininfologo}" alt="marineinfo">
                 </a>
                 <!--${citation_html}-->
                 ${urls_html}
@@ -208,7 +213,8 @@ export function generateDatasetCardTemplate(
 export function generateProjectCardTemplate(
   data: { [key: string]: any },
   html_element: HTMLElement,
-  affordance_link: string
+  affordance_link: string,
+  theme?: string
 ): HTMLElement {
   let _link = affordance_link || "";
   let title = data.title || "";
@@ -219,16 +225,20 @@ export function generateProjectCardTemplate(
   let doc = data.doc || "";
   let marineinfo_link = doc || _link;
 
+  // Get theme styles
+  const themeStyles = getThemeStyles(theme);
+  const themeInlineStyles = getThemeInlineStyles(theme);
+
   //url section
   let urls_html = "";
   if (typeof urls === "string") {
-    urls_html = `<a href="${urls}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
-                   <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
+    urls_html = `<a href="${urls}" class="${themeStyles.link} ${themeStyles.linkHover}" mia-extra-properties="nochange">
+                   <img class="h-6 w-6 ${themeStyles.icon}" src="${link}" alt="external link">
                  </a>`;
   } else {
     for (let i = 0; i < Math.min(urls.length, 5); i++) {
-      urls_html += `<a href="${urls[i]}" class="text-gray-500 hover:text-gray-700 relative" mia-extra-properties="nochange">
-          <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
+      urls_html += `<a href="${urls[i]}" class="${themeStyles.link} ${themeStyles.linkHover} relative" mia-extra-properties="nochange">
+          <img class="h-6 w-6 ${themeStyles.icon}" src="${link}" alt="external link">
         </a>`;
     }
     if (urls.length > 5) {
@@ -262,19 +272,19 @@ export function generateProjectCardTemplate(
   }
 
   let innerHTML = `
-     <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;min-height:150px;">
+     <div class="flex items-center ${themeStyles.card}" style="width: 312.85px;min-height:150px;${themeInlineStyles}">
         <div class="ml-4">
-            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
-              <img id="marineinfo_logo" class="h-5 w-5 mr-1" src="${book_atlas}">
+            <h2 class="inline-flex items-center text-lg font-semibold ${themeStyles.title} mr-5">
+              <img id="marineinfo_logo" class="h-5 w-5 mr-1 ${themeStyles.icon}" src="${book_atlas}">
               ${stringlengthshortener(title, 25)}
             </h2>
             <div class="mt-2 flex space-x-1 mb-2 mt-2 mr-2">
                 ${keywords_html}
             </div>
-            <p class="text-sm text-gray-500 mr-5"><b>span: </b>${start_date} - ${end_date}</p>
+            <p class="text-sm ${themeStyles.textSecondary} mr-5"><b>span: </b>${start_date} - ${end_date}</p>
             <div class="mt-2 flex space-x-4">
-                <a href="${marineinfo_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
-                     <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
+                <a href="${marineinfo_link}" class="${themeStyles.link} ${themeStyles.linkHover}" mia-extra-properties="nochange">
+                     <img class="h-6 w-6 ${themeStyles.icon}" src="${marininfologo}" alt="marineinfo">
                 </a>
                 ${urls_html}
             </div>
@@ -290,10 +300,15 @@ export function generateProjectCardTemplate(
 export function generateInfoCardTemplate(
   data: { [key: string]: any },
   html_element: HTMLElement,
-  affordance_link: string
+  affordance_link: string,
+  theme?: string
 ): HTMLElement {
   // console.debug(data);
   // // console.debug(html_element);
+  // Get theme styles
+  const themeStyles = getThemeStyles(theme);
+  const themeInlineStyles = getThemeInlineStyles(theme);
+
 
   // This is the default card generated
 
@@ -303,28 +318,28 @@ export function generateInfoCardTemplate(
   let title = data.title || "No title available";
 
   // make object that will go over each key in data and make
-  // <p class="text-sm text-gray-500 mr-5">${value}</p>
+  // <p class="text-sm ${themeStyles.textSecondary} mr-5">${value}</p>
   // except for title
   let description = "";
   for (const [key, value] of Object.entries(data)) {
     if (key != "title") {
       // if value is an array then show the ammount of items in the array
       if (Array.isArray(value)) {
-        description += `<p class="text-sm text-gray-500 mr-5"><b>${key}:</b> ${value.length} items</p>`;
+        description += `<p class="text-sm ${themeStyles.textSecondary} mr-5"><b>${key}:</b> ${value.length} items</p>`;
       } else if (value != "") {
-        description += `<p class="text-sm text-gray-500 mr-5"><b>${key}:</b> ${stringlengthshortener(
+        description += `<p class="text-sm ${themeStyles.textSecondary} mr-5"><b>${key}:</b> ${stringlengthshortener(
           value,
           150,
-          "text-sm text-gray-500 mr-5"
+          "text-sm ${themeStyles.textSecondary} mr-5"
         )}</p>`;
       }
     }
   }
 
   let defaulthtml = `
-     <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;min-height:150px">
+     <div class="flex items-center ${themeStyles.card}" style="width: 312.85px;min-height:150px;${themeInlineStyles}">
         <div class="ml-4">
-            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
+            <h2 class="inline-flex items-center text-lg font-semibold ${themeStyles.title} mr-5">
               <img id="marineinfo_logo" class="h-5 w-5 mr-1" src="${scroll}">
               ${stringlengthshortener(title, 25)}
             </h2>
@@ -359,7 +374,7 @@ export function generateInfoCardTemplate(
 
             <div class="mt-2 flex space-x-4">
                 <a href="${_link}" class="text-gray-500 hover:text-gray-700 mb-2" mia-extra-properties="nochange">
-                     <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
+                     <img class="h-6 w-6 ${themeStyles.icon}" src="${marininfologo}" alt="marineinfo">
                 </a>
             </div>
         </div>
@@ -375,7 +390,8 @@ export function generateInfoCardTemplate(
 export function generateOrganizationCardTemplate(
   data: { [key: string]: any },
   html_element: HTMLElement,
-  affordance_link: string
+  affordance_link: string,
+  theme?: string
 ): HTMLElement {
   let _link = affordance_link || "";
   let email_info = data.email || "";
@@ -384,25 +400,29 @@ export function generateOrganizationCardTemplate(
   let name = data.name || "";
   let doc = data.doc || "";
   let marineinfo_link = doc || _link;
+  // Get theme styles
+  const themeStyles = getThemeStyles(theme);
+  const themeInlineStyles = getThemeInlineStyles(theme);
+
 
   let organization_html = `
-     <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;min-height:150px;">
+     <div class="flex items-center ${themeStyles.card}" style="width: 312.85px;min-height:150px;${themeInlineStyles}">
         <div class="ml-4">
-            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
+            <h2 class="inline-flex items-center text-lg font-semibold ${themeStyles.title} mr-5">
               <img id="marineinfo_logo" class="h-5 w-5 mr-1" src="${organization}">
               ${stringlengthshortener(name, 25)}
             </h2>
-            <p class="text-sm text-gray-500 mr-5">${contact}</p>
-            <p class="text-sm text-gray-500 mr-5">${adress}</p>
+            <p class="text-sm ${themeStyles.textSecondary} mr-5">${contact}</p>
+            <p class="text-sm ${themeStyles.textSecondary} mr-5">${adress}</p>
             <div class="mt-2 flex space-x-4">
-                <a href="${marineinfo_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
-                     <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
+                <a href="${marineinfo_link}" class="${themeStyles.link} ${themeStyles.linkHover}" mia-extra-properties="nochange">
+                     <img class="h-6 w-6 ${themeStyles.icon}" src="${marininfologo}" alt="marineinfo">
                 </a>
-                <a href="mailto:${email_info}" class="text-gray-500 hover:text-gray-700">
-                    <img class="h-6 w-6 icon_svg" src="${email}" alt="Orcid">
+                <a href="mailto:${email_info}" class="${themeStyles.link} ${themeStyles.linkHover}">
+                    <img class="h-6 w-6 ${themeStyles.icon}" src="${email}" alt="Orcid">
                 </a>
-                <a href="tel:${contact}" class="text-gray-500 hover:text-gray-700">
-                    <img class="h-6 w-6 icon_svg" src="${phone}" alt="Phone">
+                <a href="tel:${contact}" class="${themeStyles.link} ${themeStyles.linkHover}">
+                    <img class="h-6 w-6 ${themeStyles.icon}" src="${phone}" alt="Phone">
                 </a>
             </div>
         </div>
@@ -418,7 +438,8 @@ export function generateOrganizationCardTemplate(
 export function generateCollectionCardTemplate(
   data: { [key: string]: any },
   html_element: HTMLElement,
-  affordance_link: string
+  affordance_link: string,
+  theme?: string
 ): HTMLElement {
   // console.debug(data);
   //for each undefined value, replace with a default value
@@ -430,12 +451,16 @@ export function generateCollectionCardTemplate(
   let urls = data.urls || [];
   let doc = data.doc || "";
   let marineinfo_link = doc || _link;
+  // Get theme styles
+  const themeStyles = getThemeStyles(theme);
+  const themeInlineStyles = getThemeInlineStyles(theme);
+
 
   //url section
   let urls_html = "";
   if (typeof urls === "string") {
-    urls_html = `<a href="${urls}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
-                   <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
+    urls_html = `<a href="${urls}" class="${themeStyles.link} ${themeStyles.linkHover}" mia-extra-properties="nochange">
+                   <img class="h-6 w-6 ${themeStyles.icon}" src="${link}" alt="external link">
                  </a>`;
   } else {
     /*
@@ -443,7 +468,7 @@ export function generateCollectionCardTemplate(
       // if the url does not starts with https:marineinfo.org then show the link
       console.info(urls[i]);
       urls_html += `<a href="${urls[i]}" class="text-gray-500 hover:text-gray-700 relative" mia-extra-properties="nochange">
-          <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
+          <img class="h-6 w-6 ${themeStyles.icon}" src="${link}" alt="external link">
         </a>`;
     }
     if (urls.length > 5) {
@@ -508,9 +533,9 @@ export function generateCollectionCardTemplate(
 
   //tailwind
   let innerHTML = `
-     <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;min-height:150px;">
+     <div class="flex items-center ${themeStyles.card}" style="width: 312.85px;min-height:150px;${themeInlineStyles}">
         <div class="ml-4">
-            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
+            <h2 class="inline-flex items-center text-lg font-semibold ${themeStyles.title} mr-5">
               <img id="marineinfo_logo" class="h-5 w-5 mr-1" src="${layer_group}">
               ${stringlengthshortener(title, 25)}
             </h2>
@@ -521,8 +546,8 @@ export function generateCollectionCardTemplate(
             ${resources_html}
             </div>
             <div class="mt-2 flex space-x-4">
-                <a href="${marineinfo_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
-                     <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
+                <a href="${marineinfo_link}" class="${themeStyles.link} ${themeStyles.linkHover}" mia-extra-properties="nochange">
+                     <img class="h-6 w-6 ${themeStyles.icon}" src="${marininfologo}" alt="marineinfo">
                 </a>
                 ${urls_html}
             </div>
@@ -538,9 +563,14 @@ export function generateCollectionCardTemplate(
 export function generateBibliographicResourceCardTemplate(
   data: { [key: string]: any },
   html_element: HTMLElement,
-  affordance_link: string
+  affordance_link: string,
+  theme?: string
 ): HTMLElement {
   let _link = affordance_link || "";
+  // Get theme styles
+  const themeStyles = getThemeStyles(theme);
+  const themeInlineStyles = getThemeInlineStyles(theme);
+
 
   // console.debug(data);
   //for each undefined value, replace with a default value
@@ -564,28 +594,28 @@ export function generateBibliographicResourceCardTemplate(
   if (free_type != "") {
     if (download_url != "") {
       download_button = `
-      <a href="${download_url}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
-            <img id="download-button" class="h-6 w-6 icon_svg" src="${download_svg}" alt="Orcid">
+      <a href="${download_url}" class="${themeStyles.link} ${themeStyles.linkHover}" mia-extra-properties="nochange">
+            <img id="download-button" class="h-6 w-6 ${themeStyles.icon}" src="${download_svg}" alt="Orcid">
       </a>
       `;
     }
   }
 
   let innerHTML = `
-     <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;min-height:150px;">
+     <div class="flex items-center ${themeStyles.card}" style="width: 312.85px;min-height:150px;${themeInlineStyles}">
         <div class="ml-4">
-            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
+            <h2 class="inline-flex items-center text-lg font-semibold ${themeStyles.title} mr-5">
               <img id="marineinfo_logo" class="h-5 w-5 mr-1" src="${book}">
               ${stringlengthshortener(title, 25)}
             </h2>
-            <p class="items-center inline-flex text-sm text-gray-500 mr-5"><img class="h-4 w-4 mr-1" src="${c_type_image}"> ${type}</p>
-            <p class="text-sm text-gray-500 mr-5"><b>release date: </b>${publishDate}</p>
+            <p class="items-center inline-flex text-sm ${themeStyles.textSecondary} mr-5"><img class="h-4 w-4 mr-1" src="${c_type_image}"> ${type}</p>
+            <p class="text-sm ${themeStyles.textSecondary} mr-5"><b>release date: </b>${publishDate}</p>
             <div class="mt-2 flex space-x-4">
-                <a href="${marineinfo_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
-                     <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
+                <a href="${marineinfo_link}" class="${themeStyles.link} ${themeStyles.linkHover}" mia-extra-properties="nochange">
+                     <img class="h-6 w-6 ${themeStyles.icon}" src="${marininfologo}" alt="marineinfo">
                 </a>
-                <a href="#" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange" id="clipboard">
-                     <img class="h-6 w-6 icon_svg" src="${clipboard}" alt="marineinfo">
+                <a href="#" class="${themeStyles.link} ${themeStyles.linkHover}" mia-extra-properties="nochange" id="clipboard">
+                     <img class="h-6 w-6 ${themeStyles.icon}" src="${clipboard}" alt="marineinfo">
                 </a>
                 ${download_button}
             </div>
@@ -615,7 +645,8 @@ export function generateBibliographicResourceCardTemplate(
 export function generateEventCardTemplate(
   data: { [key: string]: any },
   html_element: HTMLElement,
-  affordance_link: string
+  affordance_link: string,
+  theme?: string
 ): HTMLElement {
   // console.debug(data);
   //for each undefined value, replace with a default value
@@ -628,17 +659,21 @@ export function generateEventCardTemplate(
   let urls = data.otherLinks || [];
   let doc = data.doc || "";
   let marineinfo_link = doc || _link;
+  // Get theme styles
+  const themeStyles = getThemeStyles(theme);
+  const themeInlineStyles = getThemeInlineStyles(theme);
+
 
   // other links section
   let urls_html = "";
   if (typeof urls === "string") {
-    urls_html = `<a href="${urls}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
-                   <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
+    urls_html = `<a href="${urls}" class="${themeStyles.link} ${themeStyles.linkHover}" mia-extra-properties="nochange">
+                   <img class="h-6 w-6 ${themeStyles.icon}" src="${link}" alt="external link">
                  </a>`;
   } else {
     for (let i = 0; i < Math.min(urls.length, 5); i++) {
       urls_html += `<a href="${urls[i]}" class="text-gray-500 hover:text-gray-700 relative" mia-extra-properties="nochange">
-          <img class="h-6 w-6 icon_svg" src="${link}" alt="external link">
+          <img class="h-6 w-6 ${themeStyles.icon}" src="${link}" alt="external link">
         </a>`;
     }
     if (urls.length > 5) {
@@ -651,23 +686,23 @@ export function generateEventCardTemplate(
   }
 
   let innerHTML = `
-  <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;min-height:150px;">
+  <div class="flex items-center ${themeStyles.card}" style="width: 312.85px;min-height:150px;${themeInlineStyles}">
      <div class="ml-4">
-         <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
-           <img class="h-5 w-5 mr-1 icon_svg" src="${bullhorn}" alt="location">
+         <h2 class="inline-flex items-center text-lg font-semibold ${themeStyles.title} mr-5">
+           <img class="h-5 w-5 mr-1 ${themeStyles.icon}" src="${bullhorn}" alt="location">
            ${stringlengthshortener(title, 25)}
          </h2>
-         <p class="text-sm text-gray-500 mr-5">${type}</p>
-         <p class="inline-flex items-center text-sm text-gray-500 mr-5">
-         <img class="h-4 w-4 mr-1 icon_svg" src="${globe}" alt="location">
+         <p class="text-sm ${themeStyles.textSecondary} mr-5">${type}</p>
+         <p class="inline-flex items-center text-sm ${themeStyles.textSecondary} mr-5">
+         <img class="h-4 w-4 mr-1 ${themeStyles.icon}" src="${globe}" alt="location">
          ${location}
          </p>
-         <p class="inline-flex items-center text-sm text-gray-500 mr-5">
-          <img class="h-4 w-4 mr-1 icon_svg" src=" ${calendar}" alt="marineinfo">
+         <p class="inline-flex items-center text-sm ${themeStyles.textSecondary} mr-5">
+          <img class="h-4 w-4 mr-1 ${themeStyles.icon}" src=" ${calendar}" alt="marineinfo">
           ${start_date} - ${end_date}
          </p>
          <div class="mt-2 flex space-x-4">
-             <a href="${marineinfo_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
+             <a href="${marineinfo_link}" class="${themeStyles.link} ${themeStyles.linkHover}" mia-extra-properties="nochange">
                   <img class="h-6 w-6 icon_svg mb-1" src="${marininfologo}" alt="marineinfo">
              </a>
               ${urls_html}
@@ -684,7 +719,8 @@ export function generateEventCardTemplate(
 export function generateAphiaCardTemplate(
   data: { [key: string]: any },
   html_element: HTMLElement,
-  affordance_link: string
+  affordance_link: string,
+  theme?: string
 ): HTMLElement {
   // console.debug(data);
   //for each undefined value, replace with a default value
@@ -694,6 +730,10 @@ export function generateAphiaCardTemplate(
   let citation = data.citation || "";
   let _link = affordance_link || "";
   let image = data.image || "";
+  // Get theme styles
+  const themeStyles = getThemeStyles(theme);
+  const themeInlineStyles = getThemeInlineStyles(theme);
+
 
   let image_html = "";
 
@@ -705,10 +745,10 @@ export function generateAphiaCardTemplate(
 
   //tailwind
   let innerHTML = `
-     <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;min-height:150px">
+     <div class="flex items-center ${themeStyles.card}" style="width: 312.85px;min-height:150px;${themeInlineStyles}">
         ${image_html}
         <div class="ml-4">
-            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
+            <h2 class="inline-flex items-center text-lg font-semibold ${themeStyles.title} mr-5">
               <img id="marineinfo_logo" class="h-5 w-5 mr-1" src="${link}">
               ${stringlengthshortener(title, 20)}
             </h2>
@@ -717,8 +757,8 @@ export function generateAphiaCardTemplate(
               <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">${rank}</span>
             </div>
             <div class="mt-2 flex space-x-4 items-center">
-                <a href="${_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
-                     <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
+                <a href="${_link}" class="${themeStyles.link} ${themeStyles.linkHover}" mia-extra-properties="nochange">
+                     <img class="h-6 w-6 ${themeStyles.icon}" src="${marininfologo}" alt="marineinfo">
                 </a>
                 <button id="aphia-clipboard" class="flex items-center px-2 py-1 bg-gray-100 rounded hover:bg-gray-200 transition ml-2" title="Copy citation">
                   <img class="h-5 w-5 icon_svg mr-1" src="${clipboard}" alt="Copy citation">
@@ -752,7 +792,8 @@ export function generateAphiaCardTemplate(
 export function generateMapCardTemplate(
   data: { [key: string]: any },
   html_element: HTMLElement,
-  affordance_link: string
+  affordance_link: string,
+  theme?: string
 ): HTMLElement {
   let _link = affordance_link || "";
   // console.debug(data);
@@ -760,6 +801,10 @@ export function generateMapCardTemplate(
   const mapwkt = data.mapwkt || null; // Default to 0 if not provided
   const centroid = data.centroid || null; // Default to 0 if not provided
   const uniqueId = "map-" + Math.random().toString(36).substr(2, 9); // Generate a unique ID for the map
+  // Get theme styles
+  const themeStyles = getThemeStyles(theme);
+  const themeInlineStyles = getThemeInlineStyles(theme);
+
 
   //if map location is "" and centroid is null and mapwkt is null then return
   if (mapwkt == null && centroid == null && name == "") {
@@ -788,11 +833,11 @@ export function generateMapCardTemplate(
   document.head.appendChild(leafletJs);
 
   let InnerHTML = `
-    <div class="items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;min-height:150px;">
+    <div class="items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;min-height:150px;${themeInlineStyles}">
         <div class="ml-4">
           <div class="mt-2 flex space-x-4">
             <img class="h-5 w-5 mr-2" src="${book_atlas}" alt="book_atlas">
-            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
+            <h2 class="inline-flex items-center text-lg font-semibold ${themeStyles.title} mr-5">
             ${stringlengthshortener(name, 25)}
             </h2>
           </div>

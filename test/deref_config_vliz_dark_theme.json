@@ -1,0 +1,60 @@
+[
+    {
+        "RDF_TYPE": "https://schema.org/Person",
+        "PREFIXES": [
+            {
+                "prefix": "schema",
+                "uri": "https://schema.org/"
+            },
+            {
+                "prefix": "org",
+                "uri": "http://www.w3.org/ns/org#"
+            },
+            {
+                "prefix": "skos",
+                "uri": "http://www.w3.org/2004/02/skos/core#"
+            }
+        ],
+        "ASSERTION_PATHS": [
+            "schema:givenName",
+            "schema:familyName",
+            "schema:image",
+            "schema:subjectOf",
+            "schema:identifier",
+            "org:hasMembership/org:organization/schema:name",
+            "org:hasMembership/org:role/skos:prefLabel"
+        ],
+        "TEMPLATE": "person",
+        "THEME": "vliz-dark",
+        "MAPPING": {
+            "name": {
+                "query": "schema:givenName",
+                "type": "single"
+            },
+            "family": {
+                "query": "schema:familyName",
+                "type": "single"
+            },
+            "image": {
+                "query": "schema:image",
+                "type": "single"
+            },
+            "orcid": {
+                "query": "schema:identifier",
+                "type": "single"
+            },
+            "organization": {
+                "query": "org:hasMembership/org:organization ?a. \n ?a a org:Organization .\n ?a schema:name",
+                "type": "single"
+            },
+            "job_position": {
+                "query": "org:hasMembership/org:role/skos:prefLabel",
+                "type": "single"
+            },
+            "doc": {
+                "query": "schema:subjectOf",
+                "type": "single"
+            }
+        }
+    }
+]
