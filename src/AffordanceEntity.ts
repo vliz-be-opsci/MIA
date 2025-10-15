@@ -512,7 +512,7 @@ export default class AffordanceEntity {
     }
 
     //get card type for right template
-    let template_name = Object.keys(this.collected_info.content || {})[0];
+    let template_name = Object.keys(this.collected_info.content || {}).filter(k => k !== '_theme')[0];
     // console.debug(template_name);
 
     // Safety check: if no template_name, we can't generate the card
@@ -521,6 +521,9 @@ export default class AffordanceEntity {
       this.removeLoader();
       return;
     }
+
+    // Get theme from collected info
+    const theme = this.collected_info.content['_theme'] || 'default';
 
     //create card
     let card = document.createElement("div");
@@ -540,7 +543,8 @@ export default class AffordanceEntity {
     card = this._get_template_name(template_name)(
       this.collected_info.content[template_name],
       card,
-      affordance_link
+      affordance_link,
+      theme
     );
     card = this._generate_card_placement(card, event);
 

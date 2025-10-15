@@ -23,11 +23,13 @@ import calendar from "./css/calendar.svg";
 import link from "./css/link.svg";
 import map_marker from "./css/map_marker.svg";
 import { wktToGeoJSON } from "@terraformer/wkt";
+import { getThemeStyles, getThemeInlineStyles } from "./ThemeConfig";
 
 export function generatePersonCardTemplate(
   data: { [key: string]: any },
   html_element: HTMLElement,
-  affordance_link: string
+  affordance_link: string,
+  theme?: string
 ): HTMLElement {
   // console.debug(data);
   // console.debug(html_element);
@@ -50,23 +52,27 @@ export function generatePersonCardTemplate(
     image_html = `<img src="${cleanURI(image)}" alt="Card Image" class="h-30">`;
   }
 
+  // Get theme styles
+  const themeStyles = getThemeStyles(theme);
+  const themeInlineStyles = getThemeInlineStyles(theme);
+
   //tailwind
   let person_html = `
-     <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;min-height:150px">
+     <div class="flex items-center ${themeStyles.card}" style="width: 312.85px;min-height:150px;${themeInlineStyles}">
         ${image_html}
         <div class="ml-4">
-            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
-              <img id="marineinfo_logo" class="h-5 w-5 mr-1" src="${person}">
+            <h2 class="inline-flex items-center text-lg font-semibold ${themeStyles.title} mr-5">
+              <img id="marineinfo_logo" class="h-5 w-5 mr-1 ${themeStyles.icon}" src="${person}">
               ${surname} ${familyname}
             </h2>
-            <p class="text-sm text-gray-500 mr-5">${job_position}</p>
-            <p class="text-sm text-gray-500 mr-5">${organization}</p>
+            <p class="text-sm ${themeStyles.textSecondary} mr-5">${job_position}</p>
+            <p class="text-sm ${themeStyles.textSecondary} mr-5">${organization}</p>
             <div class="mt-2 flex space-x-4">
-                <a href="${marineinfo_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
-                     <img class="h-6 w-6 icon_svg" src="${marininfologo}" alt="marineinfo">
+                <a href="${marineinfo_link}" class="${themeStyles.link} ${themeStyles.linkHover}" mia-extra-properties="nochange">
+                     <img class="h-6 w-6 ${themeStyles.icon}" src="${marininfologo}" alt="marineinfo">
                 </a>
-                <a href="${orcid}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
-                    <img class="h-6 w-6 icon_svg" src="${orcidSVG}" alt="Orcid">
+                <a href="${orcid}" class="${themeStyles.link} ${themeStyles.linkHover}" mia-extra-properties="nochange">
+                    <img class="h-6 w-6 ${themeStyles.icon}" src="${orcidSVG}" alt="Orcid">
                 </a>
                 
             </div>
