@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>MIA Glass Theme Example</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Include MIA from local build -->
+    <script src="../dist/mia.bundle.js" id="mia_script"
+        data-deref-config="../test/deref_config_glass_theme.json"></script>
+    
+    <!-- Include Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        /* Background gradient for glass theme demo */
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+        }
+        .content-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-4xl font-bold text-white mb-6 drop-shadow-lg">MIA Glass Theme Example</h1>
+        
+        <div class="content-box p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-2xl font-semibold text-white mb-4">Marine Researchers</h2>
+            <p class="mb-3 text-white">
+                Meet <a href="https://marineinfo.org/id/person/38476" class="text-cyan-300 hover:text-cyan-100 underline">Dr. Marine Expert</a>, 
+                a leading researcher in marine biodiversity.
+            </p>
+            <p class="text-white">
+                Learn more about <a href="https://marineinfo.org/id/person/48" class="text-cyan-300 hover:text-cyan-100 underline">Jan Mees</a> 
+                and their work at <a href="https://marineinfo.org/id/institute/36" class="text-cyan-300 hover:text-cyan-100 underline">VLIZ</a>.
+            </p>
+        </div>
+
+        <div class="content-box p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-2xl font-semibold text-white mb-4">Marine Datasets</h2>
+            <p class="mb-3 text-white">
+                Explore the <a href="https://marineinfo.org/id/dataset/6472" class="text-cyan-300 hover:text-cyan-100 underline">North Sea Dataset</a>.
+            </p>
+        </div>
+        
+        <div class="content-box p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-semibold text-white mb-2">Theme Details</h2>
+            <p class="text-white text-sm">
+                This page demonstrates the <strong>Glass theme</strong> with glassmorphism effects.
+                The cards feature translucent backgrounds with backdrop blur for a modern look.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

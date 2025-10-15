@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>MIA Theme Testing</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Include MIA from local build -->
+    <script src="../dist/mia.bundle.js" id="mia_script"
+        data-deref-config="../test/deref_config.json"></script>
+    
+    <!-- Include Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+        }
+        .section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-4xl font-bold text-white mb-8 drop-shadow-lg text-center">MIA Theme System Test</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="section p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-semibold text-white mb-4">Default Theme</h2>
+                <p class="text-white mb-2">Standard MIA cards (when THEME is not specified)</p>
+                <p class="text-sm text-gray-200">
+                    <a href="https://marineinfo.org/id/person/48" class="text-cyan-300 hover:text-cyan-100 underline">Jan Mees</a>
+                </p>
+            </div>
+            
+            <div class="section p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-semibold text-white mb-4">Glass Theme</h2>
+                <p class="text-white mb-2">Glassmorphism with light colors</p>
+                <p class="text-sm text-gray-200">
+                    Configure with: <code class="bg-black bg-opacity-30 px-2 py-1 rounded">"THEME": "glass"</code>
+                </p>
+            </div>
+            
+            <div class="section p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-semibold text-white mb-4">Glass Dark Theme</h2>
+                <p class="text-white mb-2">Glassmorphism with dark colors</p>
+                <p class="text-sm text-gray-200">
+                    Configure with: <code class="bg-black bg-opacity-30 px-2 py-1 rounded">"THEME": "glass-dark"</code>
+                </p>
+            </div>
+            
+            <div class="section p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-semibold text-white mb-4">VLIZ Theme</h2>
+                <p class="text-white mb-2">VLIZ brand colors (light mode)</p>
+                <p class="text-sm text-gray-200">
+                    Configure with: <code class="bg-black bg-opacity-30 px-2 py-1 rounded">"THEME": "vliz"</code>
+                </p>
+            </div>
+            
+            <div class="section p-6 rounded-lg shadow-md md:col-span-2">
+                <h2 class="text-2xl font-semibold text-white mb-4 text-center">VLIZ Dark Theme</h2>
+                <p class="text-white mb-2 text-center">VLIZ brand colors (dark mode)</p>
+                <p class="text-sm text-gray-200 text-center">
+                    Configure with: <code class="bg-black bg-opacity-30 px-2 py-1 rounded">"THEME": "vliz-dark"</code>
+                </p>
+            </div>
+        </div>
+        
+        <div class="section p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-semibold text-white mb-4">Test Links</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <h3 class="text-white font-semibold mb-2">Default Theme Examples:</h3>
+                    <ul class="space-y-1">
+                        <li><a href="https://marineinfo.org/id/person/48" class="text-cyan-300 hover:text-cyan-100 underline">Person: Jan Mees</a></li>
+                        <li><a href="https://marineinfo.org/id/institute/36" class="text-cyan-300 hover:text-cyan-100 underline">Organization: VLIZ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-white font-semibold mb-2">Theme Examples:</h3>
+                    <ul class="space-y-1">
+                        <li><a href="./theme-glass.html" class="text-cyan-300 hover:text-cyan-100 underline">View Glass Theme</a></li>
+                        <li><a href="./theme-glass-dark.html" class="text-cyan-300 hover:text-cyan-100 underline">View Glass Dark Theme</a></li>
+                        <li><a href="./theme-vliz.html" class="text-cyan-300 hover:text-cyan-100 underline">View VLIZ Theme</a></li>
+                        <li><a href="./theme-vliz-dark.html" class="text-cyan-300 hover:text-cyan-100 underline">View VLIZ Dark Theme</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section p-6 rounded-lg shadow-md mt-6">
+            <h2 class="text-2xl font-semibold text-white mb-4">Documentation</h2>
+            <p class="text-white text-sm">
+                For complete documentation on using themes in MIA, see the <code class="bg-black bg-opacity-30 px-2 py-1 rounded">THEMES.md</code> file in the repository root.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

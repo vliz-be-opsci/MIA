@@ -2,6 +2,7 @@ import scroll from "./css/scroll.svg";
 import * as N3 from "n3";
 import { traverseURI, comunicaQueryString } from "./linked_data_store";
 import { stringlengthshortener } from "./Templates";
+import { getThemeStyles, getThemeInlineStyles } from "./ThemeConfig";
 
 /*
 {
@@ -240,7 +241,8 @@ function _extractPropertyPathsFromString(
 export function generateDefaultCardTemplate(
   data: { [key: string]: any },
   html_element: HTMLElement,
-  affordance_link: string
+  affordance_link: string,
+  theme?: string
 ): HTMLElement {
   // console.debug(data);
   // console.debug(html_element);
@@ -260,22 +262,27 @@ export function generateDefaultCardTemplate(
   if (Array.isArray(data["description"])) {
     data["description"] = data["description"].join("<br>");
   }
+
+  // Get theme styles
+  const themeStyles = getThemeStyles(theme);
+  const themeInlineStyles = getThemeInlineStyles(theme);
+
   let description = `
-    <p class="text-gray-600 text-sm mt-2">
+    <p class="${themeStyles.text} text-sm mt-2">
       ${data["description"]}
     </p>`;
 
   let defaulthtml = `
-     <div class="flex items-center bg-white rounded-lg shadow-lg" style="width: 312.85px;min-height:150px">
+     <div class="flex items-center ${themeStyles.card}" style="width: 312.85px;min-height:150px;${themeInlineStyles}">
         <div class="ml-4">
-            <h2 class="inline-flex items-center text-lg font-semibold text-gray-800 mr-5">
-              <img id="marineinfo_logo" class="h-5 w-5 mr-1" src="${scroll}">
+            <h2 class="inline-flex items-center text-lg font-semibold ${themeStyles.title} mr-5">
+              <img id="marineinfo_logo" class="h-5 w-5 mr-1 ${themeStyles.icon}" src="${scroll}">
               ${stringlengthshortener(title, 25)}
             </h2>
             ${description}
             <div class="mt-2 mb-2 flex space-x-4">
-                <a href="${_link}" class="text-gray-500 hover:text-gray-700" mia-extra-properties="nochange">
-                   <img class="h-6 w-6 icon_svg" src="${_link}" alt="external link">
+                <a href="${_link}" class="${themeStyles.link} ${themeStyles.linkHover}" mia-extra-properties="nochange">
+                   <img class="h-6 w-6 ${themeStyles.icon}" src="${_link}" alt="external link">
                  </a>
             </div>
         </div>

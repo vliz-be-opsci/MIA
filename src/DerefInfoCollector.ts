@@ -56,6 +56,7 @@ export default class DerefInfoCollector {
       const template_name = "default";
       const to_cache: any = {};
       to_cache[template_name] = info_keys;
+      to_cache['_theme'] = 'default'; // Default theme for default template
       this.cashedInfo[url] = to_cache;
       //console.info("cashed info: ", this.cashedInfo);
       return;
@@ -93,8 +94,10 @@ export default class DerefInfoCollector {
 
     //template for the info
     const template_name = config_type_info.TEMPLATE;
+    const theme = config_type_info.THEME || 'default';
     const to_cache: any = {};
     to_cache[template_name] = info_keys;
+    to_cache['_theme'] = theme; // Store theme separately
     //add empty store to the triplestore
     this.triplestore = this._combine_triplestores(this.triplestore, emptystore);
     this.cashedInfo[url] = to_cache;

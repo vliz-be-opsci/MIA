@@ -8,6 +8,7 @@ export interface DerefConfigType {
   ASSERTION_PATHS: string[];
   TEMPLATE: string;
   MAPPING: { [key: string]: string };
+  THEME?: string; // Optional theme: default, glass, glass-dark, vliz, vliz-dark
 }
 export interface DerefConfig {
   //shape derefconfig
