@@ -16,6 +16,7 @@ import {
   generateCollectionCardTemplate,
 } from "./Templates";
 import { generateDefaultCardTemplate } from "./DefaultTemplateGenerator";
+import { getThemeStyles, getThemeInlineStyles, getSkeletonColors } from "./ThemeConfig";
 import "./css/mia.css";
 
 // make maiproperties an interface
@@ -659,6 +660,18 @@ export default class AffordanceEntity {
     // Remove any existing cards first
     this._remove_card();
 
+    // Try to get theme from cached info if available
+    let theme = 'default';
+    if (this.derefinfocollector.cashedInfo[this.link] && 
+        this.derefinfocollector.cashedInfo[this.link]['_theme']) {
+      theme = this.derefinfocollector.cashedInfo[this.link]['_theme'];
+    }
+
+    // Get theme-aware styles
+    const themeStyles = getThemeStyles(theme);
+    const themeInlineStyles = getThemeInlineStyles(theme);
+    const skeletonColors = getSkeletonColors(theme);
+
     // Create skeleton card
     let card = document.createElement("div");
     card.className = "marine_info_affordances fade-in";
@@ -666,23 +679,35 @@ export default class AffordanceEntity {
     card.classList.add("card", "skeleton-card");
     card.style.position = "absolute";
 
-    // Create skeleton content with spinner
+    // Create skeleton content with theme-aware styling
     let skeletonContent = `
-      <div class="marine_info_affordances-skeleton" style="max-width: 312.85px; max-height: 150px; min-width: 312.85px; min-height: 150px; overflow: hidden;">
-      <div class="marine_info_affordances-skeleton-header" style="margin-bottom: 12px;">
-        <div class="skeleton-line skeleton-title" style="height: 12px; width: 70%; margin: 0 auto 3px auto; border-radius: 6px;"></div>
+      <div class="${themeStyles.card}" style="max-width: 312.85px; max-height: 150px; min-width: 312.85px; min-height: 150px; overflow: hidden; ${themeInlineStyles}">
+        <div class="p-4">
+          <div class="skeleton-header" style="margin-bottom: 12px;">
+            <div class="skeleton-line skeleton-title" style="height: 12px; width: 70%; margin: 0 auto 3px auto; border-radius: 6px; background: ${skeletonColors.background}; animation: skeleton-shimmer 1.5s ease-in-out infinite;"></div>
+          </div>
+          <div class="skeleton-body" style="margin-bottom: 12px;">
+            <div class="skeleton-line skeleton-text" style="height: 6px; width: 90%; margin-bottom: 3px; border-radius: 2px; background: ${skeletonColors.background}; animation: skeleton-shimmer 1.5s ease-in-out infinite; animation-delay: 0.1s;"></div>
+            <div class="skeleton-line skeleton-text" style="height: 6px; width: 70%; margin-bottom: 3px; border-radius: 2px; background: ${skeletonColors.background}; animation: skeleton-shimmer 1.5s ease-in-out infinite; animation-delay: 0.2s;"></div>
+            <div class="skeleton-line skeleton-text short" style="height: 6px; width: 50%; margin-bottom: 3px; border-radius: 2px; background: ${skeletonColors.background}; animation: skeleton-shimmer 1.5s ease-in-out infinite; animation-delay: 0.3s;"></div>
+          </div>
+          <div class="skeleton-footer" style="display: flex; justify-content: center; gap: 8px; margin-top: 5px;">
+            <div class="skeleton-circle" style="width: 10px; height: 10px; border-radius: 50%; background: ${skeletonColors.background}; animation: skeleton-shimmer 1.5s ease-in-out infinite; animation-delay: 0.4s;"></div>
+            <div class="skeleton-circle" style="width: 10px; height: 10px; border-radius: 50%; background: ${skeletonColors.background}; animation: skeleton-shimmer 1.5s ease-in-out infinite; animation-delay: 0.5s;"></div>
+            <div class="skeleton-circle" style="width: 10px; height: 10px; border-radius: 50%; background: ${skeletonColors.background}; animation: skeleton-shimmer 1.5s ease-in-out infinite; animation-delay: 0.6s;"></div>
+          </div>
+        </div>
       </div>
-      <div class="marine_info_affordances-skeleton-body" style="margin-bottom: 12px;">
-        <div class="skeleton-line skeleton-text" style="height: 6px; width: 90%; margin-bottom: 3px; border-radius: 2px;"></div>
-        <div class="skeleton-line skeleton-text" style="height: 6px; width: 70%; margin-bottom: 3px; border-radius: 2px;"></div>
-        <div class="skeleton-line skeleton-text short" style="height: 6px; width: 50%; margin-bottom: 3px; border-radius: 2px;"></div>
-      </div>
-      <div class="marine_info_affordances-skeleton-footer" style="display: flex; justify-content: center; gap: 8px; margin-top: 5px;">
-        <div class="skeleton-circle" style="width: 10px; height: 10px; border-radius: 50%; background: #e0e0e0;"></div>
-        <div class="skeleton-circle" style="width: 10px; height: 10px; border-radius: 50%; background: #e0e0e0;"></div>
-        <div class="skeleton-circle" style="width: 10px; height: 10px; border-radius: 50%; background: #e0e0e0;"></div>
-      </div>
-      </div>
+      <style>
+        @keyframes skeleton-shimmer {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
+        }
+      </style>
     `;
     
     card.innerHTML = skeletonContent;

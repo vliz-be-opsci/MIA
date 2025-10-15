@@ -105,3 +105,38 @@ export function getThemeInlineStyles(theme?: string): string {
       return '';
   }
 }
+
+/**
+ * Get skeleton loading colors based on theme
+ */
+export function getSkeletonColors(theme?: string): { background: string; shimmer: string } {
+  const themeType = (theme || 'default') as ThemeType;
+  
+  switch (themeType) {
+    case 'glass':
+      return {
+        background: 'rgba(255, 255, 255, 0.2)',
+        shimmer: 'rgba(255, 255, 255, 0.4)'
+      };
+    case 'glass-dark':
+      return {
+        background: 'rgba(100, 100, 120, 0.3)',
+        shimmer: 'rgba(150, 150, 170, 0.4)'
+      };
+    case 'vliz':
+      return {
+        background: '#e8ecf0',
+        shimmer: '#f0f4f8'
+      };
+    case 'vliz-dark':
+      return {
+        background: 'rgba(49, 183, 188, 0.15)',
+        shimmer: 'rgba(49, 183, 188, 0.25)'
+      };
+    default:
+      return {
+        background: '#e0e0e0',
+        shimmer: '#f0f0f0'
+      };
+  }
+}

@@ -4,7 +4,7 @@ This document describes the theme support feature added to MIA (Marine Info Affo
 
 ## Overview
 
-MIA now supports optional themes for card templates, allowing you to customize the visual appearance of information cards to match your website's design or brand identity.
+MIA now supports optional themes for card templates, allowing you to customize the visual appearance of information cards to match your website's design or brand identity. The theme system applies to both the final cards and the loading skeleton shown while data is being fetched, ensuring a consistent visual experience.
 
 ## Available Themes
 
@@ -118,7 +118,20 @@ To add a new theme:
 1. Add the theme name to the `ThemeType` type in `src/ThemeConfig.ts`
 2. Add the theme configuration to `THEME_CONFIGS` object
 3. Optionally add inline styles in `getThemeInlineStyles()` if needed
-4. Create example HTML and test configuration files
+4. Add skeleton colors in `getSkeletonColors()` for the loading state
+5. Create example HTML and test configuration files
+
+## Loading Skeleton Theming
+
+The loading skeleton (shown while data is being fetched) automatically adapts to the chosen theme:
+
+- **Default**: Gray shimmer effect on light gray background
+- **Glass**: Semi-transparent white shimmer matching the glassmorphism aesthetic
+- **Glass Dark**: Semi-transparent light gray shimmer on dark background
+- **VLIZ**: Light blue-gray shimmer matching VLIZ brand colors
+- **VLIZ Dark**: Zeeblauw-tinted shimmer on dark blue background
+
+The skeleton uses a smooth pulsing animation that complements each theme's visual style.
 
 ## Browser Compatibility
 
