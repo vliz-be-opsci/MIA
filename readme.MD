@@ -152,6 +152,35 @@ Each configuration entry defines:
 }
 ```
 
+### Customizing Card Themes
+
+MIA supports optional themes to customize the visual appearance of cards. Add a `THEME` parameter to your configuration:
+
+```json
+{
+    "RDF_TYPE": "https://schema.org/Person",
+    "TEMPLATE": "person",
+    "THEME": "glass",
+    "MAPPING": { ... }
+}
+```
+
+#### Available Themes
+
+| Theme | Description | Best For |
+|-------|-------------|----------|
+| `default` | White cards with shadow (used when THEME is omitted) | Professional websites |
+| `glass` | Light glassmorphism effect | Modern UI with colorful backgrounds |
+| `glass-dark` | Dark glassmorphism effect | Dark mode interfaces |
+| `vliz` | VLIZ brand colors (light) | Official VLIZ websites |
+| `vliz-dark` | VLIZ brand colors (dark) | VLIZ dark mode interfaces |
+
+**Quick Start with Themes:**
+- See `THEME_QUICKSTART.md` for quick configuration guide
+- See `THEMES.md` for complete theme documentation  
+- See `THEME_VISUAL_GUIDE.md` for visual descriptions
+- Check `examples/theme-*.html` for live examples
+
 ### Supported Data Types
 
 The default configuration supports:
